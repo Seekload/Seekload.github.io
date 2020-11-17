@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="zh-CN">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4b79e198f0e43ade55032d4bf11860a4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.53" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Go 面向对象编程（译） | Seekload&#39;s Blog</title>
+    <meta property="og:title" content="Go 面向对象编程（译） - Seekload&#39;s Blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2019-06-16T23:17:36&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2019-06-16T23:17:36&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Go 面向对象编程（译）">
+        
+    <meta name="author" content="Seekload">
+    <meta property="og:url" content="https://seekload.net/2019/06/16/go-oop-one.html">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://seekload.net">
+                        Seekload&#39;s Blog
+                    </a>
+                
+                <p class="description">专注于分享 Go 语言、职场心得和生活感悟</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://seekload.net">首页</a>
+                    
+                    <a  href="https://seekload.net/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://seekload.net/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">Go 面向对象编程（译）</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2019年6月16日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80">就要学习 Go 语言</a></span>
+                            
+                                <span class="meta-category"><a href="https://seekload.net/categories/golang">Golang</a></span>
+                            
+                        </div>
+                        
+                        <div class="post-meta">
+                            <span >
+                                <span>|</span>
+                                字数:2036
+                            </span>
+                        </div>
+                        
+                        <div class="post-meta">
+                            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span> 阅读</span></span>
+                        </div>
+                        
+                        <div class="post-content">
+                            
+
+<blockquote>
+<p><strong>『就要学习 Go 语言』系列 &ndash; 第 26 篇分享好文</strong></p>
+</blockquote>
+
+<p>今天接着给大家分享关于 Go 面向对象的好文。原文作者是 William Kennedy，《Go 语言实战》作者之一，
+<a href="https://www.ardanlabs.com/blog/" target="_blank">博客</a> 的维护者。大部分中国的 Gopher 都是通过这个博客认识了这位 Go 大神。</p>
+
+<p>有些与知识点无关的语句，翻译过来有点拗口，大家一眼带过，看看就好。但与知识点相关的，都会尽量忠于原文。另外，文章做了简单的排版，方便阅读。翻译水平有限，有误的地方，请大家在下方留言指正。</p>
+
+<h3 id="基础">基础</h3>
+
+<p>今天有人在论坛上问我一个问题，如何在不通过嵌入的情况下而获得继承的优点。重要的是，每个人都应该考虑 Go 语言，而不是他们留下的语言。我不能告诉你我从早期的 Go 实现中删除了多少代码，因为这是不必要的。语言设计师有多年的经验和知识，正在帮助创建一种快速、精简且编写代码非常有趣的语言。</p>
+
+<p>我认为 Go 是一门轻量级的面向对象编程语言。是的，它具有封装和类型成员函数，但它缺乏继承，因此缺乏传统的多态性。对我来说，除非想实现多态性，否则继承是无用的。通过在 Go 中实现接口的方式，不需要继承。Go采用 OOP 中最好的部分，而忽略了其他部分，为我们提供了一种编写多态代码的更好方法。</p>
+
+<p>下面是 Go 中的 OOP 快速概览。先从这三个结构体开始。</p>
+
+<pre><code class="language-go">type Animal struct {
+    Name string
+    mean bool
+}
+
+type Cat struct {
+    Basics Animal
+    MeowStrength int
+}
+
+type Dog struct {
+    Animal
+    BarkStrength int
+}
+</code></pre>
+
+<p>在任何关于 OOP 的示例中，你都可能看到上面三个结构体。一个基础结构体 Animal 和基于 Animal 声明的结构体 Cat 和 Dog。结构体 Animal 拥有所有动物共同的属性。</p>
+
+<p>除了成员 mean，其他所有成员都是公共的、可被外部访问的。结构体 Animal 的 mean 成员以小写字母开头。在 Go 中，变量、结构体、成员、函数等的第一个字母的大小写决定了访问权限。大写字母开头表示公共的，可供外部调用；小写字母开头表示私有的，外部不能调用。</p>
+
+<p>由于 Go 里没有继承，所以组合是你唯一的选择。结构体 Cat 的一个成员是 Basics，类型是 Animal。而结构体 Dog 通过匿名的方式嵌入了结构体 Animal。哪种实现方式更好取决于你，我会展示这两种实现方式。</p>
+
+<p>给结构体 Cat 和 Dog 创建各自的方法：</p>
+
+<pre><code class="language-go">func (dog *Dog) MakeNoise() {
+    barkStrength := dog.BarkStrength
+
+    if dog.mean == true {
+        barkStrength = barkStrength * 5
+    }
+
+    for bark := 0; bark &lt; barkStrength; bark++ {
+        fmt.Printf(&quot;BARK &quot;)
+    }
+
+    fmt.Println(&quot;&quot;)
+}
+
+func (cat *Cat) MakeNoise() {
+    meowStrength := cat.MeowStrength
+
+    if cat.Basics.mean == true {
+        meowStrength = meowStrength * 5
+    }
+
+    for meow := 0; meow &lt; meowStrength; meow++ {
+        fmt.Printf(&quot;MEOW &quot;)
+    }
+
+    fmt.Println(&quot;&quot;)
+}
+</code></pre>
+
+<p>使用指针接收者实现各自的方法 MakeNoise()。这两个方法做同样的事情，如果 mean 为 true 话，每个动物会基于吠或喵的强度，用各自的母语说话。很无聊，但它展示了如何访问引用的对象。</p>
+
+<p>我们可以使用 Dog 引用直接调用结构体 Animal 的成员，而 Cat 必须通过成员 Basics 访问到 Animal 的成员。</p>
+
+<p>到目前为止，我们已经讨论了封装、组合、访问规范和成员函数，剩下的就是如何创建多态行为。</p>
+
+<p>通过接口实现多态：</p>
+
+<pre><code class="language-go">type AnimalSounder interface {
+    MakeNoise()
+}
+
+func MakeSomeNoise(animalSounder AnimalSounder) {
+    animalSounder.MakeNoise()
+}
+</code></pre>
+
+<p>上面的代码，我们添加一个接口 AnimalSounder 和一个公共函数 MakeSomeNoise()，该函数接受接口类型的值。实际上，该函数将引用实现此接口的类型的值。接口不是可以实例化的类型，是行为声明，其他类型可以去实现接口声明的行为。</p>
+
+<p>在 Go 中，<strong>通过方法实现接口的任何类型都表示接口类型</strong>。在我们的例子中，结构体 Dog 和 Cat 都通过指针接收者实现了接口 AnimalSounder，所以它们都可以看成是 AnimalSounder 类型。</p>
+
+<p>这意味着，Dog 和 Cat 的指针可以作为参数传递给函数 MakeSomeNoise()。MakeSomeNoise() 函数通过 AnimalSounder 接口实现多态行为。</p>
+
+<p><a href="https://play.golang.org/p/Qy7GJ7lpkM3" target="_blank">查看完整代码</a></p>
+
+<h3 id="进阶">进阶</h3>
+
+<p>如果你想减少 Cat 和 Dog 的 MakeNoise() 方法中的代码重复，可以为 Animal 类型创建一个方法来处理：</p>
+
+<pre><code class="language-go">func (animal *Animal) PerformNoise(strength int, sound string) {
+    if animal.mean == true {
+        strength = strength * 5
+    }
+
+    for voice := 0; voice &lt; strength; voice++ {
+        fmt.Printf(&quot;%s &quot;, sound)
+    }
+
+    fmt.Println(&quot;&quot;)
+}
+
+func (dog *Dog) MakeNoise() {
+    dog.PerformNoise(dog.BarkStrength, &quot;BARK&quot;)
+}
+
+func (cat *Cat) MakeNoise() {
+    cat.Basics.PerformNoise(cat.MeowStrength, &quot;MEOW&quot;)
+}
+</code></pre>
+
+<p>现在 Animal 类型有一个处理 noise 的方法，可以被其外部类型调用，例如 Dog、Cat 类型。还有一个好处，我们不需要将 mean 成员作为参数传递，因为它就属于 Animal 结构体。
+下面是完整代码：</p>
+
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+)
+
+type Animal struct {
+    Name string
+    mean bool
+}
+
+type AnimalSounder interface {
+    MakeNoise()
+}
+
+type Dog struct {
+    Animal
+    BarkStrength int
+}
+
+type Cat struct {
+    Basics Animal
+    MeowStrength int
+}
+
+func main() {
+    myDog := &amp;Dog{
+        Animal{
+           &quot;Rover&quot;, // Name
+           false,   // mean
+        },
+        2, // BarkStrength
+    }
+
+    myCat := &amp;Cat{
+        Basics: Animal{
+            Name: &quot;Julius&quot;,
+            mean: true,
+        },
+        MeowStrength: 3,
+    }
+
+    MakeSomeNoise(myDog)
+    MakeSomeNoise(myCat)
+}
+
+func (animal *Animal) PerformNoise(strength int, sound string) {
+    if animal.mean == true {
+        strength = strength * 5
+    }
+
+    for voice := 0; voice &lt; strength; voice++ {
+        fmt.Printf(&quot;%s &quot;, sound)
+    }
+
+    fmt.Println(&quot;&quot;)
+}
+
+func (dog *Dog) MakeNoise() {
+    dog.PerformNoise(dog.BarkStrength, &quot;BARK&quot;)
+}
+
+func (cat *Cat) MakeNoise() {
+    cat.Basics.PerformNoise(cat.MeowStrength, &quot;MEOW&quot;)
+}
+
+func MakeSomeNoise(animalSounder AnimalSounder) {
+    animalSounder.MakeNoise()
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="language-go">BARK BARK
+MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW
+</code></pre>
+
+<h3 id="结构体中嵌入接口">结构体中嵌入接口</h3>
+
+<p>有人在后台给出了一个在结构体中嵌入接口的例子：</p>
+
+<pre><code class="language-go">package main
+
+import (
+    &quot;fmt&quot;
+)
+
+type HornSounder interface {
+    SoundHorn()
+}
+
+type Vehicle struct {
+    List [2]HornSounder
+}
+
+type Car struct {
+    Sound string
+}
+
+type Bike struct {
+   Sound string
+}
+
+func main() {
+    vehicle := new(Vehicle)
+    vehicle.List[0] = &amp;Car{&quot;BEEP&quot;}
+    vehicle.List[1] = &amp;Bike{&quot;RING&quot;}
+
+    for _, hornSounder := range vehicle.List {
+        hornSounder.SoundHorn()
+        // PressHorn(hornSounder) 这种方式也可以
+    }
+}
+
+func (car *Car) SoundHorn() {
+    fmt.Println(car.Sound)
+}
+
+func (bike *Bike) SoundHorn() {
+    fmt.Println(bike.Sound)
+}
+
+func PressHorn(hornSounder HornSounder) {
+    hornSounder.SoundHorn()
+}
+</code></pre>
+
+<p>在这个例子中，结构体 Vehicle 维护了一个实现 HornSounder 接口的值列表。在 main 函数中创建了变量 vehicle，并存储了 Car 类型变量和 Bike 变量的指针。这种赋值操作是可以的，因为 Car 和 Bike 都实现了接口。接着就是要一个简单的 loop 操作，循环调用 SoundHorn() 方法。</p>
+
+<p>在你的应用程序中，任何你需要实现面向对象的东西在 Go 语言中都有。正如我之前所说的，Go 采用了 OOP 中最好的部分，省略了其他部分，为我们提供了编写多态代码的更好方法。</p>
+
+<p>与主题相关联的几篇文章：<br>
+1.
+<a href="http://www.goinggo.net/2014/05/methods-interfaces-and-embedded-types.html" target="_blank">Methods, Interfaces and Embedded Types in Go</a><br></p>
+
+<p>2.<a href="http://www.goinggo.net/2013/07/how-packages-work-in-go-language.html" target="_blank">How Packages Work in Go</a><br></p>
+
+<p>3.<a href="http://www.goinggo.net/2013/07/singleton-design-pattern-in-go.html" target="_blank">Singleton Design Pattern in Go</a><br></p>
+
+<p>希望这几个简单的例子能对你的 Go 编程有帮助！<br><br><br></p>
+
+<p>推荐阅读：<br>
+1.<a href="https://seekload.net/2019/06/06/go-study-method.html" target="_blank">教女朋友写方法（续）</a><br></p>
+
+<p>2.<a href="https://seekload.net/2019/06/10/go-oop.html" target="_blank">Go 面向对象式编程</a><br></p>
+
+<p><br><br>
+(全文完)
+<img src="/me/weixingzh.jpg" alt="" /></p>
+
+<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h3>推荐阅读</h3>
+    <ul class="listing">
+        
+        <li><a href="/2019/06/10/go-oop.html">Go 面向对象式编程</a></li>
+        
+        <li><a href="/2019/06/06/go-study-method.html">教女朋友写方法（续）</a></li>
+        
+        <li><a href="/2019/06/03/go-hangzhou-meetup.html">Go 语言中文网 · 杭州线下面基第一期</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://seekload.net/tags/go">Go</a></li>
+                                
+                                <li><a href="https://seekload.net/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1">面向对象</a></li>
+                                
+                                <li><a href="https://seekload.net/tags/oop">OOP</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Seekload/Seekload.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://seekload.net">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利!!扫码关注领取学习资料！</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a title=""  style="color:red">
+                
+                    <img src="/me/weixingzh.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-interview-9-day.html" title="Go面试每天一篇（第 9 天）">Go面试每天一篇（第 9 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-pointers-vs-references.html" title="指针与引用（译）">指针与引用（译）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/29/go-interview-7-day.html" title="Go面试每天一篇（第 7 天）">Go面试每天一篇（第 7 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/26/go-interview-4-day.html" title="Go面试每天一篇（第 4 天）">Go面试每天一篇（第 4 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/25/go-interview-3-day.html" title="Go面试每天一篇（第 3 天）">Go面试每天一篇（第 3 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/24/go-interview-2-day.html" title="Go面试每天一篇（第 2 天）">Go面试每天一篇（第 2 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/23/go-interview-1-day.html" title="Go面试每天一篇（第 1 天）">Go面试每天一篇（第 1 天）</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://niannian.cleer.club/" title="念念有鱼">念念有鱼</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/categories/golang/">Golang(35)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(26)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书(1)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://seekload.net/tags/go/">Go</a>
+    
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
+    
+    <a href="https://seekload.net/tags/channel/">channel</a>
+    
+    <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/select/">select</a>
+    
+    <a href="https://seekload.net/tags/variadic/">variadic</a>
+    
+    <a href="https://seekload.net/tags/%E4%BF%A1%E9%81%93/">信道</a>
+    
+    <a href="https://seekload.net/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://seekload.net/tags/%E5%87%BD%E6%95%B0/">函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%88%87%E7%89%87/">切片</a>
+    
+    <a href="https://seekload.net/tags/%E5%8C%85/">包</a>
+    
+    <a href="https://seekload.net/tags/%E5%8D%8F%E7%A8%8B/">协程</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%98%E9%87%8F/">变量</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0/">可变函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%9D%9A%E6%8C%81/">坚持</a>
+    
+    <a href="https://seekload.net/tags/%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4/">工作空间</a>
+    
+    <a href="https://seekload.net/tags/%E5%B9%B6%E5%8F%91/">并发</a>
+    
+    <a href="https://seekload.net/tags/%E5%BC%95%E7%94%A8/">引用</a>
+    
+    <a href="https://seekload.net/tags/%E5%BD%B1%E5%93%8D%E5%8A%9B/">影响力</a>
+    
+    <a href="https://seekload.net/tags/%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5/">循环语句</a>
+    
+    <a href="https://seekload.net/tags/%E6%80%9D%E7%BB%B4/">思维</a>
+    
+    <a href="https://seekload.net/tags/%E6%8C%87%E9%92%88/">指针</a>
+    
+    <a href="https://seekload.net/tags/%E6%8E%A5%E5%8F%A3/">接口</a>
+    
+    <a href="https://seekload.net/tags/%E6%95%B0%E7%BB%84/">数组</a>
+    
+    <a href="https://seekload.net/tags/%E6%96%B9%E6%B3%95/">方法</a>
+    
+    <a href="https://seekload.net/tags/%E6%98%A0%E5%B0%84/">映射</a>
+    
+    <a href="https://seekload.net/tags/%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5/">条件语句</a>
+    
+    <a href="https://seekload.net/tags/%E7%B1%BB%E5%9E%8B/">类型</a>
+    
+    <a href="https://seekload.net/tags/%E7%BB%93%E6%9E%84%E4%BD%93/">结构体</a>
+    
+    <a href="https://seekload.net/tags/%E8%AE%A4%E7%9F%A5/">认知</a>
+    
+    <a href="https://seekload.net/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://seekload.net/tags/%E8%BF%90%E7%AE%97%E7%AC%A6/">运算符</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">面向对象</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%9F%BA/">面基</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E8%AF%95/">面试</a>
+    
+</div>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://seekload.net/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>

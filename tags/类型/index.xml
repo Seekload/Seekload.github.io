@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>类型 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E7%B1%BB%E5%9E%8B/</link>
+    <description>Recent content in 类型 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 17 Mar 2019 18:05:42 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E7%B1%BB%E5%9E%8B/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go 语言类型详解</title>
+      <link>https://seekload.net/2019/03/17/go-type-system.html</link>
+      <pubDate>Sun, 17 Mar 2019 18:05:42 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/17/go-type-system.html</guid>
+      <description>什么是类型 不同的编程语言之间，类型的概念有所不同，可以用许多不同的方式来表达，但大体上都有一些相同的地方。 类型是一组值； 相同类型的值之间可以</description>
+    </item>
+    
+    <item>
+      <title>数字类型</title>
+      <link>https://seekload.net/2019/01/29/go-number-type.html</link>
+      <pubDate>Tue, 29 Jan 2019 06:24:54 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-number-type.html</guid>
+      <description>前言 数字类型当然是用来表示数字的，分为整型和浮点型。 整型 整型用来存储整数，Go 有几种不同大小的内置整数类型，用于存储有符号和无符号整数。 有符</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>面向对象 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/</link>
+    <description>Recent content in 面向对象 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 16 Jun 2019 23:17:36 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go 面向对象编程（译）</title>
+      <link>https://seekload.net/2019/06/16/go-oop-one.html</link>
+      <pubDate>Sun, 16 Jun 2019 23:17:36 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/06/16/go-oop-one.html</guid>
+      <description>『就要学习 Go 语言』系列 &amp;ndash; 第 26 篇分享好文 今天接着给大家分享关于 Go 面向对象的好文。原文作者是 William Kennedy，《Go 语言实战》作者之一， 博客 的维</description>
+    </item>
+    
+    <item>
+      <title>Go 面向对象式编程</title>
+      <link>https://seekload.net/2019/06/10/go-oop.html</link>
+      <pubDate>Mon, 10 Jun 2019 22:41:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/06/10/go-oop.html</guid>
+      <description>『就要学习 Go 语言』系列 &amp;ndash; 第 25 篇分享好文 Go 语言没有对象的概念，但是 struct 类型有着和对象类似的特性。struct 类型可以定义自己的属性和方法。这篇文</description>
+    </item>
+    
+    <item>
+      <title>教女朋友写方法（续）</title>
+      <link>https://seekload.net/2019/06/06/go-study-method.html</link>
+      <pubDate>Thu, 06 Jun 2019 07:37:17 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/06/06/go-study-method.html</guid>
+      <description>『就要学习 Go 语言』系列&amp;ndash;第 24 篇分享文章 之前的文章给大家总结过方法的一些基本用法，最近在学 Go 面向对象式编程，对方法又有一些新的认识</description>
+    </item>
+    
+  </channel>
+</rss>

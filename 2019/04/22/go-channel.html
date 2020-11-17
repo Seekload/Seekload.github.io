@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="zh-CN">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4b79e198f0e43ade55032d4bf11860a4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.53" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Go 信道 | Seekload&#39;s Blog</title>
+    <meta property="og:title" content="Go 信道 - Seekload&#39;s Blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2019-04-22T07:27:07&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2019-04-22T07:27:07&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Go 信道">
+        
+    <meta name="author" content="Seekload">
+    <meta property="og:url" content="https://seekload.net/2019/04/22/go-channel.html">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://seekload.net">
+                        Seekload&#39;s Blog
+                    </a>
+                
+                <p class="description">专注于分享 Go 语言、职场心得和生活感悟</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://seekload.net">首页</a>
+                    
+                    <a  href="https://seekload.net/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://seekload.net/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">Go 信道</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2019年4月22日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80">就要学习 Go 语言</a></span>
+                            
+                                <span class="meta-category"><a href="https://seekload.net/categories/golang">Golang</a></span>
+                            
+                        </div>
+                        
+                        <div class="post-meta">
+                            <span >
+                                <span>|</span>
+                                字数:2346
+                            </span>
+                        </div>
+                        
+                        <div class="post-meta">
+                            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span> 阅读</span></span>
+                        </div>
+                        
+                        <div class="post-content">
+                            
+
+<blockquote>
+<p><strong>这是『就要学习 Go 语言』系列的第 22 篇分享文章</strong></p>
+</blockquote>
+
+<p>上篇文章讲了关于协程的一些用法，比如如何创建协程、匿名协程等。这篇文章我们来讲讲信道。
+<strong>信道是协程之间通信的管道，从一端发送数据，另一端接收数据。</strong></p>
+
+<h3 id="信道声明">信道声明</h3>
+
+<p>使用信道之前需要声明，有两种方式：</p>
+
+<pre><code class="language-go">var c chan int  		// 方式一
+c := make(chan int)		// 方式二
+</code></pre>
+
+<p>使用关键字 chan 创建信道，声明时有类型，表明信道只允许该类型的数据传输。信道的零值为 nil。方式一就声明了 nil 信道。nil 信道没什么作用，既不能发送数据也不能接受数据。方式二使用 make 函数创建了可用的信道 c。</p>
+
+<pre><code class="language-go">func main() {
+	c := make(chan int)
+	fmt.Printf(&quot;c Type is %T\n&quot;,c)
+	fmt.Printf(&quot;c Value is %v\n&quot;,c)
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="language-go">c Type is chan int
+c Value is 0xc000060060
+</code></pre>
+
+<p>上面的代码创建了信道 c，而且只允许 int 型数据传输。一般将信道作为参数传递给函数或者方法实现两个协程之间通信，有没有注意到信道 c 的值是一个地址，传参的时候直接使用 c 的值就可以，而不用取址。</p>
+
+<h3 id="信道的使用">信道的使用</h3>
+
+<h4 id="读写数据">读写数据</h4>
+
+<p>Go 提供了语法方便我们操作信道：</p>
+
+<pre><code class="language-go">c := make(chan int)
+// 写数据
+c &lt;- data   
+
+// 读数据
+variable &lt;- c  // 方式一
+&lt;- c  			// 方式二
+</code></pre>
+
+<p>读写数据注意信道的位置，<strong>信道在箭头的左边是写数据，在右边是从信道读数据</strong>。上面的方式二读数据是合理的，读出来的数据丢弃不使用。
+注意：<strong>信道操作默认是阻塞的，往信道里写数据之后当前协程便阻塞，直到其他协程将数据读出。一个协程被信道操作阻塞后，Go 调度器会去调用其他可用的协程，这样程序就不会一直阻塞</strong>。信道的这种特性非常有用，接下来我们就可以看到。
+我们来温习下上篇文章的一个例子：</p>
+
+<pre><code class="language-go">func printHello() {
+	fmt.Println(&quot;hello world goroutine&quot;)
+}
+
+func main() {
+	go printHello()
+	time.Sleep(1*time.Second)
+	fmt.Println(&quot;main goroutine&quot;)
+}
+</code></pre>
+
+<p>这个例子 main() 协程使用了 time.Sleep() 函数休眠了 1s 等待 printHello() 执行完成。很黑科技，在生产环境绝对不可以这样用。我们使用信道修改下：</p>
+
+<pre><code class="language-go">func printHello(c chan bool) {
+	fmt.Println(&quot;hello world goroutine&quot;)
+	&lt;- c    // 读取信道的数据
+}
+
+func main() {
+	c := make(chan bool)
+	go printHello(c)
+	c &lt;- true    // main 协程阻塞
+	fmt.Println(&quot;main goroutine&quot;)
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="language-go">hello world goroutine
+main goroutine
+</code></pre>
+
+<p>上面的例子，main 协程创建完 printHello 协程之后，第 8 行往信道 c 写数据，main 协程阻塞，Go 调度器调度可使用 printHello 协程，从信道 c 读出数据，main 协程接触阻塞继续运行。注意：读取操作没有阻塞是因为信道 c 已有可读的数据，否则，读取操作会阻塞。</p>
+
+<h4 id="死锁">死锁</h4>
+
+<p>前面提到过，读/写数据的时候信道会阻塞，调度器会去调度其他可用的协程。问题来了，如果没有其他可用的协程会发生什么情况？没错，就会发生著名的<strong>死锁</strong>。最简单的情况就是，只往信道写数据。</p>
+
+<pre><code class="language-go">func main() {
+	c := make(chan bool)
+	c &lt;- true    // 只写不读
+	fmt.Println(&quot;main goroutine&quot;)
+}
+</code></pre>
+
+<p>报错：</p>
+
+<pre><code class="language-go">fatal error: all goroutines are asleep - deadlock!
+</code></pre>
+
+<p>同理，只读不写也会报同样的错误。</p>
+
+<h4 id="关闭信道与-for-loop">关闭信道与 for loop</h4>
+
+<p>发送数据的信道有能力选择关闭信道，数据就不能传输。数据接收的时候可以返回一个状态判断该信道是否关闭：</p>
+
+<pre><code class="language-go">val, ok := &lt;- channel
+</code></pre>
+
+<p>val 是接收的值，ok 标识信道是否关闭。为 true 的话，该信道还可以进行读写操作；为 false 则标识信道关闭，数据不能传输。
+使用内置函数 close() 关闭信道。</p>
+
+<pre><code class="language-go">func printNums(ch chan int) {
+	for i := 0; i &lt; 4; i++ {
+		ch &lt;- i
+	}
+	close(ch)
+}
+
+func main() {
+	ch := make(chan int)
+	go printNums(ch)
+	for {
+		v, ok := &lt;-ch
+		if ok == false {     // 通过 ok 判断信道是否关闭
+			fmt.Println(v, ok)
+			break
+		}
+		fmt.Println(v, ok)
+	}
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="language-go">0 true
+1 true
+2 true
+3 true
+0 false
+</code></pre>
+
+<p>printNums 协程写完数据之后关闭了信道，在 main 协程里对 ok 判断，若为 false 说明信道关闭，退出 for 循坏。从关闭的信道读出来的值是对应类型的零值，上面最后一行的输出值是 int 类型的零值 0。</p>
+
+<p>使用 for 循环，需要手动判断信道有没有关闭。如果嫌烦的话，那就使用 for range 读取信道吧，信道关闭，for range 自动退出。</p>
+
+<pre><code class="language-go">func printNums(ch chan int) {
+	for i := 0; i &lt; 4; i++ {
+		ch &lt;- i
+	}
+	close(ch)
+}
+
+func main() {
+	ch := make(chan int)
+	go printNums(ch)
+
+	for v := range ch {
+		fmt.Println(v)
+	}
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="language-go">0
+1
+2
+3
+</code></pre>
+
+<p>提一点，使用 for range 一个信道，发送完毕之后必须 close() 信道，不然发生死锁。</p>
+
+<h4 id="缓冲信道和信道容量">缓冲信道和信道容量</h4>
+
+<p>之前创建的信道是无缓冲的，读写信道会立马阻塞当前协程。对于缓冲信道，写不会阻塞当前信道直到信道满了，同理，读操作也不会阻塞当前信道除非信道没数据。创建带缓冲的信道：</p>
+
+<pre><code class="language-go">ch := make(chan type, capacity)  
+</code></pre>
+
+<p>capacity 是缓冲大小，必须大于 0。 内置函数 len()、cap() 可以计算信道的长度和容量。</p>
+
+<pre><code class="language-go">func main() {
+	ch := make(chan int,3)
+
+	ch &lt;- 7
+	ch &lt;- 8
+	ch &lt;- 9
+	//ch &lt;- 10    
+	// 注释打开的话，协程阻塞，发生死锁
+	会发生死锁：信道已满且没有其他可用信道读取数据
+
+	fmt.Println(&quot;main stopped&quot;)
+}
+</code></pre>
+
+<p>输出：main stopped
+创建了缓冲为 3 的信道，写入 3 个数据时信道不会阻塞。如果将第 7 行代码注释打开的话，此时信道已满，协程阻塞，又没有其他可用协程读数据，便发生死锁。
+再来看个例子：</p>
+
+<pre><code class="language-go">func printNums(ch chan int) {
+
+	ch &lt;- 7
+	ch &lt;- 8
+	ch &lt;- 9
+	fmt.Printf(&quot;channel len:%d,capacity:%d\n&quot;,len(ch),cap(ch))
+	fmt.Println(&quot;blocking...&quot;)
+	ch &lt;- 10   // 阻塞
+	close(ch)
+}
+
+func main() {
+	ch := make(chan int,3)
+	go printNums(ch)
+
+	// 休眠 2s
+	time.Sleep(2*time.Second)
+	for v := range ch {
+		fmt.Println(v)
+	}
+
+	fmt.Println(&quot;main stopped&quot;)
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="language-go">channel len:3,capacity:3
+blocking...
+7
+8
+9
+10
+main stopped
+</code></pre>
+
+<p>休眠 2s 的目的是让信道写满数据发生阻塞，从打印结果可以看出。2s 之后，主协程从信道读取数据，信道容量有余阻塞便解除，继续写数据。</p>
+
+<p>如果缓冲信道是关闭状态但有数据，仍然可以读取数据：</p>
+
+<pre><code class="language-go">func main() {
+	ch := make(chan int,3)
+	
+	ch &lt;- 7
+	ch &lt;- 8
+	//ch &lt;- 9
+	close(ch)
+
+	for v := range ch {
+		fmt.Println(v)
+	}
+
+	fmt.Println(&quot;main stopped&quot;)
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="language-go">7
+8
+main stopped
+</code></pre>
+
+<h4 id="单向信道">单向信道</h4>
+
+<p>之前创建的都是双向信道，既能发送数据也能接收数据。我们还可以创建单向信道，只发送或者只接收数据。
+语法：</p>
+
+<pre><code class="language-go">sch := make(chan&lt;- int)
+rch := make(&lt;-chan int) 
+</code></pre>
+
+<p>sch 是只发送信道，rch 是只接受信道。
+这种单向信道有什么用呢？我们总不能只发不接或只接不发吧。这种信道主要用在信道作为参数传递的时候，Go 提供了自动转化，双向转单向。
+重写之前的例子：</p>
+
+<pre><code class="language-go">func printNums(ch chan&lt;- int) {
+	for i := 0; i &lt; 4; i++ {
+		ch &lt;- i
+	}
+	close(ch)
+}
+
+func main() {
+	ch := make(chan int)
+	go printNums(ch)
+
+	for v := range ch {
+		fmt.Println(v)
+	}
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="language-go">0
+1
+2
+3
+</code></pre>
+
+<p>main 协程中 ch 是一个双向信道，printNums() 在接收参数的时候将 ch 自动转成了单向信道，只发不收。但在 main 协程中，ch 仍然可以接收数据。<strong>使用单向通道主要是可以提高程序的类型安全性，程序不容易出错。</strong></p>
+
+<h4 id="信道数据类型">信道数据类型</h4>
+
+<p>信道是一类值，类似于 int、string 等，可以像其他值一样在任何地方使用，比如作为结构体成员、函数参数、函数返回值，甚至作为另一个通道的类型。我们来看下<strong>使用通道作为另一个通道的数据类型</strong>。</p>
+
+<pre><code class="language-go">func printWord(ch chan string) {
+	fmt.Println(&quot;Hello &quot; + &lt;-ch)
+}
+
+func productCh(ch chan chan string)  {
+	c := make(chan string)   // 创建 string type 信道
+	ch &lt;- c     // 传输信道
+}
+
+func main() {
+
+	// 创建 chan string 类型的信道
+	ch := make(chan chan string)
+	go productCh(ch)
+	// c 是 string type 的信道
+	c := &lt;-ch
+	go printWord(c)
+	c &lt;- &quot;world&quot;
+	fmt.Println(&quot;main stopped&quot;)
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="language-go">Hello world
+main stopped
+</code></pre>
+
+<p>希望这篇文章能够帮助你，Good day!</p>
+
+<p><br><br>
+(全文完)
+<img src="/me/weixingzh.jpg" alt="" /></p>
+
+<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h3>推荐阅读</h3>
+    <ul class="listing">
+        
+        <li><a href="/2019/04/19/go-goroutine.html">Go 并发 -- 协程</a></li>
+        
+        <li><a href="/2019/03/30/go-interface-two.html">Go 语言接口详解（二）</a></li>
+        
+        <li><a href="/2019/03/29/go-interface-one.html">Go 语言接口详解（一）</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://seekload.net/tags/go">Go</a></li>
+                                
+                                <li><a href="https://seekload.net/tags/%E4%BF%A1%E9%81%93">信道</a></li>
+                                
+                                <li><a href="https://seekload.net/tags/channel">channel</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Seekload/Seekload.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://seekload.net">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利!!扫码关注领取学习资料！</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a title=""  style="color:red">
+                
+                    <img src="/me/weixingzh.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-interview-9-day.html" title="Go面试每天一篇（第 9 天）">Go面试每天一篇（第 9 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-pointers-vs-references.html" title="指针与引用（译）">指针与引用（译）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/29/go-interview-7-day.html" title="Go面试每天一篇（第 7 天）">Go面试每天一篇（第 7 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/26/go-interview-4-day.html" title="Go面试每天一篇（第 4 天）">Go面试每天一篇（第 4 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/25/go-interview-3-day.html" title="Go面试每天一篇（第 3 天）">Go面试每天一篇（第 3 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/24/go-interview-2-day.html" title="Go面试每天一篇（第 2 天）">Go面试每天一篇（第 2 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/23/go-interview-1-day.html" title="Go面试每天一篇（第 1 天）">Go面试每天一篇（第 1 天）</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://niannian.cleer.club/" title="念念有鱼">念念有鱼</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/categories/golang/">Golang(35)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(26)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书(1)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://seekload.net/tags/go/">Go</a>
+    
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
+    
+    <a href="https://seekload.net/tags/channel/">channel</a>
+    
+    <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/select/">select</a>
+    
+    <a href="https://seekload.net/tags/variadic/">variadic</a>
+    
+    <a href="https://seekload.net/tags/%E4%BF%A1%E9%81%93/">信道</a>
+    
+    <a href="https://seekload.net/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://seekload.net/tags/%E5%87%BD%E6%95%B0/">函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%88%87%E7%89%87/">切片</a>
+    
+    <a href="https://seekload.net/tags/%E5%8C%85/">包</a>
+    
+    <a href="https://seekload.net/tags/%E5%8D%8F%E7%A8%8B/">协程</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%98%E9%87%8F/">变量</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0/">可变函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%9D%9A%E6%8C%81/">坚持</a>
+    
+    <a href="https://seekload.net/tags/%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4/">工作空间</a>
+    
+    <a href="https://seekload.net/tags/%E5%B9%B6%E5%8F%91/">并发</a>
+    
+    <a href="https://seekload.net/tags/%E5%BC%95%E7%94%A8/">引用</a>
+    
+    <a href="https://seekload.net/tags/%E5%BD%B1%E5%93%8D%E5%8A%9B/">影响力</a>
+    
+    <a href="https://seekload.net/tags/%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5/">循环语句</a>
+    
+    <a href="https://seekload.net/tags/%E6%80%9D%E7%BB%B4/">思维</a>
+    
+    <a href="https://seekload.net/tags/%E6%8C%87%E9%92%88/">指针</a>
+    
+    <a href="https://seekload.net/tags/%E6%8E%A5%E5%8F%A3/">接口</a>
+    
+    <a href="https://seekload.net/tags/%E6%95%B0%E7%BB%84/">数组</a>
+    
+    <a href="https://seekload.net/tags/%E6%96%B9%E6%B3%95/">方法</a>
+    
+    <a href="https://seekload.net/tags/%E6%98%A0%E5%B0%84/">映射</a>
+    
+    <a href="https://seekload.net/tags/%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5/">条件语句</a>
+    
+    <a href="https://seekload.net/tags/%E7%B1%BB%E5%9E%8B/">类型</a>
+    
+    <a href="https://seekload.net/tags/%E7%BB%93%E6%9E%84%E4%BD%93/">结构体</a>
+    
+    <a href="https://seekload.net/tags/%E8%AE%A4%E7%9F%A5/">认知</a>
+    
+    <a href="https://seekload.net/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://seekload.net/tags/%E8%BF%90%E7%AE%97%E7%AC%A6/">运算符</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">面向对象</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%9F%BA/">面基</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E8%AF%95/">面试</a>
+    
+</div>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://seekload.net/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>

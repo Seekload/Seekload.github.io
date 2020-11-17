@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>思维 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E6%80%9D%E7%BB%B4/</link>
+    <description>Recent content in 思维 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 02 Mar 2019 10:08:46 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E6%80%9D%E7%BB%B4/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>好好学习</title>
+      <link>https://seekload.net/2019/03/02/study-well.html</link>
+      <pubDate>Sat, 02 Mar 2019 10:08:46 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/02/study-well.html</guid>
+      <description>不知道有没有人跟我一样，『极客时间』的专栏买了一大波，也只是了解一些概念性的东西，停留在知识表面；每天都会追『得到』上的课程，生怕哪天别人讲</description>
+    </item>
+    
+  </channel>
+</rss>

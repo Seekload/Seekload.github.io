@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="zh-CN">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4b79e198f0e43ade55032d4bf11860a4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.53" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Go 并发 -- Select | Seekload&#39;s Blog</title>
+    <meta property="og:title" content="Go 并发 -- Select - Seekload&#39;s Blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2019-04-29T07:31:11&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2019-04-29T07:31:11&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Go 并发 -- Select">
+        
+    <meta name="author" content="Seekload">
+    <meta property="og:url" content="https://seekload.net/2019/04/29/go-select.html">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://seekload.net">
+                        Seekload&#39;s Blog
+                    </a>
+                
+                <p class="description">专注于分享 Go 语言、职场心得和生活感悟</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://seekload.net">首页</a>
+                    
+                    <a  href="https://seekload.net/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://seekload.net/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">Go 并发 -- Select</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2019年4月29日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80">就要学习 Go 语言</a></span>
+                            
+                                <span class="meta-category"><a href="https://seekload.net/categories/golang">Golang</a></span>
+                            
+                        </div>
+                        
+                        <div class="post-meta">
+                            <span >
+                                <span>|</span>
+                                字数:1226
+                            </span>
+                        </div>
+                        
+                        <div class="post-meta">
+                            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span> 阅读</span></span>
+                        </div>
+                        
+                        <div class="post-content">
+                            
+
+<blockquote>
+<p><strong>这是『就要学习 Go 语言』系列的第 23 篇分享文章</strong></p>
+</blockquote>
+
+<h3 id="select-的作用">Select 的作用</h3>
+
+<p>select 的用法有点类似 switch 语句，但 select 不会有输入值而且只用于信道操作。select 用于从多个发送或接收信道操作中进行选择，语句会阻塞直到其中有信道可以操作，如果有多个信道可以操作，会随机选择其中一个 case 执行。
+看下例子：</p>
+
+<pre><code class="language-go">func service1(ch chan string) {
+	time.Sleep(2 * time.Second)
+	ch &lt;- &quot;from service1&quot;
+}
+func service2(ch chan string) {
+	time.Sleep(1 * time.Second)
+	ch &lt;- &quot;from service2&quot;
+}
+
+func main() {
+	ch1 := make(chan string)
+	ch2 := make(chan string)
+	go service1(ch1)
+	go service2(ch2)
+	
+	select {       // 会发送阻塞
+	case s1 := &lt;-ch1:
+		fmt.Println(s1)
+	case s2 := &lt;-ch2:
+		fmt.Println(s2)
+	}
+}
+</code></pre>
+
+<p>输出：from service2 <br>
+上面的例子执行到 select 语句的时候回发生阻塞，main 协程等待一个 case 操作可执行，很明显是 service2 先准备好读取的数据（休眠 1s），所以输出 from service2。
+看下在两种操作都准备好的情况：</p>
+
+<pre><code class="language-go">func service1(ch chan string) {
+	//time.Sleep(2 * time.Second)
+	ch &lt;- &quot;from service1&quot;
+}
+func service2(ch chan string) {
+	//time.Sleep(1 * time.Second)
+	ch &lt;- &quot;from service2&quot;
+}
+
+func main() {
+	ch1 := make(chan string)
+	ch2 := make(chan string)
+	go service1(ch1)
+	go service2(ch2)
+
+	time.Sleep(2*time.Second)
+	select {
+	case s1 := &lt;-ch1:
+		fmt.Println(s1)
+	case s2 := &lt;-ch2:
+		fmt.Println(s2)
+	}
+}
+</code></pre>
+
+<p>我们把函数里的延时注释掉，主函数 select 之前加 2s 的延时以等待两个信道的数据准备好，select 会随机选取其中一个 case 执行，所以输出也是随机的。</p>
+
+<h3 id="default-case">default case</h3>
+
+<p>与 switch 语句类似，select 也有 default case，是的 select 语句不在阻塞，如果其他信道操作还没有准备好，将会直接执行 default 分支。</p>
+
+<pre><code class="language-go">func service1(ch chan string) {
+	ch &lt;- &quot;from service1&quot;
+}
+func service2(ch chan string) {
+	ch &lt;- &quot;from service2&quot;
+}
+
+func main() {
+	ch1 := make(chan string)
+	ch2 := make(chan string)
+	go service1(ch1)
+	go service2(ch2)
+
+	select {         // ch1 ch2 都还没有准备好，直接执行 default 分支 
+	case s1 := &lt;-ch1:
+		fmt.Println(s1)
+	case s2 := &lt;-ch2:
+		fmt.Println(s2)
+	default:
+		fmt.Println(&quot;no case ok&quot;)
+	}
+}
+</code></pre>
+
+<p>输出：no case ok <br>
+执行到 select 语句的时候，由于信道 ch1、ch2 都没准备好，直接执行 default 语句。</p>
+
+<pre><code class="language-go">func service1(ch chan string) {
+	ch &lt;- &quot;from service1&quot;
+}
+func service2(ch chan string) {
+	ch &lt;- &quot;from service2&quot;
+}
+
+func main() {
+	ch1 := make(chan string)
+	ch2 := make(chan string)
+	go service1(ch1)
+	go service2(ch2)
+
+	time.Sleep(time.Second)   // 延时 1s,等待 ch1 ch2 准备就绪
+	
+	select {
+	case s1 := &lt;-ch1:
+		fmt.Println(s1)
+	case s2 := &lt;-ch2:
+		fmt.Println(s2)
+	default:
+		fmt.Println(&quot;no case ok&quot;)
+	}
+}
+</code></pre>
+
+<p>在 select 语句之前加了 1s 延时，等待 ch1 ch2 准备就绪。因为两个通道都准备好了，所以不会走 default 语句。随机输出 from service1 或 from service2。</p>
+
+<h3 id="nil-channel">nil channel</h3>
+
+<p>信道的默认值是 nil，不能对 nil 信道进行读写操作。看下面的例子</p>
+
+<pre><code class="language-go">func service1(ch chan string) {
+	ch &lt;- &quot;from service1&quot;
+}
+
+func main() {
+
+	var ch chan string
+	go service1(ch)
+	select {
+	case str := &lt;-ch:
+		fmt.Println(str)
+	}
+}
+</code></pre>
+
+<p>报错：</p>
+
+<pre><code class="language-go">fatal error: all goroutines are asleep - deadlock!
+
+goroutine 1 [select (no cases)]:
+
+goroutine 18 [chan send (nil chan)]:
+</code></pre>
+
+<p>有两个错误的地方需要注意：
+[select (no cases)]  case 分支中如果信道是 nil，<strong>该分支就会被忽略</strong>，那么上面就变成空 select{} 语句，阻塞主协程，调度 service1 协程，在 nil 信道上操作，便报[chan send (nil chan)] 错误。可以使用上面的 default case 避免发生这样的错误。</p>
+
+<pre><code class="language-go">func service1(ch chan string) {
+	ch &lt;- &quot;from service1&quot;
+}
+
+func main() {
+
+	var ch chan string
+	go service1(ch)
+	select {
+	case str := &lt;-ch:
+		fmt.Println(str)
+	default:
+		fmt.Println(&quot;I am default&quot;)
+	}
+}
+</code></pre>
+
+<p>输出：I am default</p>
+
+<h3 id="添加超时时间">添加超时时间</h3>
+
+<p>有时候，我们不希望立即执行 default 语句，而是希望等待一段时间，若这个时间段内还没有可操作的信道，则执行规定的语句。可以在 case 语句后面设置超时时间。</p>
+
+<pre><code class="language-go">func service1(ch chan string) {
+	time.Sleep(5 * time.Second)
+	ch &lt;- &quot;from service1&quot;
+}
+func service2(ch chan string) {
+	time.Sleep(3 * time.Second)
+	ch &lt;- &quot;from service2&quot;
+}
+
+func main() {
+	ch1 := make(chan string)
+	ch2 := make(chan string)
+	go service1(ch1)
+	go service2(ch2)
+
+	select {       // 会发送阻塞
+	case s1 := &lt;-ch1:
+		fmt.Println(s1)
+	case s2 := &lt;-ch2:
+		fmt.Println(s2)
+	case &lt;-time.After(2*time.Second):     // 等待 2s
+		fmt.Println(&quot;no case ok&quot;)
+	}
+}
+</code></pre>
+
+<p>输出：no case ok <br>
+在第三个 case 语句中设置了 2s 的超时时间，这 2s 内如果其他可操作的信道，便会执行该 case。</p>
+
+<h3 id="空-select">空 select</h3>
+
+<pre><code class="language-go">package main
+
+func main() {  
+    select {}
+}
+</code></pre>
+
+<p>我们知道 select 语句会发生阻塞，直到有 case 可以操作。但是空 select 语句没有 case 分支，所以便一直阻塞引起死锁。
+报错：</p>
+
+<pre><code class="language-go">fatal error: all goroutines are asleep - deadlock!
+goroutine 1 [select (no cases)]
+</code></pre>
+
+<p><br>
+希望这篇文章能够帮助你，Good day!</p>
+
+<p><br><br>
+(全文完)
+<img src="/me/weixingzh.jpg" alt="" /></p>
+
+<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h3>推荐阅读</h3>
+    <ul class="listing">
+        
+        <li><a href="/2019/04/19/go-goroutine.html">Go 并发 -- 协程</a></li>
+        
+        <li><a href="/2019/04/22/go-channel.html">Go 信道</a></li>
+        
+        <li><a href="/2019/03/30/go-interface-two.html">Go 语言接口详解（二）</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://seekload.net/tags/go">Go</a></li>
+                                
+                                <li><a href="https://seekload.net/tags/%E5%B9%B6%E5%8F%91">并发</a></li>
+                                
+                                <li><a href="https://seekload.net/tags/select">select</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Seekload/Seekload.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://seekload.net">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利!!扫码关注领取学习资料！</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a title=""  style="color:red">
+                
+                    <img src="/me/weixingzh.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-interview-9-day.html" title="Go面试每天一篇（第 9 天）">Go面试每天一篇（第 9 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-pointers-vs-references.html" title="指针与引用（译）">指针与引用（译）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/29/go-interview-7-day.html" title="Go面试每天一篇（第 7 天）">Go面试每天一篇（第 7 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/26/go-interview-4-day.html" title="Go面试每天一篇（第 4 天）">Go面试每天一篇（第 4 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/25/go-interview-3-day.html" title="Go面试每天一篇（第 3 天）">Go面试每天一篇（第 3 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/24/go-interview-2-day.html" title="Go面试每天一篇（第 2 天）">Go面试每天一篇（第 2 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/23/go-interview-1-day.html" title="Go面试每天一篇（第 1 天）">Go面试每天一篇（第 1 天）</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://niannian.cleer.club/" title="念念有鱼">念念有鱼</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/categories/golang/">Golang(35)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(26)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书(1)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://seekload.net/tags/go/">Go</a>
+    
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
+    
+    <a href="https://seekload.net/tags/channel/">channel</a>
+    
+    <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/select/">select</a>
+    
+    <a href="https://seekload.net/tags/variadic/">variadic</a>
+    
+    <a href="https://seekload.net/tags/%E4%BF%A1%E9%81%93/">信道</a>
+    
+    <a href="https://seekload.net/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://seekload.net/tags/%E5%87%BD%E6%95%B0/">函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%88%87%E7%89%87/">切片</a>
+    
+    <a href="https://seekload.net/tags/%E5%8C%85/">包</a>
+    
+    <a href="https://seekload.net/tags/%E5%8D%8F%E7%A8%8B/">协程</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%98%E9%87%8F/">变量</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0/">可变函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%9D%9A%E6%8C%81/">坚持</a>
+    
+    <a href="https://seekload.net/tags/%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4/">工作空间</a>
+    
+    <a href="https://seekload.net/tags/%E5%B9%B6%E5%8F%91/">并发</a>
+    
+    <a href="https://seekload.net/tags/%E5%BC%95%E7%94%A8/">引用</a>
+    
+    <a href="https://seekload.net/tags/%E5%BD%B1%E5%93%8D%E5%8A%9B/">影响力</a>
+    
+    <a href="https://seekload.net/tags/%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5/">循环语句</a>
+    
+    <a href="https://seekload.net/tags/%E6%80%9D%E7%BB%B4/">思维</a>
+    
+    <a href="https://seekload.net/tags/%E6%8C%87%E9%92%88/">指针</a>
+    
+    <a href="https://seekload.net/tags/%E6%8E%A5%E5%8F%A3/">接口</a>
+    
+    <a href="https://seekload.net/tags/%E6%95%B0%E7%BB%84/">数组</a>
+    
+    <a href="https://seekload.net/tags/%E6%96%B9%E6%B3%95/">方法</a>
+    
+    <a href="https://seekload.net/tags/%E6%98%A0%E5%B0%84/">映射</a>
+    
+    <a href="https://seekload.net/tags/%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5/">条件语句</a>
+    
+    <a href="https://seekload.net/tags/%E7%B1%BB%E5%9E%8B/">类型</a>
+    
+    <a href="https://seekload.net/tags/%E7%BB%93%E6%9E%84%E4%BD%93/">结构体</a>
+    
+    <a href="https://seekload.net/tags/%E8%AE%A4%E7%9F%A5/">认知</a>
+    
+    <a href="https://seekload.net/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://seekload.net/tags/%E8%BF%90%E7%AE%97%E7%AC%A6/">运算符</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">面向对象</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%9F%BA/">面基</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E8%AF%95/">面试</a>
+    
+</div>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://seekload.net/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>

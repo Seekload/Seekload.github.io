@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>循环语句 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5/</link>
+    <description>Recent content in 循环语句 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 29 Jan 2019 06:06:00 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>条件语句和循环语句</title>
+      <link>https://seekload.net/2019/01/29/go-condition-loop.html</link>
+      <pubDate>Tue, 29 Jan 2019 06:06:00 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-condition-loop.html</guid>
+      <description>前言 今天，我们来看下条件语句和循环语句，学起来！ 条件语句 if语句 //if if a%2 == 0 { println(&amp;quot;偶数&amp;quot;) } //if else if a%2 == 0 { p</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Seekload&#39;s Blog</title>
+    <link>https://seekload.net/</link>
+    <description>Recent content on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 31 Aug 2019 20:17:59 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go面试每天一篇（第 9 天）</title>
+      <link>https://seekload.net/2019/08/31/go-interview-9-day.html</link>
+      <pubDate>Sat, 31 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/31/go-interview-9-day.html</guid>
+      <description>1.关于channel，下面语法正确的是() A. var ch chan int B. ch := make(chan int) C. &amp;lt;- ch D. ch &amp;lt;- 参考答案及解析：ABC.知识点：channel。可以看下之前发过</description>
+    </item>
+    
+    <item>
+      <title>指针与引用（译）</title>
+      <link>https://seekload.net/2019/08/31/go-pointers-vs-references.html</link>
+      <pubDate>Sat, 31 Aug 2019 07:14:25 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/31/go-pointers-vs-references.html</guid>
+      <description>原文地址：https://spf13.com/post/go-pointers-vs-references/ 包括 C、C++ 在内的一些语言支持</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 8 天）</title>
+      <link>https://seekload.net/2019/08/30/go-interview-8-day.html</link>
+      <pubDate>Fri, 30 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/30/go-interview-8-day.html</guid>
+      <description>1.关于init函数，下面说法正确的是() A. 一个包中，可以包含多个 init 函数； B. 程序编译时，先执行依赖包的 init 函数，再执行 main 包内的 init 函数； C. main 包中</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 7 天）</title>
+      <link>https://seekload.net/2019/08/29/go-interview-7-day.html</link>
+      <pubDate>Thu, 29 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/29/go-interview-7-day.html</guid>
+      <description>1.关于字符串连接，下面语法正确的是？ A. str := &amp;lsquo;abc&amp;rsquo; + &amp;lsquo;123&amp;rsquo; B. str := &amp;ldquo;abc&amp;rdquo; + &amp;ldquo;123&amp;rdquo; C. str := &amp;lsquo;123&amp;rsquo; + &amp;ldquo;abc&amp;rdquo; S. fmt.Sprintf(&amp;ldquo;abc%d&amp;rdquo;, 123) 参考答案：BD 参考解析：考的知识点是字符串连接。除了以上两种</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 6 天）</title>
+      <link>https://seekload.net/2019/08/28/go-interview-6-day.html</link>
+      <pubDate>Wed, 28 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/28/go-interview-6-day.html</guid>
+      <description>1.通过指针变量 p 访问其成员变量 name，有哪几种方式？ A.p.name B.(&amp;amp;p).name C.(*p).name D.p-&amp;gt;name 参考答案：AC 参考解析：&amp;amp; 取址运算符，* 指针解引用。 2.下面这段代码</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 5 天）</title>
+      <link>https://seekload.net/2019/08/27/go-interview-5-day.html</link>
+      <pubDate>Tue, 27 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/27/go-interview-5-day.html</guid>
+      <description>1.下面这段代码能否通过编译？不能的话，原因是什么？如果通过，输出什么？ func main() { sn1 := struct { age int name string }{age: 11, name: &amp;quot;qq&amp;quot;} sn2 := struct { age int name string }{age: 11, name: &amp;quot;qq&amp;quot;} if sn1 == sn2 { fmt.Println(&amp;quot;sn1 ==</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 4 天）</title>
+      <link>https://seekload.net/2019/08/26/go-interview-4-day.html</link>
+      <pubDate>Mon, 26 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/26/go-interview-4-day.html</guid>
+      <description>1.下面这段代码能否通过编译，不能的话原因是什么；如果通过，输出什么。 func main() { list := new([]int) list = append(list, 1) fmt.Println(list) } 答案：不能通过编译，new([]int) 之后的</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 3 天）</title>
+      <link>https://seekload.net/2019/08/25/go-interview-3-day.html</link>
+      <pubDate>Sun, 25 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/25/go-interview-3-day.html</guid>
+      <description>1.下面两段代码输出什么。 // 1. func main() { s := make([]int, 5) s = append(s, 1, 2, 3) fmt.Println(s) } // 2. func main() { s := make([]int,0) s = append(s,1,2,3,4) fmt.Println(s) } 2.下面这段代码有什么缺陷 func funcMui(x,y int)(sum int,error){ return x+y,nil } 答案：第二个返</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 2 天）</title>
+      <link>https://seekload.net/2019/08/24/go-interview-2-day.html</link>
+      <pubDate>Sat, 24 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/24/go-interview-2-day.html</guid>
+      <description>下面这段代码输出什么，说明原因。 func main() { slice := []int{0,1,2,3} m := make(map[int]*int) for key,val := range slice { m[key] = &amp;amp;val } for k,v := range m { fmt.Println(k,&amp;quot;-&amp;gt;&amp;quot;,*v) } } 参考答案： 0 -&amp;gt; 3 1 -&amp;gt; 3 2 -&amp;gt; 3 3 -&amp;gt; 3 解析：这是新手常会</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 1 天）</title>
+      <link>https://seekload.net/2019/08/23/go-interview-1-day.html</link>
+      <pubDate>Fri, 23 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/23/go-interview-1-day.html</guid>
+      <description>下面这段代码输出的内容 package main import ( &amp;quot;fmt&amp;quot; ) func main() { defer_call() } func defer_call() { defer func() { fmt.Println(&amp;quot;打印前&amp;quot;) }() defer func() { fmt.Printl</description>
+    </item>
+    
+    <item>
+      <title>Go 面向对象编程（译）</title>
+      <link>https://seekload.net/2019/06/16/go-oop-one.html</link>
+      <pubDate>Sun, 16 Jun 2019 23:17:36 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/06/16/go-oop-one.html</guid>
+      <description>『就要学习 Go 语言』系列 &amp;ndash; 第 26 篇分享好文 今天接着给大家分享关于 Go 面向对象的好文。原文作者是 William Kennedy，《Go 语言实战》作者之一， 博客 的维</description>
+    </item>
+    
+    <item>
+      <title>Go 面向对象式编程</title>
+      <link>https://seekload.net/2019/06/10/go-oop.html</link>
+      <pubDate>Mon, 10 Jun 2019 22:41:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/06/10/go-oop.html</guid>
+      <description>『就要学习 Go 语言』系列 &amp;ndash; 第 25 篇分享好文 Go 语言没有对象的概念，但是 struct 类型有着和对象类似的特性。struct 类型可以定义自己的属性和方法。这篇文</description>
+    </item>
+    
+    <item>
+      <title>教女朋友写方法（续）</title>
+      <link>https://seekload.net/2019/06/06/go-study-method.html</link>
+      <pubDate>Thu, 06 Jun 2019 07:37:17 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/06/06/go-study-method.html</guid>
+      <description>『就要学习 Go 语言』系列&amp;ndash;第 24 篇分享文章 之前的文章给大家总结过方法的一些基本用法，最近在学 Go 面向对象式编程，对方法又有一些新的认识</description>
+    </item>
+    
+    <item>
+      <title>Go 语言中文网 · 杭州线下面基第一期</title>
+      <link>https://seekload.net/2019/06/03/go-hangzhou-meetup.html</link>
+      <pubDate>Mon, 03 Jun 2019 14:18:25 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/06/03/go-hangzhou-meetup.html</guid>
+      <description>Hello，大家好，我是 Seekload，本次 Go 语言中文网 · 杭州线下交流会 的组织者。6 月 2 号的线下交流会能顺利举办，特别感谢 Go 语言中文网站长</description>
+    </item>
+    
+    <item>
+      <title>Go 并发 -- Select</title>
+      <link>https://seekload.net/2019/04/29/go-select.html</link>
+      <pubDate>Mon, 29 Apr 2019 07:31:11 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/04/29/go-select.html</guid>
+      <description>这是『就要学习 Go 语言』系列的第 23 篇分享文章 Select 的作用 select 的用法有点类似 switch 语句，但 select 不会有输入值而且只用于信道操作。select 用于从多个发送或接</description>
+    </item>
+    
+    <item>
+      <title>真情实感</title>
+      <link>https://seekload.net/2019/04/22/real-feelings.html</link>
+      <pubDate>Mon, 22 Apr 2019 15:57:27 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/04/22/real-feelings.html</guid>
+      <description>上周六（4 月 20 号）参加了博文视点在杭州组织的作译者交流会，会议邀请到了大家熟悉的潘爱民、余晟、孤尽、苏杰、刘备教授等一路大咖。自己是收获满满</description>
+    </item>
+    
+    <item>
+      <title>Go 信道</title>
+      <link>https://seekload.net/2019/04/22/go-channel.html</link>
+      <pubDate>Mon, 22 Apr 2019 07:27:07 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/04/22/go-channel.html</guid>
+      <description>这是『就要学习 Go 语言』系列的第 22 篇分享文章 上篇文章讲了关于协程的一些用法，比如如何创建协程、匿名协程等。这篇文章我们来讲讲信道。 信道是协程之</description>
+    </item>
+    
+    <item>
+      <title>Go 并发 -- 协程</title>
+      <link>https://seekload.net/2019/04/19/go-goroutine.html</link>
+      <pubDate>Fri, 19 Apr 2019 07:23:06 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/04/19/go-goroutine.html</guid>
+      <description>这是『就要学习 Go 语言』系列的第 21 篇分享文章 并发与并行 提到并发，相信大家还听过另一个概念 &amp;ndash; 并行。我先给大家介绍下这两者之间的区别，再来讲 Go 语言</description>
+    </item>
+    
+    <item>
+      <title>Go 语言接口详解（二）</title>
+      <link>https://seekload.net/2019/03/30/go-interface-two.html</link>
+      <pubDate>Sat, 30 Mar 2019 07:03:36 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/30/go-interface-two.html</guid>
+      <description>这是『就要学习 Go 语言』系列的第 20 篇分享文章 提醒：文末给大家留了小练习，可以先看文章，再做练习，检验自己的学习成果！ 我们接着上一篇，继续讲接口</description>
+    </item>
+    
+    <item>
+      <title>Go 语言接口详解（一）</title>
+      <link>https://seekload.net/2019/03/29/go-interface-one.html</link>
+      <pubDate>Fri, 29 Mar 2019 06:39:58 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/29/go-interface-one.html</guid>
+      <description>这是『就要学习 Go 语言』系列的第 19 篇分享文章 什么是接口 在一些面向对象的编程语言中，例如 Java、PHP 等，接口定义了对象的行为，只指定了对象应</description>
+    </item>
+    
+    <item>
+      <title>Go 语言类型详解</title>
+      <link>https://seekload.net/2019/03/17/go-type-system.html</link>
+      <pubDate>Sun, 17 Mar 2019 18:05:42 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/17/go-type-system.html</guid>
+      <description>什么是类型 不同的编程语言之间，类型的概念有所不同，可以用许多不同的方式来表达，但大体上都有一些相同的地方。 类型是一组值； 相同类型的值之间可以</description>
+    </item>
+    
+    <item>
+      <title>【独家】技术人到底应不应该写作</title>
+      <link>https://seekload.net/2019/03/17/keep-writing.html</link>
+      <pubDate>Sun, 17 Mar 2019 17:20:30 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/17/keep-writing.html</guid>
+      <description>日前，GOTV 采访到了『就要学习 Go 语言』系列文章的作者 － Seekload，来看看他的专访！ GOTV：你是什么时候开始在公众号上写作的？写作的</description>
+    </item>
+    
+    <item>
+      <title>教女朋友写方法</title>
+      <link>https://seekload.net/2019/03/03/go-method.html</link>
+      <pubDate>Sun, 03 Mar 2019 21:03:37 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/03/go-method.html</guid>
+      <description>刚接触 Go 语言的函数和方法时，我产生过这样的疑惑：为什么会严格区分这两者的概念？学完之后才知道，不像别的语言（Java、PHP等）函数即方法，</description>
+    </item>
+    
+    <item>
+      <title>好好学习</title>
+      <link>https://seekload.net/2019/03/02/study-well.html</link>
+      <pubDate>Sat, 02 Mar 2019 10:08:46 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/02/study-well.html</guid>
+      <description>不知道有没有人跟我一样，『极客时间』的专栏买了一大波，也只是了解一些概念性的东西，停留在知识表面；每天都会追『得到』上的课程，生怕哪天别人讲</description>
+    </item>
+    
+    <item>
+      <title>可变函数</title>
+      <link>https://seekload.net/2019/02/17/go-variadic-function.html</link>
+      <pubDate>Sun, 17 Feb 2019 06:42:43 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/02/17/go-variadic-function.html</guid>
+      <description>在上篇文章里，讲解了关于函数的概念和用法，函数接收的参数数目都是确定的。而可变参数函数的参数数目是不确定的，这一节，就来讲讲可变参数函数 。 可</description>
+    </item>
+    
+    <item>
+      <title>函数</title>
+      <link>https://seekload.net/2019/01/31/go-function.html</link>
+      <pubDate>Thu, 31 Jan 2019 12:41:07 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/31/go-function.html</guid>
+      <description>函数 函数是一段能够完成特定功能的代码段，可以接收输入参数或者能够返回想要的值。 函数声明 Go 语言采用如下语法声明一个函数： func funcName(parameterName type) returntype { //函数体 }</description>
+    </item>
+    
+    <item>
+      <title>包罗万象的结构体</title>
+      <link>https://seekload.net/2019/01/31/go-structure.html</link>
+      <pubDate>Thu, 31 Jan 2019 12:28:05 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/31/go-structure.html</guid>
+      <description>Go 语言的数组可以存储一组相同类型的数据，而结构体可以将不同类型的变量数据组合在一起，每一个变量都是结构体的成员。 创建并初始化一个结构体 可以使</description>
+    </item>
+    
+    <item>
+      <title>Strings、bytes and runes </title>
+      <link>https://seekload.net/2019/01/30/go-strings-bytes-runes.html</link>
+      <pubDate>Wed, 30 Jan 2019 06:55:58 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/30/go-strings-bytes-runes.html</guid>
+      <description>Go 中的字符串值得特别关注，与其他语言相比，Go 中的字符串实现方式有所不同。 字符串 在 Go 中，使用双引号 &amp;quot;&amp;quot; 声明字符串： s := &amp;quot;Hello world&amp;quot; fmt.Println(&amp;quot;len(s):&amp;quot;,len(s)) fmt.Println(s); 输出： len(s): 11 Hello world 上</description>
+    </item>
+    
+    <item>
+      <title>Go Map</title>
+      <link>https://seekload.net/2019/01/30/go-map.html</link>
+      <pubDate>Wed, 30 Jan 2019 06:44:10 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/30/go-map.html</guid>
+      <description>前言 Hash表是一种巧妙并且实用的数据结构，是一个无序的key/value对的集合，其中所有的key都是不同的，通过给定的key可以在常数时</description>
+    </item>
+    
+    <item>
+      <title>非懂不可的Slice（二）</title>
+      <link>https://seekload.net/2019/01/30/go-slice-second.html</link>
+      <pubDate>Wed, 30 Jan 2019 06:30:45 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/30/go-slice-second.html</guid>
+      <description>这一节，我们来讨论更多关于Slice的用法。 nil切片与空切片 nil切片 var s []int fmt.Println(s == nil) // 输出 true fmt.Println(len(s),cap(s)) // 输出：0 0 上面这段代码声明了一个nil切片s</description>
+    </item>
+    
+    <item>
+      <title>非懂不可的Slice（一）</title>
+      <link>https://seekload.net/2019/01/29/go-slice-first.html</link>
+      <pubDate>Tue, 29 Jan 2019 21:47:53 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-slice-first.html</guid>
+      <description>前言 切片是一种复合数据类型，与数组类似，存放相同数据类型的元素，但数组的大小是固定的，而切片的大小可变，可以按需自动改变大小。切片是基于底层</description>
+    </item>
+    
+    <item>
+      <title>我是数组</title>
+      <link>https://seekload.net/2019/01/29/go-array.html</link>
+      <pubDate>Tue, 29 Jan 2019 07:35:08 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-array.html</guid>
+      <description>前言 Go 语言给用户提供了三种数据结构用于管理集合数据：数组、切片( Slice )和映射( Map )。这三种数据结构是语言核心的一部分，在标准库里被广泛使用。学</description>
+    </item>
+    
+    <item>
+      <title>彻底学会Go指针</title>
+      <link>https://seekload.net/2019/01/29/go-pointer.html</link>
+      <pubDate>Tue, 29 Jan 2019 07:14:25 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-pointer.html</guid>
+      <description>什么是指针 写代码的时候，我们通过变量就可以操作存储在内存中的值，进行赋值、加减运算等。大家有没有想过，变量代表什么呢？其实，一个变量对应一段</description>
+    </item>
+    
+    <item>
+      <title>运算符</title>
+      <link>https://seekload.net/2019/01/29/go-operator.html</link>
+      <pubDate>Tue, 29 Jan 2019 06:44:18 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-operator.html</guid>
+      <description>今天，我们来讲下 Go 语言的算术运算符、比较运算符和逻辑运算符。 算术运算符 + sum integers, floats, complex values (复数), strings - difference integers, floats, complex values * product integers, floats, complex values / quotient integers, floats, complex values % remainder integers 位运</description>
+    </item>
+    
+    <item>
+      <title>数字类型</title>
+      <link>https://seekload.net/2019/01/29/go-number-type.html</link>
+      <pubDate>Tue, 29 Jan 2019 06:24:54 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-number-type.html</guid>
+      <description>前言 数字类型当然是用来表示数字的，分为整型和浮点型。 整型 整型用来存储整数，Go 有几种不同大小的内置整数类型，用于存储有符号和无符号整数。 有符</description>
+    </item>
+    
+    <item>
+      <title>条件语句和循环语句</title>
+      <link>https://seekload.net/2019/01/29/go-condition-loop.html</link>
+      <pubDate>Tue, 29 Jan 2019 06:06:00 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-condition-loop.html</guid>
+      <description>前言 今天，我们来看下条件语句和循环语句，学起来！ 条件语句 if语句 //if if a%2 == 0 { println(&amp;quot;偶数&amp;quot;) } //if else if a%2 == 0 { p</description>
+    </item>
+    
+    <item>
+      <title>变量和常量</title>
+      <link>https://seekload.net/2019/01/29/go-constant-variable.html</link>
+      <pubDate>Tue, 29 Jan 2019 05:50:03 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-constant-variable.html</guid>
+      <description>前言 学完之前的几篇文章，大家对 Go 语言有了些基本的认识，比如包的概念、导入包fmt打印字符串等。这还不够，本文开始，将推出系列文章&amp;ndash</description>
+    </item>
+    
+    <item>
+      <title>Go 包-代码组织者</title>
+      <link>https://seekload.net/2019/01/29/go-package.html</link>
+      <pubDate>Tue, 29 Jan 2019 05:23:09 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-package.html</guid>
+      <description>前言 在上一节（聊聊 Go 的工作空间），提到了 Go 包，这一节，我们就来仔细讲讲。 什么是Go包 Go 语言中的包，其实是一种组织代码的方式。Go 的程序都会组</description>
+    </item>
+    
+    <item>
+      <title>聊聊 Go 工作空间</title>
+      <link>https://seekload.net/2019/01/27/go-workspace.html</link>
+      <pubDate>Sun, 27 Jan 2019 15:41:56 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/27/go-workspace.html</guid>
+      <description>前言 对于刚开始学 Go 的同学，可能会对几个概念比较迷糊：GOROOT 和 GOPATH，今天就来聊聊它们。 执行go env，给大家看下我开发环境的相关</description>
+    </item>
+    
+    <item>
+      <title>关于我</title>
+      <link>https://seekload.net/about/</link>
+      <pubDate>Sat, 26 Jan 2019 17:08:14 +0800</pubDate>
+      
+      <guid>https://seekload.net/about/</guid>
+      <description>未完待续</description>
+    </item>
+    
+    <item>
+      <title>文章归档</title>
+      <link>https://seekload.net/archives/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://seekload.net/archives/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

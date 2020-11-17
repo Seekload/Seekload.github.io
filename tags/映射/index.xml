@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>映射 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E6%98%A0%E5%B0%84/</link>
+    <description>Recent content in 映射 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Wed, 30 Jan 2019 06:44:10 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E6%98%A0%E5%B0%84/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go Map</title>
+      <link>https://seekload.net/2019/01/30/go-map.html</link>
+      <pubDate>Wed, 30 Jan 2019 06:44:10 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/30/go-map.html</guid>
+      <description>前言 Hash表是一种巧妙并且实用的数据结构，是一个无序的key/value对的集合，其中所有的key都是不同的，通过给定的key可以在常数时</description>
+    </item>
+    
+  </channel>
+</rss>

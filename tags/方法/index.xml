@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>方法 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E6%96%B9%E6%B3%95/</link>
+    <description>Recent content in 方法 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Thu, 06 Jun 2019 07:37:17 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E6%96%B9%E6%B3%95/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>教女朋友写方法（续）</title>
+      <link>https://seekload.net/2019/06/06/go-study-method.html</link>
+      <pubDate>Thu, 06 Jun 2019 07:37:17 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/06/06/go-study-method.html</guid>
+      <description>『就要学习 Go 语言』系列&amp;ndash;第 24 篇分享文章 之前的文章给大家总结过方法的一些基本用法，最近在学 Go 面向对象式编程，对方法又有一些新的认识</description>
+    </item>
+    
+    <item>
+      <title>教女朋友写方法</title>
+      <link>https://seekload.net/2019/03/03/go-method.html</link>
+      <pubDate>Sun, 03 Mar 2019 21:03:37 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/03/go-method.html</guid>
+      <description>刚接触 Go 语言的函数和方法时，我产生过这样的疑惑：为什么会严格区分这两者的概念？学完之后才知道，不像别的语言（Java、PHP等）函数即方法，</description>
+    </item>
+    
+  </channel>
+</rss>

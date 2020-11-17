@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>信道 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E4%BF%A1%E9%81%93/</link>
+    <description>Recent content in 信道 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Mon, 22 Apr 2019 07:27:07 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E4%BF%A1%E9%81%93/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go 信道</title>
+      <link>https://seekload.net/2019/04/22/go-channel.html</link>
+      <pubDate>Mon, 22 Apr 2019 07:27:07 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/04/22/go-channel.html</guid>
+      <description>这是『就要学习 Go 语言』系列的第 22 篇分享文章 上篇文章讲了关于协程的一些用法，比如如何创建协程、匿名协程等。这篇文章我们来讲讲信道。 信道是协程之</description>
+    </item>
+    
+  </channel>
+</rss>

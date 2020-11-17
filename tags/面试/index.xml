@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>面试 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E9%9D%A2%E8%AF%95/</link>
+    <description>Recent content in 面试 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 31 Aug 2019 20:17:59 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E9%9D%A2%E8%AF%95/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Go面试每天一篇（第 9 天）</title>
+      <link>https://seekload.net/2019/08/31/go-interview-9-day.html</link>
+      <pubDate>Sat, 31 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/31/go-interview-9-day.html</guid>
+      <description>1.关于channel，下面语法正确的是() A. var ch chan int B. ch := make(chan int) C. &amp;lt;- ch D. ch &amp;lt;- 参考答案及解析：ABC.知识点：channel。可以看下之前发过</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 8 天）</title>
+      <link>https://seekload.net/2019/08/30/go-interview-8-day.html</link>
+      <pubDate>Fri, 30 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/30/go-interview-8-day.html</guid>
+      <description>1.关于init函数，下面说法正确的是() A. 一个包中，可以包含多个 init 函数； B. 程序编译时，先执行依赖包的 init 函数，再执行 main 包内的 init 函数； C. main 包中</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 7 天）</title>
+      <link>https://seekload.net/2019/08/29/go-interview-7-day.html</link>
+      <pubDate>Thu, 29 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/29/go-interview-7-day.html</guid>
+      <description>1.关于字符串连接，下面语法正确的是？ A. str := &amp;lsquo;abc&amp;rsquo; + &amp;lsquo;123&amp;rsquo; B. str := &amp;ldquo;abc&amp;rdquo; + &amp;ldquo;123&amp;rdquo; C. str := &amp;lsquo;123&amp;rsquo; + &amp;ldquo;abc&amp;rdquo; S. fmt.Sprintf(&amp;ldquo;abc%d&amp;rdquo;, 123) 参考答案：BD 参考解析：考的知识点是字符串连接。除了以上两种</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 6 天）</title>
+      <link>https://seekload.net/2019/08/28/go-interview-6-day.html</link>
+      <pubDate>Wed, 28 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/28/go-interview-6-day.html</guid>
+      <description>1.通过指针变量 p 访问其成员变量 name，有哪几种方式？ A.p.name B.(&amp;amp;p).name C.(*p).name D.p-&amp;gt;name 参考答案：AC 参考解析：&amp;amp; 取址运算符，* 指针解引用。 2.下面这段代码</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 5 天）</title>
+      <link>https://seekload.net/2019/08/27/go-interview-5-day.html</link>
+      <pubDate>Tue, 27 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/27/go-interview-5-day.html</guid>
+      <description>1.下面这段代码能否通过编译？不能的话，原因是什么？如果通过，输出什么？ func main() { sn1 := struct { age int name string }{age: 11, name: &amp;quot;qq&amp;quot;} sn2 := struct { age int name string }{age: 11, name: &amp;quot;qq&amp;quot;} if sn1 == sn2 { fmt.Println(&amp;quot;sn1 ==</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 4 天）</title>
+      <link>https://seekload.net/2019/08/26/go-interview-4-day.html</link>
+      <pubDate>Mon, 26 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/26/go-interview-4-day.html</guid>
+      <description>1.下面这段代码能否通过编译，不能的话原因是什么；如果通过，输出什么。 func main() { list := new([]int) list = append(list, 1) fmt.Println(list) } 答案：不能通过编译，new([]int) 之后的</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 3 天）</title>
+      <link>https://seekload.net/2019/08/25/go-interview-3-day.html</link>
+      <pubDate>Sun, 25 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/25/go-interview-3-day.html</guid>
+      <description>1.下面两段代码输出什么。 // 1. func main() { s := make([]int, 5) s = append(s, 1, 2, 3) fmt.Println(s) } // 2. func main() { s := make([]int,0) s = append(s,1,2,3,4) fmt.Println(s) } 2.下面这段代码有什么缺陷 func funcMui(x,y int)(sum int,error){ return x+y,nil } 答案：第二个返</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 2 天）</title>
+      <link>https://seekload.net/2019/08/24/go-interview-2-day.html</link>
+      <pubDate>Sat, 24 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/24/go-interview-2-day.html</guid>
+      <description>下面这段代码输出什么，说明原因。 func main() { slice := []int{0,1,2,3} m := make(map[int]*int) for key,val := range slice { m[key] = &amp;amp;val } for k,v := range m { fmt.Println(k,&amp;quot;-&amp;gt;&amp;quot;,*v) } } 参考答案： 0 -&amp;gt; 3 1 -&amp;gt; 3 2 -&amp;gt; 3 3 -&amp;gt; 3 解析：这是新手常会</description>
+    </item>
+    
+    <item>
+      <title>Go面试每天一篇（第 1 天）</title>
+      <link>https://seekload.net/2019/08/23/go-interview-1-day.html</link>
+      <pubDate>Fri, 23 Aug 2019 20:17:59 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/23/go-interview-1-day.html</guid>
+      <description>下面这段代码输出的内容 package main import ( &amp;quot;fmt&amp;quot; ) func main() { defer_call() } func defer_call() { defer func() { fmt.Println(&amp;quot;打印前&amp;quot;) }() defer func() { fmt.Printl</description>
+    </item>
+    
+  </channel>
+</rss>

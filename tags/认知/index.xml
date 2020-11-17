@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>认知 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E8%AE%A4%E7%9F%A5/</link>
+    <description>Recent content in 认知 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 17 Mar 2019 17:20:30 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E8%AE%A4%E7%9F%A5/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>【独家】技术人到底应不应该写作</title>
+      <link>https://seekload.net/2019/03/17/keep-writing.html</link>
+      <pubDate>Sun, 17 Mar 2019 17:20:30 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/17/keep-writing.html</guid>
+      <description>日前，GOTV 采访到了『就要学习 Go 语言』系列文章的作者 － Seekload，来看看他的专访！ GOTV：你是什么时候开始在公众号上写作的？写作的</description>
+    </item>
+    
+    <item>
+      <title>好好学习</title>
+      <link>https://seekload.net/2019/03/02/study-well.html</link>
+      <pubDate>Sat, 02 Mar 2019 10:08:46 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/02/study-well.html</guid>
+      <description>不知道有没有人跟我一样，『极客时间』的专栏买了一大波，也只是了解一些概念性的东西，停留在知识表面；每天都会追『得到』上的课程，生怕哪天别人讲</description>
+    </item>
+    
+  </channel>
+</rss>

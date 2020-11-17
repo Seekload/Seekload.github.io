@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>指针 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E6%8C%87%E9%92%88/</link>
+    <description>Recent content in 指针 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 31 Aug 2019 07:14:25 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E6%8C%87%E9%92%88/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>指针与引用（译）</title>
+      <link>https://seekload.net/2019/08/31/go-pointers-vs-references.html</link>
+      <pubDate>Sat, 31 Aug 2019 07:14:25 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/31/go-pointers-vs-references.html</guid>
+      <description>原文地址：https://spf13.com/post/go-pointers-vs-references/ 包括 C、C++ 在内的一些语言支持</description>
+    </item>
+    
+    <item>
+      <title>彻底学会Go指针</title>
+      <link>https://seekload.net/2019/01/29/go-pointer.html</link>
+      <pubDate>Tue, 29 Jan 2019 07:14:25 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-pointer.html</guid>
+      <description>什么是指针 写代码的时候，我们通过变量就可以操作存储在内存中的值，进行赋值、加减运算等。大家有没有想过，变量代表什么呢？其实，一个变量对应一段</description>
+    </item>
+    
+  </channel>
+</rss>

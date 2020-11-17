@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>变量 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E5%8F%98%E9%87%8F/</link>
+    <description>Recent content in 变量 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Tue, 29 Jan 2019 05:50:03 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E5%8F%98%E9%87%8F/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>变量和常量</title>
+      <link>https://seekload.net/2019/01/29/go-constant-variable.html</link>
+      <pubDate>Tue, 29 Jan 2019 05:50:03 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/01/29/go-constant-variable.html</guid>
+      <description>前言 学完之前的几篇文章，大家对 Go 语言有了些基本的认识，比如包的概念、导入包fmt打印字符串等。这还不够，本文开始，将推出系列文章&amp;ndash</description>
+    </item>
+    
+  </channel>
+</rss>

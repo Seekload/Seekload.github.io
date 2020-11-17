@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>引用 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/%E5%BC%95%E7%94%A8/</link>
+    <description>Recent content in 引用 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 31 Aug 2019 07:14:25 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/%E5%BC%95%E7%94%A8/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>指针与引用（译）</title>
+      <link>https://seekload.net/2019/08/31/go-pointers-vs-references.html</link>
+      <pubDate>Sat, 31 Aug 2019 07:14:25 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/08/31/go-pointers-vs-references.html</guid>
+      <description>原文地址：https://spf13.com/post/go-pointers-vs-references/ 包括 C、C++ 在内的一些语言支持</description>
+    </item>
+    
+  </channel>
+</rss>

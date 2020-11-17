@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>variadic on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/variadic/</link>
+    <description>Recent content in variadic on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 17 Feb 2019 06:42:43 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/variadic/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>可变函数</title>
+      <link>https://seekload.net/2019/02/17/go-variadic-function.html</link>
+      <pubDate>Sun, 17 Feb 2019 06:42:43 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/02/17/go-variadic-function.html</guid>
+      <description>在上篇文章里，讲解了关于函数的概念和用法，函数接收的参数数目都是确定的。而可变参数函数的参数数目是不确定的，这一节，就来讲讲可变参数函数 。 可</description>
+    </item>
+    
+  </channel>
+</rss>

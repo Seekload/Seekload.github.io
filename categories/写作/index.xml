@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>写作 on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/categories/%E5%86%99%E4%BD%9C/</link>
+    <description>Recent content in 写作 on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 17 Mar 2019 17:20:30 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>【独家】技术人到底应不应该写作</title>
+      <link>https://seekload.net/2019/03/17/keep-writing.html</link>
+      <pubDate>Sun, 17 Mar 2019 17:20:30 +0800</pubDate>
+      
+      <guid>https://seekload.net/2019/03/17/keep-writing.html</guid>
+      <description>日前，GOTV 采访到了『就要学习 Go 语言』系列文章的作者 － Seekload，来看看他的专访！ GOTV：你是什么时候开始在公众号上写作的？写作的</description>
+    </item>
+    
+  </channel>
+</rss>
