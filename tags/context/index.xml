@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>context on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/context/</link>
+    <description>Recent content in context on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sat, 06 Feb 2021 22:08:08 +0800</lastBuildDate>
+    
+	<atom:link href="https://seekload.net/tags/context/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>使用 Go 语言 context 包的取消功能</title>
+      <link>https://seekload.net/2021/02/06/using-context-cancellation.html</link>
+      <pubDate>Sat, 06 Feb 2021 22:08:08 +0800</pubDate>
+      
+      <guid>https://seekload.net/2021/02/06/using-context-cancellation.html</guid>
+      <description>via: https://www.sohamkamani.com/golang/2018-06-17-golang-using-context-cancellation/ 作者：Soham Kamani 使用过 Go 语言的人对 context 包应该都不陌生。context 包经常用于需要执行一些下游操作的地方，比如：执行 HTTP 请求、从数据库获取</description>
+    </item>
+    
+  </channel>
+</rss>

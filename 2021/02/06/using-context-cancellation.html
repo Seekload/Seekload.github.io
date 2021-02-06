@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="zh-CN">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4b79e198f0e43ade55032d4bf11860a4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.53" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>使用 Go 语言 context 包的取消功能 | Seekload&#39;s Blog</title>
+    <meta property="og:title" content="使用 Go 语言 context 包的取消功能 - Seekload&#39;s Blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2021-02-06T22:08:08&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2021-02-06T22:08:08&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="使用 Go 语言 context 包的取消功能">
+        
+    <meta name="author" content="Seekload">
+    <meta property="og:url" content="https://seekload.net/2021/02/06/using-context-cancellation.html">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://seekload.net">
+                        Seekload&#39;s Blog
+                    </a>
+                
+                <p class="description">专注于分享 Go 语言、职场心得和生活感悟</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://seekload.net">首页</a>
+                    
+                    <a  href="https://seekload.net/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://seekload.net/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">使用 Go 语言 context 包的取消功能</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2021年2月6日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="https://seekload.net/categories/golang">Golang</a></span>
+                            
+                        </div>
+                        
+                        <div class="post-meta">
+                            <span >
+                                <span>|</span>
+                                字数:1655
+                            </span>
+                        </div>
+                        
+                        <div class="post-meta">
+                            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span> 阅读</span></span>
+                        </div>
+                        
+                        <div class="post-content">
+                            
+
+<p>via:<br>
+<a href="https://www.sohamkamani.com/golang/2018-06-17-golang-using-context-cancellation/">https://www.sohamkamani.com/golang/2018-06-17-golang-using-context-cancellation/</a>
+<br>
+作者：Soham Kamani</p>
+
+<p>使用过 Go 语言的人对 context 包应该都不陌生。context 包经常用于需要执行一些下游操作的地方，比如：执行 HTTP 请求、从数据库获取数据或者使用协程执行异步操作。最普通的用法就是向下游传递一些公共数据。然而，一个 context 鲜为人知但是非常有用的功能就是可以用于中途取消或者停止操作。</p>
+
+<p>接下来的内容我们将会讨论如何使用 context 提供的取消功能，并提供一些最佳实践供参考，为你编写效率更高、代码更健壮的程序提供借鉴。</p>
+
+<h3 id="为什么我们需要取消">为什么我们需要取消？</h3>
+
+<p>简而言之，取消是为了防止系统做一些不必要的工作。</p>
+
+<p>我们拿一种常见的场景举例，比如：用户发出 HTTP 请求，从数据获取数据并将数据返回给客户端。</p>
+
+<p><img src="/img/using-context-cancellation_1.png" alt="11" /></p>
+
+<p>如果一切正常的话，时序图应该是下面这样的：</p>
+
+<p><img src="/img/using-context-cancellation_2.png" alt="2" /></p>
+
+<p>但是，如果客户端中途取消了请求会发生什么？类似的场景，比如：关闭了浏览器等。如果不取消操作，服务器和数据库仍然会继续完成执行，即使它们的执行成果会被浪费：</p>
+
+<p><img src="/img/using-context-cancellation_3.png" alt="3" /></p>
+
+<p>理想情况下，如果我们知道请求中断了，我们希望该请求下游的所有工作组件都停止执行。</p>
+
+<p><img src="/img/using-context-cancellation_4.png" alt="4" /></p>
+
+<h3 id="context-cancellation-in-go">Context cancellation in Go</h3>
+
+<p>现在我们已经知道为什么需要取消，接着就来看看如何实现。因为取消事件与事务和操作高度相关，所以很自然将它与 context 联系在一起。</p>
+
+<p>取消主要有两个方面：</p>
+
+<ol>
+<li>监听取消事件；</li>
+<li>发出取消事件；</li>
+</ol>
+
+<h4 id="监听取消事件">监听取消事件</h4>
+
+<p>Context 类型提供了 Done() 方法，每次 context 接收到取消事件时，该方法都是返回一个 channel，这个 channel 会收到空结构体类型的数据。监听取消事件也很容易，&lt;- ctx.Done()。</p>
+
+<p>比如，一个 HTTP 请求处理需要两秒，如果在中途取消就必须立即返回。</p>
+
+<pre><code class="language-go">func main() {
+	// Create an HTTP server that listens on port 8000
+	http.ListenAndServe(&quot;:8000&quot;, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		// This prints to STDOUT to show that processing has started
+		fmt.Fprint(os.Stdout, &quot;processing request\n&quot;)
+		// We use `select` to execute a peice of code depending on which
+		// channel receives a message first
+		select {
+		case &lt;-time.After(2 * time.Second):
+			// If we receive a message after 2 seconds
+			// that means the request has been processed
+			// We then write this as the response
+			w.Write([]byte(&quot;request processed&quot;))
+		case &lt;-ctx.Done():
+			// If the request gets cancelled, log it
+			// to STDERR
+			fmt.Fprint(os.Stderr, &quot;request cancelled\n&quot;)
+		}
+	}))
+}
+</code></pre>
+
+<p>ps：文末有完整代码地址。</p>
+
+<p>你可以使用 go run 将服务跑起来，在浏览器中打开 localhost:8000，如果你在 2s 钟之内关闭浏览器，终端将会输出 request cancelled。</p>
+
+<h3 id="发出取消事件">发出取消事件</h3>
+
+<p>如果你有需要取消的操作，可以通过 context 发出取消事件。可以通过 context 包提供的 WithCancel 函数完成，该函数返回 context 对象和一个取消函数，这个函数不带任何参数、没有返回值，当你需要取消 context 时可以调用该函数。</p>
+
+<p>假设有两个相互依赖的操作，这里“依赖”的意思是，如果其中一个操作失败了，另一条操作即使完成也没有任何意义。这个场景里，如果我们事先知道其中一个操作失败了，我们需要取消所有的操作。</p>
+
+<pre><code class="language-go">func operation1(ctx context.Context) error {
+	// Let's assume that this operation failed for some reason
+	// We use time.Sleep to simulate a resource intensive operation
+	time.Sleep(100 * time.Millisecond)
+	return errors.New(&quot;failed&quot;)
+}
+
+func operation2(ctx context.Context) {
+	// We use a similar pattern to the HTTP server
+	// that we saw in the earlier example
+	select {
+	case &lt;-time.After(500 * time.Millisecond):
+		fmt.Println(&quot;done&quot;)
+	case &lt;-ctx.Done():
+		fmt.Println(&quot;halted operation2&quot;)
+	}
+}
+
+func main() {
+	// Create a new context
+	ctx := context.Background()
+	// Create a new context, with its cancellation function
+	// from the original context
+	ctx, cancel := context.WithCancel(ctx)
+
+	// Run two operations: one in a different go routine
+	go func() {
+		err := operation1(ctx)
+		// If this operation returns an error
+		// cancel all operations using this context
+		if err != nil {
+			cancel()
+		}
+	}()
+
+	// Run operation2 with the same context we use for operation1
+	operation2(ctx)
+}
+</code></pre>
+
+<h3 id="基于时间的取消事件">基于时间的取消事件</h3>
+
+<p>任何应用程序都需要在超时时间之内维护 SLA 可用性，可以采用基于时间的取消事件。相关的 API 与上面提到的例子类似，但是有一点补充：</p>
+
+<pre><code class="language-go">// The context will be cancelled after 3 seconds
+// If it needs to be cancelled earlier, the `cancel` function can
+// be used, like before
+ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+
+// The context will be cancelled on 2009-11-10 23:00:00
+ctx, cancel := context.WithDeadline(ctx, time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC))
+</code></pre>
+
+<p>例如，使用 HTTP API 调用外部服务，如果请求时间太长，最好尽早取消请求。</p>
+
+<pre><code class="language-go">func main() {
+	// Create a new context
+	// With a deadline of 100 milliseconds
+	ctx := context.Background()
+	ctx, _ = context.WithTimeout(ctx, 100*time.Millisecond)
+
+	// Make a request, that will call the google homepage
+	req, _ := http.NewRequest(http.MethodGet, &quot;http://google.com&quot;, nil)
+	// Associate the cancellable context we just created to the request
+	req = req.WithContext(ctx)
+
+	// Create a new HTTP client and execute the request
+	client := &amp;http.Client{}
+	res, err := client.Do(req)
+	// If the request failed, log to STDOUT
+	if err != nil {
+		fmt.Println(&quot;Request failed:&quot;, err)
+		return
+	}
+	// Print the statuscode if the request succeeds
+	fmt.Println(&quot;Response received, status code:&quot;, res.StatusCode)
+}
+</code></pre>
+
+<p>输出的结果取决于请求谷歌主页的快慢，有可能输出：</p>
+
+<pre><code class="language-go">Response received, status code: 200
+</code></pre>
+
+<p>或者</p>
+
+<pre><code class="language-go">Request failed: Get http://google.com: context deadline exceeded
+</code></pre>
+
+<h3 id="陷阱和警告">陷阱和警告</h3>
+
+<p>尽管 Context 的取消功能是一个很好用的工具，但是使用时有一些需要主要的点。最重要的是，context 只能被取消一次。如果你希望在同一操作中传递多个错误，那么使用 context 取消可能不是最佳选择。使用取消最常见的场景是仅仅希望取消操作，而不是返回下游操作出现的错误。</p>
+
+<p>需要注意的另一点就是，应将相同的 context  对象传递给可能要取消的所有函数或者协程，使用 WithTimeout 或 WithCancel 包装一个已经可取消的 context 将导致多种可能的上下文被取消，应该避免。</p>
+
+<p>ps: 文章的<a href="https://github.com/sohamkamani/blog-example-go-context-cancellation">完整代码</a>。</p>
+
+<p><br><br>
+(全文完)
+<img src="/me/weixingzh.jpg" alt="" /></p>
+
+<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h3>推荐阅读</h3>
+    <ul class="listing">
+        
+        <li><a href="/2019/08/31/go-interview-9-day.html">Go面试每天一篇（第 9 天）</a></li>
+        
+        <li><a href="/2019/08/31/go-pointers-vs-references.html">指针与引用（译）</a></li>
+        
+        <li><a href="/2019/08/30/go-interview-8-day.html">Go面试每天一篇（第 8 天）</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://seekload.net/tags/go">Go</a></li>
+                                
+                                <li><a href="https://seekload.net/tags/context">context</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Seekload/Seekload.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://seekload.net">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利!!扫码关注领取学习资料！</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a title=""  style="color:red">
+                
+                    <img src="/me/weixingzh.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2021/02/06/using-context-cancellation.html" title="使用 Go 语言 context 包的取消功能">使用 Go 语言 context 包的取消功能</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-interview-9-day.html" title="Go面试每天一篇（第 9 天）">Go面试每天一篇（第 9 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-pointers-vs-references.html" title="指针与引用（译）">指针与引用（译）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/29/go-interview-7-day.html" title="Go面试每天一篇（第 7 天）">Go面试每天一篇（第 7 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/26/go-interview-4-day.html" title="Go面试每天一篇（第 4 天）">Go面试每天一篇（第 4 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/25/go-interview-3-day.html" title="Go面试每天一篇（第 3 天）">Go面试每天一篇（第 3 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/24/go-interview-2-day.html" title="Go面试每天一篇（第 2 天）">Go面试每天一篇（第 2 天）</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://niannian.cleer.club/" title="念念有鱼">念念有鱼</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/categories/golang/">Golang(36)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(26)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书(1)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://seekload.net/tags/go/">Go</a>
+    
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
+    
+    <a href="https://seekload.net/tags/channel/">channel</a>
+    
+    <a href="https://seekload.net/tags/context/">context</a>
+    
+    <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/select/">select</a>
+    
+    <a href="https://seekload.net/tags/variadic/">variadic</a>
+    
+    <a href="https://seekload.net/tags/%E4%BF%A1%E9%81%93/">信道</a>
+    
+    <a href="https://seekload.net/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://seekload.net/tags/%E5%87%BD%E6%95%B0/">函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%88%87%E7%89%87/">切片</a>
+    
+    <a href="https://seekload.net/tags/%E5%8C%85/">包</a>
+    
+    <a href="https://seekload.net/tags/%E5%8D%8F%E7%A8%8B/">协程</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%98%E9%87%8F/">变量</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0/">可变函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%9D%9A%E6%8C%81/">坚持</a>
+    
+    <a href="https://seekload.net/tags/%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4/">工作空间</a>
+    
+    <a href="https://seekload.net/tags/%E5%B9%B6%E5%8F%91/">并发</a>
+    
+    <a href="https://seekload.net/tags/%E5%BC%95%E7%94%A8/">引用</a>
+    
+    <a href="https://seekload.net/tags/%E5%BD%B1%E5%93%8D%E5%8A%9B/">影响力</a>
+    
+    <a href="https://seekload.net/tags/%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5/">循环语句</a>
+    
+    <a href="https://seekload.net/tags/%E6%80%9D%E7%BB%B4/">思维</a>
+    
+    <a href="https://seekload.net/tags/%E6%8C%87%E9%92%88/">指针</a>
+    
+    <a href="https://seekload.net/tags/%E6%8E%A5%E5%8F%A3/">接口</a>
+    
+    <a href="https://seekload.net/tags/%E6%95%B0%E7%BB%84/">数组</a>
+    
+    <a href="https://seekload.net/tags/%E6%96%B9%E6%B3%95/">方法</a>
+    
+    <a href="https://seekload.net/tags/%E6%98%A0%E5%B0%84/">映射</a>
+    
+    <a href="https://seekload.net/tags/%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5/">条件语句</a>
+    
+    <a href="https://seekload.net/tags/%E7%B1%BB%E5%9E%8B/">类型</a>
+    
+    <a href="https://seekload.net/tags/%E7%BB%93%E6%9E%84%E4%BD%93/">结构体</a>
+    
+    <a href="https://seekload.net/tags/%E8%AE%A4%E7%9F%A5/">认知</a>
+    
+    <a href="https://seekload.net/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://seekload.net/tags/%E8%BF%90%E7%AE%97%E7%AC%A6/">运算符</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">面向对象</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%9F%BA/">面基</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E8%AF%95/">面试</a>
+    
+</div>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://seekload.net/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        &copy; 2019 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>
