@@ -6,10 +6,19 @@
     <description>Recent content in Posts on Seekload&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sat, 06 Feb 2021 22:08:08 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 09 Feb 2021 15:58:25 +0800</lastBuildDate>
     
 	<atom:link href="https://seekload.net/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>掌握 Context 包</title>
+      <link>https://seekload.net/2021/02/09/understanding-the-context-package.html</link>
+      <pubDate>Tue, 09 Feb 2021 15:58:25 +0800</pubDate>
+      
+      <guid>https://seekload.net/2021/02/09/understanding-the-context-package.html</guid>
+      <description>via: https://medium.com/rungo/understanding-the-context-package-b2e407a9cdae 作者：Uday Hiwarale 在数据密集型和网络密集型的 Go 项目里，你可能会使用并发模式，多个协程并发或者并行地处理各种任务。 我们知道，channel 是</description>
+    </item>
     
     <item>
       <title>使用 Go 语言 context 包的取消功能</title>

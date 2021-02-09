@@ -31,20 +31,20 @@ var _hmt = _hmt || [];
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>使用 Go 语言 context 包的取消功能 | Seekload&#39;s Blog</title>
-    <meta property="og:title" content="使用 Go 语言 context 包的取消功能 - Seekload&#39;s Blog">
+    <title>掌握 Context 包 | Seekload&#39;s Blog</title>
+    <meta property="og:title" content="掌握 Context 包 - Seekload&#39;s Blog">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2021-02-06T22:08:08&#43;08:00">
+    <meta property="article:published_time" content="2021-02-09T15:58:25&#43;08:00">
         
         
-    <meta property="article:modified_time" content="2021-02-06T22:08:08&#43;08:00">
+    <meta property="article:modified_time" content="2021-02-09T15:58:25&#43;08:00">
         
     <meta name="Keywords" content="">
-    <meta name="description" content="使用 Go 语言 context 包的取消功能">
+    <meta name="description" content="掌握 Context 包">
         
     <meta name="author" content="Seekload">
-    <meta property="og:url" content="https://seekload.net/2021/02/06/using-context-cancellation.html">
+    <meta property="og:url" content="https://seekload.net/2021/02/09/understanding-the-context-package.html">
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" href="/css/normalize.css">
@@ -96,10 +96,10 @@ var _hmt = _hmt || [];
                 <div class="res-cons">
                     <article class="post">
                         <header>
-                            <h1 class="post-title">使用 Go 语言 context 包的取消功能</h1>
+                            <h1 class="post-title">掌握 Context 包</h1>
                         </header>
                         <date class="post-meta meta-date">
-                            2021年2月6日
+                            2021年2月9日
                         </date>
                         
                         <div class="post-meta">
@@ -112,7 +112,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:1655
+                                字数:3023
                             </span>
                         </div>
                         
@@ -124,180 +124,158 @@ var _hmt = _hmt || [];
                             
 
 <p>via:<br>
-<a href="https://www.sohamkamani.com/golang/2018-06-17-golang-using-context-cancellation/">https://www.sohamkamani.com/golang/2018-06-17-golang-using-context-cancellation/</a>
+<a href="https://medium.com/rungo/understanding-the-context-package-b2e407a9cdae">https://medium.com/rungo/understanding-the-context-package-b2e407a9cdae</a>
 <br>
-作者：Soham Kamani</p>
+作者：Uday Hiwarale</p>
 
-<p>使用过 Go 语言的人对 context 包应该都不陌生。context 包经常用于需要执行一些下游操作的地方，比如：执行 HTTP 请求、从数据库获取数据或者使用协程执行异步操作。最普通的用法就是向下游传递一些公共数据。然而，一个 context 鲜为人知但是非常有用的功能就是可以用于中途取消或者停止操作。</p>
+<p><br></p>
 
-<p>接下来的内容我们将会讨论如何使用 context 提供的取消功能，并提供一些最佳实践供参考，为你编写效率更高、代码更健壮的程序提供借鉴。</p>
+<p>在数据密集型和网络密集型的 Go 项目里，你可能会使用并发模式，多个协程并发或者并行地处理各种任务。</p>
 
-<h3 id="为什么我们需要取消">为什么我们需要取消？</h3>
+<p>我们知道，channel 是不同协程之间通信最安全的方式，channel 在协程之间传输数据或者消息。channel 也可用于协程之间发送取消信号，通知其他相关协程停止执行。</p>
 
-<p>简而言之，取消是为了防止系统做一些不必要的工作。</p>
+<p><img src="/img/understanding-the-context-package_1.png" alt="1" /></p>
 
-<p>我们拿一种常见的场景举例，比如：用户发出 HTTP 请求，从数据获取数据并将数据返回给客户端。</p>
+<p><a href="https://play.studygolang.com/p/weqWhW-RoGB">详细代码</a></p>
 
-<p><img src="/img/using-context-cancellation_1.png" alt="11" /></p>
+<p>上面的代码中，我们创建了 printNumbers 协程并在后台执行 for 无限循环，接着 main 协程睡眠了 1s。</p>
 
-<p>如果一切正常的话，时序图应该是下面这样的：</p>
+<p>等到 main 协程再次醒来时，printNumbers 协程仍然在后台运行或者至少占用可能对执行其他任务有用的系统资源。我们可以从输出信息验证这一点，main 协程执行快结束时，仍然有两个活跃的协程（其中一个是 main 协程）。</p>
 
-<p><img src="/img/using-context-cancellation_2.png" alt="2" /></p>
+<p>这是个极端的例子，但却有意义。我们想要的是一旦 main 协程苏醒，就立刻停止 printNumbers 协程，并释放占用的系统资源和不必要的 CPU 开销。这个可以通过使用 channel 发送停止信号来实现。</p>
 
-<p>但是，如果客户端中途取消了请求会发生什么？类似的场景，比如：关闭了浏览器等。如果不取消操作，服务器和数据库仍然会继续完成执行，即使它们的执行成果会被浪费：</p>
+<p><img src="/img/understanding-the-context-package_2.png" alt="2" /></p>
 
-<p><img src="/img/using-context-cancellation_3.png" alt="3" /></p>
+<p><a href="https://play.studygolang.com/p/orgAz9P4d9E">详细代码</a></p>
 
-<p>理想情况下，如果我们知道请求中断了，我们希望该请求下游的所有工作组件都停止执行。</p>
+<p>上面的例子中，我们创建了 signal channel 用于 main 协程和 printNumbers 协程之间通信。一旦 main 协程苏醒，向 signal channel 发送值但没有其他协程接收这个值，便会再次阻塞。</p>
 
-<p><img src="/img/using-context-cancellation_4.png" alt="4" /></p>
+<p>由于 printNumbers 协程的 select 语句，至少在 1 秒钟时间内，从 signal channel 是读取不到任何值的，便会一直执行 default case。一旦 channel 有值，便会执行 return 语句终止 for 循环，printNumbers 协程退出。</p>
 
-<h3 id="context-cancellation-in-go">Context cancellation in Go</h3>
+<p>我们可以看到，当 main 协程返回时，只剩下一个活跃的协程。通过这种办法我们可以释放 printNumbers 协程占用的任何系统资源。两个协程之间通信可以用类似上面提到的简单方式。</p>
 
-<p>现在我们已经知道为什么需要取消，接着就来看看如何实现。因为取消事件与事务和操作高度相关，所以很自然将它与 context 联系在一起。</p>
+<p>然而，一个协程可以创建许多协程并且这些协程之间关系复杂，这种情况下使用 channel 发送取消信号将会变得异常困难。</p>
 
-<p>取消主要有两个方面：</p>
+<p>情况是这样的，一个协程创建其他协程，衍生出的协程又开启子协程，这样一级一级创建，第一个协程应该将取消信号发送到所有的衍生协程。</p>
 
-<ol>
-<li>监听取消事件；</li>
-<li>发出取消事件；</li>
-</ol>
+<p>例如，printNumbers 协程创建子协程，但是 main 协程并不知道，所以向子协程发送取消信号的责任就交给了 PrintNumbers 协程。如果协程衍生出更多的子协程，这种情况就会变得更加复杂。</p>
 
-<h4 id="监听取消事件">监听取消事件</h4>
+<p>那还有解决办法吗？</p>
 
-<p>Context 类型提供了 Done() 方法，每次 context 接收到取消事件时，该方法都是返回一个 channel，这个 channel 会收到空结构体类型的数据。监听取消事件也很容易，&lt;- ctx.Done()。</p>
+<p>这就是 context 包的用处所在，context 包的主要目的就是在 goroutine 之间传递取消信号，不论这些协程是如何创建的，context 包都能覆盖到。</p>
 
-<p>比如，一个 HTTP 请求处理需要两秒，如果在中途取消就必须立即返回。</p>
+<p>PS：前面这一大段都是为了引进我们今天的主题：context。</p>
 
-<pre><code class="language-go">func main() {
-	// Create an HTTP server that listens on port 8000
-	http.ListenAndServe(&quot;:8000&quot;, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		// This prints to STDOUT to show that processing has started
-		fmt.Fprint(os.Stdout, &quot;processing request\n&quot;)
-		// We use `select` to execute a peice of code depending on which
-		// channel receives a message first
-		select {
-		case &lt;-time.After(2 * time.Second):
-			// If we receive a message after 2 seconds
-			// that means the request has been processed
-			// We then write this as the response
-			w.Write([]byte(&quot;request processed&quot;))
-		case &lt;-ctx.Done():
-			// If the request gets cancelled, log it
-			// to STDERR
-			fmt.Fprint(os.Stderr, &quot;request cancelled\n&quot;)
-		}
-	}))
+<p>context.Context 对象是接口类型，用于在协程之间传递截止时间、取消信号和值。创建该对象后返回 cancel 函数，调用该函数会关闭 Done 信号 channel，这个 channel 可以通过 Context 对象提供的 Done() 方法获取。</p>
+
+<pre><code class="language-go">type Context interface {
+    Deadline() (deadline time.Time, ok bool)
+    Done() &lt;-chan struct{}
+    Err() error
+    Value(key interface{}) interface{}
 }
 </code></pre>
 
-<p>ps：文末有完整代码地址。</p>
+<p>简而言之，我们可以在协程里创建 Context 对象并将它传递给其他协程。其他协程可以使用 Done() 方法获取到信号 channel 并开始工作。一旦 Done channel 关闭，相关的协程便会停止任何操作并立即返回。</p>
 
-<p>你可以使用 go run 将服务跑起来，在浏览器中打开 localhost:8000，如果你在 2s 钟之内关闭浏览器，终端将会输出 request cancelled。</p>
+<p>Context 也可能会与时间相关，当到了自定义时间之后便会关闭信号 channel。就是说，我们可以指定截止时间或者超时时间，到了之后 Context 便会关闭信号 channel。</p>
 
-<h3 id="发出取消事件">发出取消事件</h3>
+<p>Context 最大的好处是可以从一个 Context 衍生出其他 Context。当我们使用 Context 派生出另一个 Context 时，它们会形成共生关系。如果父 Context 关闭 Done channel，子 Context 的 Done channel 会自动关闭，反之是同样的原理。</p>
 
-<p>如果你有需要取消的操作，可以通过 context 发出取消事件。可以通过 context 包提供的 WithCancel 函数完成，该函数返回 context 对象和一个取消函数，这个函数不带任何参数、没有返回值，当你需要取消 context 时可以调用该函数。</p>
+<p>Context 对象也可以包含一个值。从父 Context 派生子 Context 时可以携带一个值，并通过 Value(key) 方法可以从子 Context 获取这个值。</p>
 
-<p>假设有两个相互依赖的操作，这里“依赖”的意思是，如果其中一个操作失败了，另一条操作即使完成也没有任何意义。这个场景里，如果我们事先知道其中一个操作失败了，我们需要取消所有的操作。</p>
+<p>现在，我们可以假设在使并发程序更安全更有效率方面，Context 发挥着巨大作用。下面让我们通过 Context 的实际使用案例，深入了解下它的特定用法。</p>
 
-<pre><code class="language-go">func operation1(ctx context.Context) error {
-	// Let's assume that this operation failed for some reason
-	// We use time.Sleep to simulate a resource intensive operation
-	time.Sleep(100 * time.Millisecond)
-	return errors.New(&quot;failed&quot;)
+<h3 id="context-background">context.Background()</h3>
+
+<p>一个空的 Context 没有携带任何值、没有截止时间并且不能取消。context.Background() 函数返回默认的空 Context，它通常用来派生其他 Context，还可以用在测试用例中。</p>
+
+<p>由于 Context 是一个接口，所以它的值也可以是 nil，但是不推荐传递 nil Context，context.Background() 是个不错的选择。context.TODO() 也会返回一个空的 Context，如果我们还不清楚使用什么 Context 时，可以用它来占个位。</p>
+
+<h3 id="context-withcancel">context.WithCancel</h3>
+
+<p>context.WithCancel 函数返回一个衍生的 Context 和 CancelFunction 函数。当调用取消函数时或者父 Context 的 Done channel 关闭时，子 Context 的 Done channel 会关闭。</p>
+
+<pre><code class="language-go">func WithCancel(parent Context) (ctx Context, cancel CancelFunc)
+</code></pre>
+
+<p><img src="/img/understanding-the-context-package_3.png" alt="3" /></p>
+
+<p><a href="https://play.studygolang.com/p/24NF68Nbl_T">详细代码</a></p>
+
+<p>上面的代码中，我们创建了信道 c 用于传输计算结果，square 协程执行 for 循环依次发送。</p>
+
+<p>main 协程里面，执行 for 循环依次读取计算结果。计算结果读取完成之后，square 协程空闲着，什么也没做。</p>
+
+<p>当 main 协程结束返回时，仍然有两个活跃的协程。为了能及时关闭 square 协程（防止系统资源浪费），可以关闭信道 c，并且在 square 协程里面通过 val, ok := &lt;- c 判断信道是否关闭来结束 for 循环。</p>
+
+<p>但是有的时候，我们无法直接控制 channel 或者处理机制过于复杂，这个时候使用 Context 是最好的选择。</p>
+
+<p><img src="/img/understanding-the-context-package_4.png" alt="4" /></p>
+
+<p><a href="https://play.studygolang.com/p/CjDfFsHWttl">详细代码</a></p>
+
+<p>上面的例子，我们通过 context.WithCancel 函数从 context.Background 派生出一个 Context，返回的是父 Context 的副本，但有 Done channel 和取消函数，我们可以随时调用取消函数。</p>
+
+<p>我们将返回的 Context 作为参数传递给 square 协程，在 square 协程里，我们在 for 循环里使用了 select 语句，有两个 case，第一个 case 在什么情况会执行？当调用 cancel 函数、Done channel 关闭时；当 c channel 能写入时会执行第二个 case。</p>
+
+<p>main 协程里，for 循环经过 5 次迭代以后，调用了 cancel 函数，将会关闭 ctx 的 Done channel，将会执行第一个 case，square 协程会终止并正常退出。</p>
+
+<p>通常，大多数人习惯使用 defer cancel() 来取消 Context，然而取消 Context 能够释放其相关的系统资源，因此建议确定不再需要使用 Context 并且子协程应立即停止工作时立即调用 cancel 函数。</p>
+
+<p>一个 Context 可以传递给多个协程，调用 cancel 函数之后再次调用不会有任何作用。</p>
+
+<p>Context 仅可以作为参数传递给函数或者 goroutine，并且最好命名为 ctx，不推荐将 Context 放在结构体中。</p>
+
+<h3 id="context-withdeadline">context.WithDeadline</h3>
+
+<p>除了标准的 cancel 函数，如果你想 Context 在某一给定的时间自动取消，这时就可以使用 context.WithDeadline。</p>
+
+<pre><code class="language-go">func WithDeadline(parent Context, d time.Time) (Context, CancelFunc)
+</code></pre>
+
+<p>与 context.WithCancel 类似，context.WithDeadline 函数也会返回 cancel 函数，方便我们手动取消。参数 d 可以指定将来某一时间，到了这一时间点 Done channel 将会自动关闭。</p>
+
+<p>如果父 Context 也有截止时间并且早于子 Context 的截止时间，默认会与父 Context 截止时间保持一致。</p>
+
+<p>这种情况下，如果发生以下 3 种条件之一，Context 都会被取消：
+1. 父 Context 的 Done channel 关闭；
+1. 调用 cancel 函数；
+1. 到了截止时间；</p>
+
+<p>这种类型的 Context 一般用于对时间比较敏感的操作，比如一组协程必须同时结束运行。</p>
+
+<p><img src="/img/understanding-the-context-package_5.png" alt="5" /></p>
+
+<p><a href="https://play.studygolang.com/p/2RQ9sC1nbIB">详细代码</a></p>
+
+<p>上面的例子，我们设置的 Context 的截止时间是 3s 后。我们将 context 作为参数，创建了三个 worker 协程，使用 seelct 语句，等待 n 秒钟后执行特定任务。</p>
+
+<p>然而，如果 Context ctx 早于等待时间过期，那么理想情况下，我们应当正常返回保证 worker 协程正常终止。这样才能释放协程占用的任何系统资源，并且待执行的任务就来不会意外执行。</p>
+
+<p>上面代码 case 语句块的顺序无关紧要，因为大概率两个 channel 不会同时有数据（即同时准备好）。如果这两个 channel 同时准备好，select 语句会随机选择一个 channe 读取数据。</p>
+
+<h3 id="context-withtimeout">context.WithTimeout</h3>
+
+<p>使用 context.WithTimeout 可以得到一个带有过期时间的 Context。</p>
+
+<pre><code class="language-go">func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc)
+</code></pre>
+
+<p>该函数语法与 context.WithDeadline 类似，除了第二个参数是 time.Duration 类型，内部实现上，context.WithTimeout 调用了 context.WithDeadline，截止时间是当前时间加上超时时间（timeout）。</p>
+
+<pre><code class="language-go">func WithTimeout(p Context, t time.Duration) (Context, CancelFunc) {
+    return WithDeadline(p, time.Now().Add(t))
 }
-
-func operation2(ctx context.Context) {
-	// We use a similar pattern to the HTTP server
-	// that we saw in the earlier example
-	select {
-	case &lt;-time.After(500 * time.Millisecond):
-		fmt.Println(&quot;done&quot;)
-	case &lt;-ctx.Done():
-		fmt.Println(&quot;halted operation2&quot;)
-	}
-}
-
-func main() {
-	// Create a new context
-	ctx := context.Background()
-	// Create a new context, with its cancellation function
-	// from the original context
-	ctx, cancel := context.WithCancel(ctx)
-
-	// Run two operations: one in a different go routine
-	go func() {
-		err := operation1(ctx)
-		// If this operation returns an error
-		// cancel all operations using this context
-		if err != nil {
-			cancel()
-		}
-	}()
-
-	// Run operation2 with the same context we use for operation1
-	operation2(ctx)
-}
 </code></pre>
 
-<h3 id="基于时间的取消事件">基于时间的取消事件</h3>
+<p>上一个例子中，通过在当前时间基础上加 3s 钟手动创建了截止时间。context.WithTimeout 的含义类似于 deadline := context.WithTimeout(3 * time.Second)。</p>
 
-<p>任何应用程序都需要在超时时间之内维护 SLA 可用性，可以采用基于时间的取消事件。相关的 API 与上面提到的例子类似，但是有一点补充：</p>
+<p>这种类型的 Context 可以为某些操作设置超时时间，比如 HTTP 请求等。但是，Go 提供了一种内置机制来处理大多数 API 中与超时相关的问题。</p>
 
-<pre><code class="language-go">// The context will be cancelled after 3 seconds
-// If it needs to be cancelled earlier, the `cancel` function can
-// be used, like before
-ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+<h3 id="context-withvalue">context.WithValue</h3>
 
-// The context will be cancelled on 2009-11-10 23:00:00
-ctx, cancel := context.WithDeadline(ctx, time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC))
-</code></pre>
-
-<p>例如，使用 HTTP API 调用外部服务，如果请求时间太长，最好尽早取消请求。</p>
-
-<pre><code class="language-go">func main() {
-	// Create a new context
-	// With a deadline of 100 milliseconds
-	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, 100*time.Millisecond)
-
-	// Make a request, that will call the google homepage
-	req, _ := http.NewRequest(http.MethodGet, &quot;http://google.com&quot;, nil)
-	// Associate the cancellable context we just created to the request
-	req = req.WithContext(ctx)
-
-	// Create a new HTTP client and execute the request
-	client := &amp;http.Client{}
-	res, err := client.Do(req)
-	// If the request failed, log to STDOUT
-	if err != nil {
-		fmt.Println(&quot;Request failed:&quot;, err)
-		return
-	}
-	// Print the statuscode if the request succeeds
-	fmt.Println(&quot;Response received, status code:&quot;, res.StatusCode)
-}
-</code></pre>
-
-<p>输出的结果取决于请求谷歌主页的快慢，有可能输出：</p>
-
-<pre><code class="language-go">Response received, status code: 200
-</code></pre>
-
-<p>或者</p>
-
-<pre><code class="language-go">Request failed: Get http://google.com: context deadline exceeded
-</code></pre>
-
-<h3 id="陷阱和警告">陷阱和警告</h3>
-
-<p>尽管 Context 的取消功能是一个很好用的工具，但是使用时有一些需要主要的点。最重要的是，context 只能被取消一次。如果你希望在同一操作中传递多个错误，那么使用 context 取消可能不是最佳选择。使用取消最常见的场景是仅仅希望取消操作，而不是返回下游操作出现的错误。</p>
-
-<p>需要注意的另一点就是，应将相同的 context  对象传递给可能要取消的所有函数或者协程，使用 WithTimeout 或 WithCancel 包装一个已经可取消的 context 将导致多种可能的上下文被取消，应该避免。</p>
-
-<p>ps: 文章的<a href="https://github.com/sohamkamani/blog-example-go-context-cancellation">完整代码</a>。</p>
+<p>context 包提供了 WithValue 函数，父 context 派生子 context 的时候可以携带值。但是，使用哪种类型的键存放值存在一定的限制，更多详细内容可以看<a href="https://golang.google.cn/pkg/context/">官方文档</a>。</p>
 
 <p><br><br>
 (全文完)
@@ -313,11 +291,11 @@ ctx, cancel := context.WithDeadline(ctx, time.Date(2009, time.November, 10, 23, 
     <h3>推荐阅读</h3>
     <ul class="listing">
         
+        <li><a href="/2021/02/06/using-context-cancellation.html">使用 Go 语言 context 包的取消功能</a></li>
+        
         <li><a href="/2019/08/31/go-interview-9-day.html">Go面试每天一篇（第 9 天）</a></li>
         
         <li><a href="/2019/08/31/go-pointers-vs-references.html">指针与引用（译）</a></li>
-        
-        <li><a href="/2019/08/30/go-interview-8-day.html">Go面试每天一篇（第 8 天）</a></li>
         
     </ul>
 </div>
