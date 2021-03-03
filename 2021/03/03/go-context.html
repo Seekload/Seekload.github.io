@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="zh-CN">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?4b79e198f0e43ade55032d4bf11860a4";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="generator" content="Hugo 0.53" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>图解Go语言Context | Seekload&#39;s Blog</title>
+    <meta property="og:title" content="图解Go语言Context - Seekload&#39;s Blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content="2021-03-03T13:37:33&#43;08:00">
+        
+        
+    <meta property="article:modified_time" content="2021-03-03T13:37:33&#43;08:00">
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="图解Go语言Context">
+        
+    <meta name="author" content="Seekload">
+    <meta property="og:url" content="https://seekload.net/2021/03/03/go-context.html">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+    <link rel="stylesheet" href="/css/normalize.css">
+    
+        <link rel="stylesheet" href="/css/prism.css">
+    
+    <link rel="stylesheet" href="/css/style.css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+
+    
+
+
+    
+    
+</head>
+
+<body>
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://seekload.net">
+                        Seekload&#39;s Blog
+                    </a>
+                
+                <p class="description">专注于分享 Go 语言、职场心得和生活感悟</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="https://seekload.net">首页</a>
+                    
+                    <a  href="https://seekload.net/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://seekload.net/golang100/" title="Go语言知识站">Go语言知识站</a>
+                    
+                    <a  href="https://seekload.net/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<div id="body">
+    <div class="container">
+        <div class="col-group">
+
+            <div class="col-8" id="main">
+                <div class="res-cons">
+                    <article class="post">
+                        <header>
+                            <h1 class="post-title">图解Go语言Context</h1>
+                        </header>
+                        <date class="post-meta meta-date">
+                            2021年3月3日
+                        </date>
+                        
+                        <div class="post-meta">
+                            <span>|</span>
+                            
+                                <span class="meta-category"><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80">就要学习 Go 语言</a></span>
+                            
+                                <span class="meta-category"><a href="https://seekload.net/categories/golang">Golang</a></span>
+                            
+                        </div>
+                        
+                        <div class="post-meta">
+                            <span >
+                                <span>|</span>
+                                字数:3039
+                            </span>
+                        </div>
+                        
+                        <div class="post-meta">
+                            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span> 阅读</span></span>
+                        </div>
+                        
+                        <div class="post-content">
+                            
+
+<p>你好，我是 Seekload。</p>
+
+<p>今天与你分享下 Go 语言里面 context 包的相关知识。</p>
+
+<p>一般新技术的出现都是为了解决现有技术存在的问题或者可以提供更优雅方便的实现方式，那我们就要想想 contex 包能解决什么问题？</p>
+
+<p>关于 context 能解决什么问题，推荐你看看这两篇文章：</p>
+
+<p>飞雪大佬的 <a href="https://www.flysnow.org/2017/05/12/go-in-action-go-context.html">《Go语言实战笔记（二十）| Go Context》</a></p>
+
+<p>和</p>
+
+<p>饶大的 <a href="https://mp.weixin.qq.com/s/GpVy1eB5Cz_t-dhVC6BJNw">《深度解密Go语言之context》</a></p>
+
+<p>这两篇已经写得足够清晰明了，这里我主要想假设一些场景，更方便大家理解问题：</p>
+
+<ul>
+<li>假设你开启了一个函数，你需要将一些常用的值传递给下游函数，但是不能通过函数参数传递，怎么办？</li>
+<li>假设你开启了一个协程 A，协程 A 衍生出很多子协程，这些子协程又衍生出子协程，如果协程 A 所完成的任务“成果”不再需要，那我们怎么通知衍生出的子协程及时退出并释放占用的系统资源呢？</li>
+<li>假设一个任务需要在 2s 内完成，如果超时，如何优雅地退出返回呢？</li>
+<li>假设一个任务需要在中午 12 点完成，如果到点没有完成，又该如何优雅地退出呢？</li>
+</ul>
+
+<p>好了，带着这些问题，我们接着往下看。</p>
+
+<h3 id="context-接口">context 接口</h3>
+
+<p>理解 context 包，核心是需要理解 Context 接口：</p>
+
+<pre><code class="language-go">type Context interface {
+
+    Done() &lt;-chan struct{}
+
+    Err() error
+
+    Deadline() (deadline time.Time, ok bool)
+
+    Value(key interface{}) interface{}
+}
+</code></pre>
+
+<p>这个接口有四个方法：</p>
+
+<p>Done() 返回只读的 channel，在 goroutine 中，如果该 channel 可读，则意味着父 context 发起了取消操作或者是时间到期，<strong>理解这一点非常重要。</strong></p>
+
+<p>Err() 返回错误，表示 channel 被关闭的原因，被取消还是超时。</p>
+
+<p>Deadline() 获取设置的截止时间，第一个是截止时间，表示到了这个点，context 会自动发起取消操作；第二个表示是否设置了截止时间。</p>
+
+<p>Value() 方法获取 context 上绑定的值，是一个键值对，这个值一般是线程安全的。</p>
+
+<p><br>
+Done() 是最常用的方法，经常与 select-case 配合使用，因为 context 取消的时候，我们就可以得到一个可读的 channel，以此来判断是否收到 context 取消的信号，最经典的用法可以在 context 包的代码中找到：</p>
+
+<pre><code class="language-go">func Stream(ctx context.Context, out chan&lt;- Value) error {
+  	for {
+  		v, err := DoSomething(ctx)
+  		if err != nil {
+  			return err
+  		}
+  		select {
+  		case &lt;-ctx.Done():
+  			return ctx.Err()
+  		case out &lt;- v:
+  		}
+  	}
+  }
+</code></pre>
+
+<h3 id="衍生-context">衍生 context</h3>
+
+<p>我们不需要自己实现 Context 接口，源码包已经为我们提供了两个实现接口的方法，分别是 Background() 和 TODO()；</p>
+
+<pre><code class="language-go">var (
+	background = new(emptyCtx)
+	todo       = new(emptyCtx)
+)
+
+func Background() Context {
+	return background
+}
+
+func TODO() Context {
+	return todo
+}
+</code></pre>
+
+<p>context.Background() 返回空的 context，通常用在 main 函数里，作为根 context 衍生出子 context。</p>
+
+<p>context.TODO() 也是返回空 context。主要用在还不清楚使用什么类型的 context 的时候，便于后期重构，先用它占个位。</p>
+
+<p>它们两本质上是 emptyCtx 类型，不能被取消，没有值，也没有超时时间。</p>
+
+<p><br>
+有了上面两个根 context，就可以衍生出子 context，源码包为我们提供了一系列 withXXX 函数用于生成子 context，分别是：</p>
+
+<pre><code class="language-go">func WithCancel(parent Context) (ctx Context, cancel CancelFunc)
+
+func WithDeadline(parent Context, deadline time.Time) (Context, CancelFunc)
+
+func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc)
+
+func WithValue(parent Context, key, val interface{}) Context
+</code></pre>
+
+<p>这四个函数的第一个参数都是父 context，可以理解为基于父 context 生成子 context，即衍生子 context。</p>
+
+<ul>
+<li><p>WithCancel() 基于父 context，返回子 context 和取消函数；</p></li>
+
+<li><p>WithDeadline() 基于父 context，返回带截止时间的子 context 和取消函数；</p></li>
+
+<li><p>WithTimeout() 基于父 context，返回带超时时间的子 context 和取消函数；</p></li>
+
+<li><p>WithValue() 基于父 context，返回绑定键值对的子 context，没有取消函数；</p></li>
+</ul>
+
+<p>前三个函数都会返回取消函数，需要注意的是<strong>只有创建该 context 的协程才能调用取消函数，且不推荐将取消函数作为参数传递。</strong></p>
+
+<p>我们可以调用<strong>取消函数</strong>取消一个 context，以及这个 context 下面所有的子 context。</p>
+
+<p><strong>通过这些函数，就能生成一棵 context 树，树的每个节点都可以有任意多个子节点，节点层级可以有任意多个。</strong></p>
+
+<h3 id="context-树">context 树</h3>
+
+<p>我们一起来看下基于两个根 context 可以创建的 context 树是什么样。</p>
+
+<h4 id="两层树">两层树</h4>
+
+<pre><code class="language-go">rootCtx := context.Background()
+childCtx := context.WithValue(rootCtx, &quot;request_Id&quot;, &quot;seekload&quot;)
+</code></pre>
+
+<p>上面的代码基于根 context 创建了两层 context 树，rootCtx 衍生出 childCtx，并携带键值对 {&ldquo;request_Id&rdquo; : &ldquo;seekload&rdquo;}。</p>
+
+<h4 id="三层树">三层树</h4>
+
+<pre><code class="language-go">rootCtx := context.Background()
+childCtx := context.WithValue(rootCtx, &quot;request_Id&quot;, &quot;seekload&quot;)
+childOfChildCtx, cancelFunc := context.WithCancel(childCtx)
+</code></pre>
+
+<p>基于两层树，childCtx 衍生出 childOfChildCtx，含有键值对并且具有取消功能。</p>
+
+<h4 id="多层树">多层树</h4>
+
+<pre><code class="language-go">rootCtx := context.Background()
+childCtx1 := context.WithValue(rootCtx, &quot;request_Id&quot;, &quot;seekload&quot;)
+childCtx2, cancelFunc := context.WithCancel(childCtx1)
+childCtx3 := context.WithValue(rootCtx, &quot;user_Id&quot;, &quot;user_100&quot;)
+</code></pre>
+
+<p>上面的代码：</p>
+
+<ul>
+<li>rootCtx 是根 context；</li>
+<li>rootCtx 衍生出 childCtx1，并携带键值对 {&ldquo;request_Id&rdquo; : &ldquo;seekload&rdquo;}；</li>
+<li>childCtx1 衍生出 childCtx2，可以取消 context；</li>
+<li>rootCtx 衍生出 childCtx3，携带键值对 {&ldquo;user_Id&rdquo; : &ldquo;user_100&rdquo;}；</li>
+</ul>
+
+<p>层级关系就像下面这样：</p>
+
+<p><img src="/img/go-context-1.png" alt="图1" /></p>
+
+<p>我们可以在任一结点 context 上创建子 context，比如从 childCtx1 衍生 childCtx4：</p>
+
+<pre><code class="language-go">childCtx4 := context.WithValue(childCtx1, &quot;token&quot;, &quot;token_some&quot;)
+</code></pre>
+
+<p>层级关系就变成这样了：</p>
+
+<p><img src="/img/go-context-2.png" alt="图1" /></p>
+
+<p>Talk is cheap. Show me the code.</p>
+
+<p>看到这里，可能你还是不知道怎么去用 context 包，接下来我们结合着示例展示下 withXXX 函数的使用方法。</p>
+
+<h3 id="如何使用">如何使用</h3>
+
+<h4 id="context-withcancel">context.WithCancel()</h4>
+
+<p>context.WithCancel() 用于取消信号，直接来看例子：</p>
+
+<pre><code class="language-go">func main() {
+	ctx := context.Background()
+	cancelCtx, cancelFunc := context.WithCancel(ctx)
+	go task(cancelCtx)
+	time.Sleep(time.Second * 3)
+	cancelFunc()                        // 取消 context
+	time.Sleep(time.Second * 1)         // 延时等待协程退出
+	fmt.Println(&quot;number of goroutine: &quot;,runtime.NumGoroutine()) // 协程数量
+}
+
+func task(ctx context.Context) {
+	i := 1
+	for {
+		select {
+		case &lt;-ctx.Done(): // 接收取消信号
+			fmt.Println(&quot;Gracefully exit&quot;)
+			fmt.Println(ctx.Err()) // 取消原因
+			return
+		default:
+			fmt.Println(i)
+			time.Sleep(time.Second * 1)
+			i++
+		}
+	}
+} 
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="language-go">1
+2
+3
+Gracefully exit
+context canceled
+number of goroutine:  1
+</code></pre>
+
+<p>当调用 cancelFunc()，Done() 返回的 channel 变成可读，Err() 返回取消原因 “context canceled”，task() 函数执行 return 优雅地退出。</p>
+
+<h4 id="context-withvalue">context.WithValue()</h4>
+
+<p>通过 context.WithValue() 可以在 goroutine 之间传递一些数据。</p>
+
+<pre><code class="language-go">func main() {
+	helloWorldHandler := http.HandlerFunc(HelloWorld)
+	http.Handle(&quot;/hello&quot;, inejctRequestId(helloWorldHandler))
+	http.ListenAndServe(&quot;:8080&quot;, nil)
+}
+
+func HelloWorld(w http.ResponseWriter, r *http.Request) {
+	requestId := &quot;&quot;
+	if m := r.Context().Value(&quot;requestId&quot;); m != nil {
+		if value, ok := m.(string); ok {
+			requestId = value
+		}
+	}
+	w.Header().Add(&quot;requestId&quot;, requestId)
+	w.Write([]byte(&quot;Hello, world&quot;))
+}
+
+func inejctRequestId(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requestId := uuid.New().String()
+		ctx := context.WithValue(r.Context(), &quot;requestId&quot;, requestId)
+		req := r.WithContext(ctx)
+		next.ServeHTTP(w, req)
+	})
+}
+</code></pre>
+
+<p>上面的代码，inejctRequestId() 是请求中间函数，通过 context.WithValue() 注入了键值对；HelloWorld() 是请求处理函数，从 context 获取到刚才绑定的 k-v。</p>
+
+<p>go run 上面示例，然后执行：</p>
+
+<pre><code class="language-go">curl -v localhost:8080/hello
+</code></pre>
+
+<p>会输出：</p>
+
+<pre><code class="language-go">*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8080 (#0)
+&gt; GET /hello HTTP/1.1
+&gt; Host: localhost:8080
+&gt; User-Agent: curl/7.54.0
+&gt; Accept: */*
+&gt;
+&lt; HTTP/1.1 200 OK
+&lt; Requestid: e0b0544d-7993-4ff5-a2de-b29eacd3645a
+&lt; Date: Mon, 08 Feb 2021 13:13:06 GMT
+&lt; Content-Length: 12
+&lt; Content-Type: text/plain; charset=utf-8
+&lt;
+* Connection #0 to host localhost left intact
+Hello, world
+</code></pre>
+
+<p>从输出可以看到，返回里有 Requestid 信息。</p>
+
+<h4 id="context-withtimeout">context.WithTimeout()</h4>
+
+<p>context.WithTimeout() 可以设置一个超时时间，过期之后 channel done 会自动关闭，context 会被取消；超时之前可以调用取消函数手动取消 context。</p>
+
+<pre><code class="language-go">
+func main() {
+	ctx := context.Background()
+	cancelCtx, cancel := context.WithTimeout(ctx, time.Second*3)
+	defer cancel()
+	go task(cancelCtx)
+	time.Sleep(time.Second * 4)
+}
+
+func task(ctx context.Context) {
+	i := 1
+	for {
+		select {
+		case &lt;-ctx.Done():
+			fmt.Println(&quot;Gracefully exit&quot;)
+			fmt.Println(ctx.Err())
+			return
+		default:
+			fmt.Println(i)
+			time.Sleep(time.Second * 1)
+			i++
+		}
+	}
+}
+</code></pre>
+
+<p>输出：</p>
+
+<pre><code class="language-go">1
+2
+3
+Gracefully exit
+context deadline exceeded
+</code></pre>
+
+<p>上面的代码，context.WithTimeout() 设置了 3s 的超时时间，时间到了之后，context 自动取消，done channel 变成可读，Err() 返回取消原因，执行 return，task() 优雅地退出。</p>
+
+<h4 id="context-withdeadline">context.WithDeadline()</h4>
+
+<p>context.WithDeadline() 设置一个将来的时间点作为截止时间，时间到了之后，channel done 会自动关闭，context 会被取消；还未到截止时间可以调用取消函数手动取消 context。</p>
+
+<pre><code class="language-go">func main() {
+	ctx := context.Background()
+	cancelCtx, cancel := context.WithDeadline(ctx, time.Now().Add(time.Second*3))
+	defer cancel()
+	go task(cancelCtx)
+	time.Sleep(time.Second * 4)   // 延时，等待 task() 正常退出
+}
+
+func task(ctx context.Context) {
+	i := 1
+	for {
+		select {
+		case &lt;-ctx.Done():
+			fmt.Println(&quot;Gracefully exit&quot;)
+			fmt.Println(ctx.Err())
+			return
+		default:
+			fmt.Println(i)
+			time.Sleep(time.Second * 1)
+			i++
+		}
+	}
+}
+</code></pre>
+
+<p>上面的代码设置的截止时间是 3s 钟之后的时间点，时间到了之后，context 自动取消，done channel 变成可读，Err() 返回取消原因，执行 return，task() 优雅地退出。</p>
+
+<p>输出：</p>
+
+<pre><code class="language-go">1
+2
+3
+Gracefully exit
+context deadline exceeded
+</code></pre>
+
+<p>相信你也能猜想到，其实 context.WithTimeout() 底层是通过 context.WithDeadline() 实现的，源码如下：</p>
+
+<pre><code class="language-go">func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc) {
+	return WithDeadline(parent, time.Now().Add(timeout))
+}
+</code></pre>
+
+<p>ps: 看完示例之后，建议你回头看看上面几节，相信对上面的内容理解会更加深刻。</p>
+
+<h3 id="总结">总结</h3>
+
+<p>全文已经很好地回答了文章开始的四个问题，作为 Go 语言的核心功能之一，context 包已经得到广泛的应用，比如上面例子里提到的 http 包。在使用时有几个需要注意的地方：</p>
+
+<ol>
+<li>context 是线程安全的，可在多个 goroutine 中传递；</li>
+<li>使用 context 作为函数参数时，需作为第一个参数，并且命名为 ctx；</li>
+<li>不要把 context 放在结构体中，要以参数的方式传递；</li>
+<li>当不知道传递什么类型 context 时，可以使用 context.TODO()；</li>
+<li>context 只能被取消一次，应当避免从已取消的 context 衍生 context；</li>
+<li>只有父 context 和创建了该 context 的函数才能调用取消函数，避免传递取消函数 cancelFunc；</li>
+</ol>
+
+<p><br></p>
+
+<p>其他推荐文章：</p>
+
+<ol>
+<li><a href="https://mp.weixin.qq.com/s/A03G3_kCvVFN3TxB-92GVw">《一文吃透 Go 语言解密之上下文 context》</a></li>
+</ol>
+
+<p><br><br>
+(全文完)
+<img src="/me/weixingzh.jpg" alt="" /></p>
+
+<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+
+                        </div>
+
+                        
+
+<div class="post-archive">
+    <h3>推荐阅读</h3>
+    <ul class="listing">
+        
+        <li><a href="/2021/02/09/understanding-the-context-package.html">掌握 Context 包</a></li>
+        
+        <li><a href="/2021/02/06/using-context-cancellation.html">使用 Go 语言 context 包的取消功能</a></li>
+        
+        <li><a href="/2021/02/28/interview-question.html">Golang语言面试题（精编263道题），包含解析！！！</a></li>
+        
+    </ul>
+</div>
+
+
+                        <div class="post-meta meta-tags">
+                            
+                            <ul class="clearfix">
+                                
+                                <li><a href="https://seekload.net/tags/go">Go</a></li>
+                                
+                                <li><a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80">Golang语言</a></li>
+                                
+                                <li><a href="https://seekload.net/tags/context">context</a></li>
+                                
+                            </ul>
+                            
+                        </div>
+                    </article>
+                    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Seekload/Seekload.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+                </div>
+            </div>
+            <div id="secondary">
+
+    <section class="widget">
+        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://seekload.net">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利!!扫码关注回复关键字领取学习资料（入门、进阶Go语言书籍，还有海量视频资料）！！</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a title=""  style="color:red">
+                
+                    <img src="/me/weixingzh.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/02/28/interview-question.html" title="Golang语言面试题（精编263道题），包含解析！！！">Golang语言面试题（精编263道题），包含解析！！！</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/02/09/understanding-the-context-package.html" title="掌握 Context 包">掌握 Context 包</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/02/06/using-context-cancellation.html" title="使用 Go 语言 context 包的取消功能">使用 Go 语言 context 包的取消功能</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-interview-9-day.html" title="Go面试每天一篇（第 9 天）">Go面试每天一篇（第 9 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-pointers-vs-references.html" title="指针与引用（译）">指针与引用（译）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/29/go-interview-7-day.html" title="Go面试每天一篇（第 7 天）">Go面试每天一篇（第 7 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://niannian.cleer.club/" title="念念有鱼">念念有鱼</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">分类</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书(1)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题(1)</a>
+    </li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">标签</h3>
+<div class="tagcloud">
+    
+    <a href="https://seekload.net/tags/go/">Go</a>
+    
+    <a href="https://seekload.net/tags/golang/">Golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
+    
+    <a href="https://seekload.net/tags/channel/">channel</a>
+    
+    <a href="https://seekload.net/tags/context/">context</a>
+    
+    <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/select/">select</a>
+    
+    <a href="https://seekload.net/tags/variadic/">variadic</a>
+    
+    <a href="https://seekload.net/tags/%E4%BF%A1%E9%81%93/">信道</a>
+    
+    <a href="https://seekload.net/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://seekload.net/tags/%E5%87%BD%E6%95%B0/">函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%88%87%E7%89%87/">切片</a>
+    
+    <a href="https://seekload.net/tags/%E5%8C%85/">包</a>
+    
+    <a href="https://seekload.net/tags/%E5%8D%8F%E7%A8%8B/">协程</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%98%E9%87%8F/">变量</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0/">可变函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%9D%9A%E6%8C%81/">坚持</a>
+    
+    <a href="https://seekload.net/tags/%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4/">工作空间</a>
+    
+    <a href="https://seekload.net/tags/%E5%B9%B6%E5%8F%91/">并发</a>
+    
+    <a href="https://seekload.net/tags/%E5%BC%95%E7%94%A8/">引用</a>
+    
+    <a href="https://seekload.net/tags/%E5%BD%B1%E5%93%8D%E5%8A%9B/">影响力</a>
+    
+    <a href="https://seekload.net/tags/%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5/">循环语句</a>
+    
+    <a href="https://seekload.net/tags/%E6%80%9D%E7%BB%B4/">思维</a>
+    
+    <a href="https://seekload.net/tags/%E6%8C%87%E9%92%88/">指针</a>
+    
+    <a href="https://seekload.net/tags/%E6%8E%A5%E5%8F%A3/">接口</a>
+    
+    <a href="https://seekload.net/tags/%E6%95%B0%E7%BB%84/">数组</a>
+    
+    <a href="https://seekload.net/tags/%E6%96%B9%E6%B3%95/">方法</a>
+    
+    <a href="https://seekload.net/tags/%E6%98%A0%E5%B0%84/">映射</a>
+    
+    <a href="https://seekload.net/tags/%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5/">条件语句</a>
+    
+    <a href="https://seekload.net/tags/%E7%B1%BB%E5%9E%8B/">类型</a>
+    
+    <a href="https://seekload.net/tags/%E7%BB%93%E6%9E%84%E4%BD%93/">结构体</a>
+    
+    <a href="https://seekload.net/tags/%E8%AE%A4%E7%9F%A5/">认知</a>
+    
+    <a href="https://seekload.net/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://seekload.net/tags/%E8%BF%90%E7%AE%97%E7%AC%A6/">运算符</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">面向对象</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%9F%BA/">面基</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E8%AF%95/">面试</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题</a>
+    
+</div>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://seekload.net/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+        </div>
+    </div>
+</div>
+<footer id="footer">
+    <div class="container">
+        
+        &copy; 2021 <a href="https://seekload.net"> 公众号：Golang来啦 </a>.
+        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
+        
+        
+    </div>
+</footer>
+
+
+    <script type="text/javascript">
+    
+    (function(){
+        $("pre code").parent().addClass("line-numbers")
+    }())
+
+    window.MathJax = {
+        tex2jax: {
+            inlineMath: [ ['$','$'] ],
+            processEscapes: true
+        }
+    };
+    </script>
+    <script type="text/javascript" src="/js/prism.js" async="true"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+</body>
+</html>

@@ -6,7 +6,7 @@
     <description>Recent content in Tags on Seekload&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 28 Feb 2021 10:38:26 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 03 Mar 2021 13:37:33 +0800</lastBuildDate>
     
 	<atom:link href="https://seekload.net/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -14,7 +14,7 @@
     <item>
       <title>Go</title>
       <link>https://seekload.net/tags/go/</link>
-      <pubDate>Sun, 28 Feb 2021 10:38:26 +0800</pubDate>
+      <pubDate>Wed, 03 Mar 2021 13:37:33 +0800</pubDate>
       
       <guid>https://seekload.net/tags/go/</guid>
       <description></description>
@@ -26,6 +26,15 @@
       <pubDate>Sun, 28 Feb 2021 10:38:26 +0800</pubDate>
       
       <guid>https://seekload.net/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Golang语言</title>
+      <link>https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/</link>
+      <pubDate>Wed, 03 Mar 2021 13:37:33 +0800</pubDate>
+      
+      <guid>https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/</guid>
       <description></description>
     </item>
     
@@ -59,7 +68,7 @@
     <item>
       <title>context</title>
       <link>https://seekload.net/tags/context/</link>
-      <pubDate>Tue, 09 Feb 2021 15:58:25 +0800</pubDate>
+      <pubDate>Wed, 03 Mar 2021 13:37:33 +0800</pubDate>
       
       <guid>https://seekload.net/tags/context/</guid>
       <description></description>
