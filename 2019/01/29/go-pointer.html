@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:1262
+                                字数:1258
                             </span>
                         </div>
                         
@@ -125,138 +125,93 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<h3 id="什么是指针">什么是指针</h3>
-
+                            <h3 id="什么是指针">什么是指针</h3>
 <p>写代码的时候，我们通过变量就可以操作存储在内存中的值，进行赋值、加减运算等。大家有没有想过，变量代表什么呢？其实，一个变量对应一段内存空间，这段空间就存储了该变量相对应类型的值。指针的值就对应变量的地址，只通过指针，就可以更新或者读取变量的值，而不需要用到变量名。</p>
-
-<pre><code class="language-go">var i int = 10      //声明变量i，并初始化为10
-var ptr *int = &amp;i 
-fmt.Println(ptr,*ptr)
-// 0xc000018060 10  指针变量ptr存储的是i地址，*ptr对应指针指向的变量的值
-*ptr = 12  				// i=12  更新指针指向的变量的值
-fmt.Println(*ptr,i)		// 12 12
-</code></pre>
-
-<p>上面这段代码，声明了<code>*int</code> 类型的指针变量 <code>ptr</code> ，通过取址运算符<code>&amp;</code>获得指向整型变量 <code>i</code> 的地址。可以说，指针<code>ptr</code>指向变量<code>i</code>，或者说<code>ptr</code>指针保存了变量<code>i</code>的地址。</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">10</span>      <span style="color:#75715e">//声明变量i，并初始化为10
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ptr</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">i</span> 
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ptr</span>,<span style="color:#f92672">*</span><span style="color:#a6e22e">ptr</span>)
+<span style="color:#75715e">// 0xc000018060 10  指针变量ptr存储的是i地址，*ptr对应指针指向的变量的值
+</span><span style="color:#75715e"></span><span style="color:#f92672">*</span><span style="color:#a6e22e">ptr</span> = <span style="color:#ae81ff">12</span>  				<span style="color:#75715e">// i=12  更新指针指向的变量的值
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">ptr</span>,<span style="color:#a6e22e">i</span>)		<span style="color:#75715e">// 12 12
+</span></code></pre></div><p>上面这段代码，声明了<code> *int</code> 类型的指针变量 <code>ptr</code> ，通过取址运算符<code>&amp;</code>获得指向整型变量 <code>i</code> 的地址。可以说，指针<code>ptr</code>指向变量<code>i</code>，或者说<code>ptr</code>指针保存了变量<code>i</code>的地址。</p>
 <h3 id="指针声明">指针声明</h3>
-
 <p>通过上面一段话的解释，相信大家对指针有了比较清晰的认识：指针指向一个变量的内存地址。要想使用指针，必须先声明，格式如下：</p>
-
-<pre><code class="language-go">var var_name *var_type
-// var_name 指针名称，var_type 指针所指向的变量的类型
-</code></pre>
-
-<pre><code class="language-go">var i int = 10
-str := &quot;go&quot;
-var ip *int         // *int类型的指针
-var pstr *string    // *string类型的指针
-ip = &amp;i
-pstr = &amp;str
-fmt.Println(*ip,*pstr)     // 10 go
-</code></pre>
-
-<p><strong>注意</strong>：<code>*int</code>类型的指针，说明该指针指向的一定是<code>int</code>类型的变量，<code>*string</code>类型也类似。</p>
-
-<pre><code class="language-go">str := &quot;go&quot;
-var ip *int
-ip = &amp;str  // 编译不会通过
-</code></pre>
-
-<p><code>*int</code> 类型的指针，指向的变量若是<code>string</code>类型的，编译器编译的时候就会报错：</p>
-
-<pre><code class="language-go">cannot use &amp;str (type *string) as type *int in assignment
-</code></pre>
-
-<h3 id="如何使用指针">如何使用指针</h3>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">var_name</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">var_type</span>
+<span style="color:#75715e">// var_name 指针名称，var_type 指针所指向的变量的类型
+</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">10</span>
+<span style="color:#a6e22e">str</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;go&#34;</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ip</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>         <span style="color:#75715e">// *int类型的指针
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">pstr</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">string</span>    <span style="color:#75715e">// *string类型的指针
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">ip</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">i</span>
+<span style="color:#a6e22e">pstr</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">str</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">ip</span>,<span style="color:#f92672">*</span><span style="color:#a6e22e">pstr</span>)     <span style="color:#75715e">// 10 go
+</span></code></pre></div><p><strong>注意</strong>：<code>*int</code>类型的指针，说明该指针指向的一定是<code>int</code>类型的变量，<code>*string</code>类型也类似。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">str</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;go&#34;</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ip</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
+<span style="color:#a6e22e">ip</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">str</span>  <span style="color:#75715e">// 编译不会通过
+</span></code></pre></div><p><code>*int</code> 类型的指针，指向的变量若是<code>string</code>类型的，编译器编译的时候就会报错：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">cannot</span> <span style="color:#a6e22e">use</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">str</span> (<span style="color:#66d9ef">type</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">as</span> <span style="color:#66d9ef">type</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">in</span> <span style="color:#a6e22e">assignment</span>
+</code></pre></div><h3 id="如何使用指针">如何使用指针</h3>
 <p>文章写到这里，关于如何使用指针，其实上文已经列出来了，主要经过三个步骤：<strong>声明</strong>、<strong>赋值</strong>和<strong>访问</strong>指针指向的变量的值。</p>
-
-<pre><code class="language-go">x,y := 1,&quot;go&quot;
-var px *int = &amp;x    	// 1、声明并初始化
-var py = &amp;y				// 2、省略指针类型，编译器自动判断
-//px,py := &amp;x,&amp;y		// 3、使用 :=
-fmt.Println(*px,*py) 	// 1 go   访问
-</code></pre>
-
-<h3 id="关于空指针">关于空指针</h3>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">x</span>,<span style="color:#a6e22e">y</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#34;go&#34;</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">px</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x</span>    	<span style="color:#75715e">// 1、声明并初始化
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">py</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">y</span>				<span style="color:#75715e">// 2、省略指针类型，编译器自动判断
+</span><span style="color:#75715e">//px,py := &amp;x,&amp;y		// 3、使用 :=
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">px</span>,<span style="color:#f92672">*</span><span style="color:#a6e22e">py</span>) 	<span style="color:#75715e">// 1 go   访问
+</span></code></pre></div><h3 id="关于空指针">关于空指针</h3>
 <p>一个指针已声明而没有赋值时，称为空指针，为 <code>nil</code> 。任何类型的指针的零值都是 <code>nil</code>。</p>
-
-<pre><code class="language-go">var ip *int
-fmt.Println(ip)							// nil
-fmt.Printf(&quot;ip 的值为:%x&quot;, ip)			// ip 的值为:0
-</code></pre>
-
-<p>如果<code>ip != nil</code> 为真，那么p是指向某个有效变量。指针之间也是可以进行相等测试的，只有当它们指向同一个变量或全部是<code>nil</code>时才相等。</p>
-
-<pre><code class="language-go">1、指向同一个变量 true
-x,_ := 1,1
-px,py := &amp;x,&amp;x
-fmt.Println(px == py) 
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ip</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ip</span>)							<span style="color:#75715e">// nil
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;ip 的值为:%x&#34;</span>, <span style="color:#a6e22e">ip</span>)			<span style="color:#75715e">// ip 的值为:0
+</span></code></pre></div><p>如果<code>ip != nil</code> 为真，那么p是指向某个有效变量。指针之间也是可以进行相等测试的，只有当它们指向同一个变量或全部是<code>nil</code>时才相等。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">指向同一个变量</span> <span style="color:#66d9ef">true</span>
+<span style="color:#a6e22e">x</span>,<span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>
+<span style="color:#a6e22e">px</span>,<span style="color:#a6e22e">py</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x</span>,<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">px</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">py</span>) 
  
-2、指向不同变量 false
-x,y := 1,1
-px,py := &amp;x,&amp;y
-fmt.Println(px == py)
+<span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">指向不同变量</span> <span style="color:#66d9ef">false</span>
+<span style="color:#a6e22e">x</span>,<span style="color:#a6e22e">y</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>
+<span style="color:#a6e22e">px</span>,<span style="color:#a6e22e">py</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x</span>,<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">y</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">px</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">py</span>)
 
-3、两个nil指针 true
-var px *int
-var py *int
-fmt.Println(px == py)
-</code></pre>
-
-<h3 id="指针作为函数参数使用">指针作为函数参数使用</h3>
-
+<span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">两个nil指针</span> <span style="color:#66d9ef">true</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">px</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">py</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">px</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">py</span>)
+</code></pre></div><h3 id="指针作为函数参数使用">指针作为函数参数使用</h3>
 <p>指针包含的是一个变量的地址，如果将一个指针作为参数传递给函数，就可以通过指针来更新变量的值。</p>
-
-<pre><code class="language-go">func a(p *int){
-	*p++
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">a</span>(<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>){
+	<span style="color:#f92672">*</span><span style="color:#a6e22e">p</span><span style="color:#f92672">++</span>
 }
 
-i := 10
-fmt.Println(i)      // 10
-a(&amp;i);
-fmt.Println(i)		// 11
-</code></pre>
-
-<h3 id="不常用的new函数">不常用的new函数</h3>
-
+<span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">10</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)      <span style="color:#75715e">// 10
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">a</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">i</span>);
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)		<span style="color:#75715e">// 11
+</span></code></pre></div><h3 id="不常用的new函数">不常用的new函数</h3>
 <p>给大家介绍下<code>new</code>函数，内建的<code>new</code>函数也是一种创建变量的方法，<code>new(type)</code>表示创建一个<code>type</code>类型的匿名变量，并初始化为<code>type</code>类型的零值，返回变量的地址，指针类型为<code>*type</code>。</p>
-
-<pre><code class="language-go">p := new(int)   	// p, *int 类型, 指向匿名的 int 变量
-fmt.Println(*p) 	// 0
-*p = 2          	// 设置 int 匿名变量的值为 2
-fmt.Println(*p) 	// 2
-</code></pre>
-
-<p>用<code>new</code>函数创建变量和普通变量声明语句方式创建变量没有什么区别，除了不需要声明一个临时变量的名字外。
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> new(<span style="color:#66d9ef">int</span>)   	<span style="color:#75715e">// p, *int 类型, 指向匿名的 int 变量
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">p</span>) 	<span style="color:#75715e">// 0
+</span><span style="color:#75715e"></span><span style="color:#f92672">*</span><span style="color:#a6e22e">p</span> = <span style="color:#ae81ff">2</span>          	<span style="color:#75715e">// 设置 int 匿名变量的值为 2
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">p</span>) 	<span style="color:#75715e">// 2
+</span></code></pre></div><p>用<code>new</code>函数创建变量和普通变量声明语句方式创建变量没有什么区别，除了不需要声明一个临时变量的名字外。
 下面的两个函数有着相同的行为：<strong>创建变量，并返回变量地址</strong></p>
-
-<pre><code class="language-go">func newA() *int {
-    return new(int)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">newA</span>() <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span> {
+    <span style="color:#66d9ef">return</span> new(<span style="color:#66d9ef">int</span>)
 }
-func newB() *int {
-    var i int
-    return &amp;i
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">newB</span>() <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span> {
+    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">i</span>
 }
-</code></pre>
-
-<p>每次调用<code>new</code>函数都会返回新的变量的地址：</p>
-
-<pre><code class="language-go">p := new(int)
-q := new(int)
-fmt.Println(p,q)   // 0xc000018060 0xc000018068
-</code></pre>
-
-<p><code>new</code>函数使用的比较少，不过觉得挺有意思的，就在这给大家分享下！实际编程，多的还是使用具体类型创建变量，毕竟更方便，是吧！
-<br><br>
+</code></pre></div><p>每次调用<code>new</code>函数都会返回新的变量的地址：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> new(<span style="color:#66d9ef">int</span>)
+<span style="color:#a6e22e">q</span> <span style="color:#f92672">:=</span> new(<span style="color:#66d9ef">int</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">p</span>,<span style="color:#a6e22e">q</span>)   <span style="color:#75715e">// 0xc000018060 0xc000018068
+</span></code></pre></div><p><code>new</code>函数使用的比较少，不过觉得挺有意思的，就在这给大家分享下！实际编程，多的还是使用具体类型创建变量，毕竟更方便，是吧！
+<!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -338,6 +293,10 @@ fmt.Println(p,q)   // 0xc000018060 0xc000018068
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -373,10 +332,6 @@ fmt.Println(p,q)   // 0xc000018060 0xc000018068
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -400,11 +355,11 @@ fmt.Println(p,q)   // 0xc000018060 0xc000018068
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -412,7 +367,7 @@ fmt.Println(p,q)   // 0xc000018060 0xc000018068
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -442,21 +397,21 @@ fmt.Println(p,q)   // 0xc000018060 0xc000018068
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

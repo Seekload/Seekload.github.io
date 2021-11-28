@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:1941
+                                字数:1973
                             </span>
                         </div>
                         
@@ -125,312 +125,243 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<blockquote>
+                            <blockquote>
 <p><strong>这是『就要学习 Go 语言』系列的第 20 篇分享文章</strong></p>
 </blockquote>
-
 <p>提醒：文末给大家留了小练习，可以先看文章，再做练习，检验自己的学习成果！</p>
-
 <p>我们接着上一篇，继续讲接口的其他用法。</p>
-
 <h3 id="实现多个接口">实现多个接口</h3>
-
 <p>一种类型可以实现多个接口，来看下例子：</p>
-
-<pre><code class="language-go">type Shape interface {
-	Area() float32
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Shape</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span>
 }
 
-type Object interface {
-	Perimeter() float32
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Object</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Perimeter</span>() <span style="color:#66d9ef">float32</span>
 }
 
-type Circle struct {
-	radius float32
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Circle</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">radius</span> <span style="color:#66d9ef">float32</span>
 }
 
-func (c Circle) Area() float32 {
-	return math.Pi * (c.radius * c.radius)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Circle</span>) <span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">Pi</span> <span style="color:#f92672">*</span> (<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span>)
 }
 
-func (c Circle) Perimeter() float32 {
-	return 2 * math.Pi * c.radius
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Circle</span>) <span style="color:#a6e22e">Perimeter</span>() <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">Pi</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span>
 }
 
-func main() {
-	c := Circle{3}
-	var s Shape = c
-	var p Object = c
-	fmt.Println(&quot;area: &quot;, s.Area())
-	fmt.Println(&quot;perimeter: &quot;, p.Perimeter())
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Circle</span>{<span style="color:#ae81ff">3</span>}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Shape</span> = <span style="color:#a6e22e">c</span>
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">p</span> <span style="color:#a6e22e">Object</span> = <span style="color:#a6e22e">c</span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;area: &#34;</span>, <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Area</span>())
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;perimeter: &#34;</span>, <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Perimeter</span>())
 }
-</code></pre>
-
-<p><a href="https://play.golang.org/p/mi756xNLlF7" target="_blank">输出：</a></p>
-
-<pre><code class="language-go">area:  28.274334
-perimeter:  18.849556
-</code></pre>
-
-<p>上面的代码，结构体 Circle 分别实现了 Shape 接口和 Object 接口，所以可以将结构体变量 c 赋给变量 s 和 p，此时 s 和 p 具有相同的动态类型和动态值，分别调用各自实现的方法 Area() 和 Perimeter()。
+</code></pre></div><p><!-- raw HTML omitted -->输出：<!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">area</span>:  <span style="color:#ae81ff">28.274334</span>
+<span style="color:#a6e22e">perimeter</span>:  <span style="color:#ae81ff">18.849556</span>
+</code></pre></div><p>上面的代码，结构体 Circle 分别实现了 Shape 接口和 Object 接口，所以可以将结构体变量 c 赋给变量 s 和 p，此时 s 和 p 具有相同的动态类型和动态值，分别调用各自实现的方法 Area() 和 Perimeter()。
 我们修改下程序：</p>
-
-<pre><code class="language-go">fmt.Println(&quot;area: &quot;, p.Area())
-fmt.Println(&quot;perimeter: &quot;, s.Perimeter())
-</code></pre>
-
-<p>编译会出错：</p>
-
-<pre><code class="language-go">p.Area undefined (type Object has no field or method Area)
-s.Perimeter undefined (type Shape has no field or method Perimeter)
-</code></pre>
-
-<p>为什么？因为 s 的静态类型是 Shape，而 p 的静态类型是 Object。那有什么解决办法吗？有的，我们接着看下一节</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;area: &#34;</span>, <span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Area</span>())
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;perimeter: &#34;</span>, <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Perimeter</span>())
+</code></pre></div><p>编译会出错：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">p</span>.<span style="color:#a6e22e">Area</span> <span style="color:#a6e22e">undefined</span> (<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Object</span> <span style="color:#a6e22e">has</span> <span style="color:#a6e22e">no</span> <span style="color:#a6e22e">field</span> <span style="color:#a6e22e">or</span> <span style="color:#a6e22e">method</span> <span style="color:#a6e22e">Area</span>)
+<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Perimeter</span> <span style="color:#a6e22e">undefined</span> (<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Shape</span> <span style="color:#a6e22e">has</span> <span style="color:#a6e22e">no</span> <span style="color:#a6e22e">field</span> <span style="color:#a6e22e">or</span> <span style="color:#a6e22e">method</span> <span style="color:#a6e22e">Perimeter</span>)
+</code></pre></div><p>为什么？因为 s 的静态类型是 Shape，而 p 的静态类型是 Object。那有什么解决办法吗？有的，我们接着看下一节</p>
 <h3 id="类型断言">类型断言</h3>
-
 <p>类型断言可以用来获取接口的底层值，通常的语法：<strong>i.(Type)</strong>，其中 i 是接口，Type 是类型或接口。编译时会自动检测 i 的动态类型与 Type 是否一致。</p>
-
-<pre><code class="language-go">type Shape interface {
-	Area() float32
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Shape</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span>
 }
 
-type Object interface {
-	Perimeter() float32
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Object</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Perimeter</span>() <span style="color:#66d9ef">float32</span>
 }
 
-type Circle struct {
-	radius float32
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Circle</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">radius</span> <span style="color:#66d9ef">float32</span>
 }
 
-func (c Circle) Area() float32 {
-	return math.Pi * (c.radius * c.radius)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Circle</span>) <span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">Pi</span> <span style="color:#f92672">*</span> (<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span>)
 }
 
-func (c Circle) Perimeter() float32 {
-	return 2 * math.Pi * c.radius
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Circle</span>) <span style="color:#a6e22e">Perimeter</span>() <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">Pi</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span>
 }
 
-func main() {
-	var s Shape = Circle{3}
-	c := s.(Circle)
-	fmt.Printf(&quot;%T\n&quot;,c)
-	fmt.Printf(&quot;%v\n&quot;,c)
-	fmt.Println(&quot;area: &quot;, c.Area())
-	fmt.Println(&quot;perimeter: &quot;, c.Perimeter())
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Shape</span> = <span style="color:#a6e22e">Circle</span>{<span style="color:#ae81ff">3</span>}
+	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>.(<span style="color:#a6e22e">Circle</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%T\n&#34;</span>,<span style="color:#a6e22e">c</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v\n&#34;</span>,<span style="color:#a6e22e">c</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;area: &#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Area</span>())
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;perimeter: &#34;</span>, <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">Perimeter</span>())
 }
-</code></pre>
-
-<p><a href="https://play.golang.org/p/dHv0KVE92vG" target="_blank">输出：</a></p>
-
-<pre><code class="language-go">main.Circle
-{3}
-area:  28.274334
-perimeter:  18.849556
-</code></pre>
-
-<p>上面的代码，我们可以通过 c 访问接口 s 的底层值，也可以通过 c 分别调用方法 Area() 和 Perimeter()，这就解决了上面遇到的问题。
+</code></pre></div><p><!-- raw HTML omitted -->输出：<!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">main</span>.<span style="color:#a6e22e">Circle</span>
+{<span style="color:#ae81ff">3</span>}
+<span style="color:#a6e22e">area</span>:  <span style="color:#ae81ff">28.274334</span>
+<span style="color:#a6e22e">perimeter</span>:  <span style="color:#ae81ff">18.849556</span>
+</code></pre></div><p>上面的代码，我们可以通过 c 访问接口 s 的底层值，也可以通过 c 分别调用方法 Area() 和 Perimeter()，这就解决了上面遇到的问题。
 在语法 i.(Type) 中，如果 Type 没有实现 i 所属的接口，编译的时候会报错；或者 i 的动态值不是 Type，则会报 panic 错误。怎么解决呢？可以使用下面的语法：</p>
-
-<pre><code class="language-go">value, ok := i.(Type)
-</code></pre>
-
-<p>使用上面的语法，Go 会自动检测上面提到的两种情况，我们只需要通过变量 ok 判断结果是否正确即可。如果正确，ok 为 true，否则为 false，value 为 Type 对应的零值。</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">value</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">i</span>.(<span style="color:#a6e22e">Type</span>)
+</code></pre></div><p>使用上面的语法，Go 会自动检测上面提到的两种情况，我们只需要通过变量 ok 判断结果是否正确即可。如果正确，ok 为 true，否则为 false，value 为 Type 对应的零值。</p>
 <h3 id="类型选择">类型选择</h3>
-
 <p>类型选择用于将接口的具体类型与各种 case 语句中指定的多种类型进行匹配比较，有点类似于 switch case 语句，不同的是 case 中指定是类型。
 类型选择的语法有点类似于类型断言的语法：i.(type)，其中 i 是接口，type 是固定关键字，使用这个可以获得接口的具体类型而不是值，每一个 case 中的类型必须实现了 i 接口。</p>
-
-<pre><code class="language-go">func switchType(i interface{}) {
-	switch i.(type) {
-	case string:
-		fmt.Printf(&quot;string and value is %s\n&quot;, i.(string))
-	case int:
-		fmt.Printf(&quot;int and value is %d\n&quot;, i.(int))
-	default:
-		fmt.Printf(&quot;Unknown type\n&quot;)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">switchType</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">interface</span>{}) {
+	<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">i</span>.(<span style="color:#66d9ef">type</span>) {
+	<span style="color:#66d9ef">case</span> <span style="color:#66d9ef">string</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;string and value is %s\n&#34;</span>, <span style="color:#a6e22e">i</span>.(<span style="color:#66d9ef">string</span>))
+	<span style="color:#66d9ef">case</span> <span style="color:#66d9ef">int</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;int and value is %d\n&#34;</span>, <span style="color:#a6e22e">i</span>.(<span style="color:#66d9ef">int</span>))
+	<span style="color:#66d9ef">default</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Unknown type\n&#34;</span>)
 	}
 }
-func main() {
-	switchType(&quot;Seekload&quot;)
-	switchType(27)
-	switchType(true)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">switchType</span>(<span style="color:#e6db74">&#34;Seekload&#34;</span>)
+	<span style="color:#a6e22e">switchType</span>(<span style="color:#ae81ff">27</span>)
+	<span style="color:#a6e22e">switchType</span>(<span style="color:#66d9ef">true</span>)
 }
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">string and value is Seekload
-int and value is 27
-Unknown type
-</code></pre>
-
-<p>上面的代码应该很好理解，i 的类型匹配到哪个 case ，就会执行相应的输出语句。
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">string</span> <span style="color:#a6e22e">and</span> <span style="color:#a6e22e">value</span> <span style="color:#a6e22e">is</span> <span style="color:#a6e22e">Seekload</span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">and</span> <span style="color:#a6e22e">value</span> <span style="color:#a6e22e">is</span> <span style="color:#ae81ff">27</span>
+<span style="color:#a6e22e">Unknown</span> <span style="color:#66d9ef">type</span>
+</code></pre></div><p>上面的代码应该很好理解，i 的类型匹配到哪个 case ，就会执行相应的输出语句。
 <strong>注意：只有接口类型才可以进行类型选择</strong>。其他类型，例如 int、string等是不能的：</p>
-
-<pre><code class="language-go">i := 1
-switch i.(type) {
-case int:
-	println(&quot;int type&quot;)
-default:
-	println(&quot;unknown type&quot;)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">i</span>.(<span style="color:#66d9ef">type</span>) {
+<span style="color:#66d9ef">case</span> <span style="color:#66d9ef">int</span>:
+	println(<span style="color:#e6db74">&#34;int type&#34;</span>)
+<span style="color:#66d9ef">default</span>:
+	println(<span style="color:#e6db74">&#34;unknown type&#34;</span>)
 }
-</code></pre>
-
-<p>报错：</p>
-
-<pre><code class="language-go">cannot type switch on non-interface value i (type int)
-</code></pre>
-
-<h3 id="接口嵌套">接口嵌套</h3>
-
+</code></pre></div><p>报错：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">cannot</span> <span style="color:#66d9ef">type</span> <span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">on</span> <span style="color:#a6e22e">non</span><span style="color:#f92672">-</span><span style="color:#66d9ef">interface</span> <span style="color:#a6e22e">value</span> <span style="color:#a6e22e">i</span> (<span style="color:#66d9ef">type</span> <span style="color:#66d9ef">int</span>)
+</code></pre></div><h3 id="接口嵌套">接口嵌套</h3>
 <p>Go 语言中，接口不能去实现别的接口也不能继承，但是可以通过嵌套接口创建新接口。</p>
-
-<pre><code class="language-go">type Math interface {
-	Shape
-	Object
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Math</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Shape</span>
+	<span style="color:#a6e22e">Object</span>
 }
-type Shape interface {
-	Area() float32
-}
-
-type Object interface {
-	Perimeter() float32
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Shape</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span>
 }
 
-type Circle struct {
-	radius float32
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Object</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Perimeter</span>() <span style="color:#66d9ef">float32</span>
 }
 
-func (c Circle) Area() float32 {
-	return math.Pi * (c.radius * c.radius)
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Circle</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">radius</span> <span style="color:#66d9ef">float32</span>
 }
 
-func (c Circle) Perimeter() float32 {
-	return 2 * math.Pi * c.radius
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Circle</span>) <span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">Pi</span> <span style="color:#f92672">*</span> (<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span>)
 }
 
-func main() {
-
-	c := Circle{3}
-	var m Math = c
-	fmt.Printf(&quot;%T\n&quot;, m )
-	fmt.Println(&quot;area: &quot;, m.Area())
-	fmt.Println(&quot;perimeter: &quot;, m.Perimeter())
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Circle</span>) <span style="color:#a6e22e">Perimeter</span>() <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">Pi</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span>
 }
-</code></pre>
 
-<p><a href="https://play.golang.org/p/ZmpHYxwxxhh" target="_blank">输出：</a></p>
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
 
-<pre><code class="language-go">main.Circle
-area:  28.274334
-perimeter:  18.849556
-</code></pre>
-
-<p>上面的代码，通过嵌套接口 Shape 和 Object，创建了新的接口 Math。任何类型如果实现了接口 Shape 和 Object 定义的方法，则说类型也实现了接口 Math，例如我们创建的结构体 Circle。
+	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Circle</span>{<span style="color:#ae81ff">3</span>}
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">m</span> <span style="color:#a6e22e">Math</span> = <span style="color:#a6e22e">c</span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%T\n&#34;</span>, <span style="color:#a6e22e">m</span> )
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;area: &#34;</span>, <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">Area</span>())
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;perimeter: &#34;</span>, <span style="color:#a6e22e">m</span>.<span style="color:#a6e22e">Perimeter</span>())
+}
+</code></pre></div><p><!-- raw HTML omitted -->输出：<!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">main</span>.<span style="color:#a6e22e">Circle</span>
+<span style="color:#a6e22e">area</span>:  <span style="color:#ae81ff">28.274334</span>
+<span style="color:#a6e22e">perimeter</span>:  <span style="color:#ae81ff">18.849556</span>
+</code></pre></div><p>上面的代码，通过嵌套接口 Shape 和 Object，创建了新的接口 Math。任何类型如果实现了接口 Shape 和 Object 定义的方法，则说类型也实现了接口 Math，例如我们创建的结构体 Circle。
 主函数里面，定义了接口类型的变量 m，动态类型是结构体 Circle，注意下方法 Area 和  Perimeter 的调用方式，类似与访问嵌套结构体的成员。</p>
-
 <h3 id="使用指针接收者和值接收者实现接口">使用指针接收者和值接收者实现接口</h3>
-
 <p>在前面我们都是通过值接收者去实现接口的，其实还可以通过指针接收者实现接口。实现过程中还是有需要注意的地方，我们来看下：</p>
-
-<pre><code class="language-go">type Shape interface {
-	Area() float32
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Shape</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span>
 }
 
-type Circle struct {
-	radius float32
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Circle</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">radius</span> <span style="color:#66d9ef">float32</span>
 }
 
-type Square struct {
-	side float32
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Square</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">side</span> <span style="color:#66d9ef">float32</span>
 }
 
-func (c Circle) Area() float32 {
-	return math.Pi * (c.radius * c.radius)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Circle</span>) <span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">Pi</span> <span style="color:#f92672">*</span> (<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span>)
 }
 
-func (s *Square) Area() float32 {
-	return s.side * s.side
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">s</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Square</span>) <span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">side</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">side</span>
 }
 
-func main() {
-	var s Shape
-	c1 := Circle{3}
-	s = c1
-	fmt.Printf(&quot;%v\n&quot;,s.Area())
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Shape</span>
+	<span style="color:#a6e22e">c1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Circle</span>{<span style="color:#ae81ff">3</span>}
+	<span style="color:#a6e22e">s</span> = <span style="color:#a6e22e">c1</span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v\n&#34;</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Area</span>())
 
-	c2 := Circle{4}
-	s = &amp;c2
-	fmt.Printf(&quot;%v\n&quot;,s.Area())
+	<span style="color:#a6e22e">c2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Circle</span>{<span style="color:#ae81ff">4</span>}
+	<span style="color:#a6e22e">s</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c2</span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v\n&#34;</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Area</span>())
 
-	c3 := Square{3}
-	//s = c3
-	s = &amp;c3
-	fmt.Printf(&quot;%v\n&quot;,s.Area())
+	<span style="color:#a6e22e">c3</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Square</span>{<span style="color:#ae81ff">3</span>}
+	<span style="color:#75715e">//s = c3
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">s</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">c3</span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%v\n&#34;</span>,<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Area</span>())
 
 }
-</code></pre>
-
-<p><a href="https://play.golang.org/p/2J25PMh7bgn" target="_blank">输出：</a></p>
-
-<pre><code class="language-go">28.274334
-50.265484
-9
-</code></pre>
-
-<p>上面的代码，结构体 Circle 通过值接收者实现了接口 Shape。我们在方法那篇文章中已经讨论过了，值接收者的方法可以使用值或者指针调用，所以上面的 c1 和 c2 的调用方式是合法的。</p>
-
+</code></pre></div><p><!-- raw HTML omitted -->输出：<!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">28.274334</span>
+<span style="color:#ae81ff">50.265484</span>
+<span style="color:#ae81ff">9</span>
+</code></pre></div><p>上面的代码，结构体 Circle 通过值接收者实现了接口 Shape。我们在方法那篇文章中已经讨论过了，值接收者的方法可以使用值或者指针调用，所以上面的 c1 和 c2 的调用方式是合法的。</p>
 <p>结构体 Square 通过指针接收者实现了接口 Shape。如果将上方注释部分打开的话，编译就会出错：</p>
-
-<pre><code class="language-go">cannot use c3 (type Square) as type Shape in assignment:
-Square does not implement Shape (Area method has pointer receiver)
-</code></pre>
-
-<p>从报错提示信息可以清楚看出，此时我们尝试将值类型 c3 分配给 s，但 c3 并没有实现接口 Shape。这可能会令我们有点惊讶，因为在方法中，我们可以直接通过值类型或者指针类型调用指针接收者方法。
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">cannot</span> <span style="color:#a6e22e">use</span> <span style="color:#a6e22e">c3</span> (<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Square</span>) <span style="color:#a6e22e">as</span> <span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Shape</span> <span style="color:#a6e22e">in</span> <span style="color:#a6e22e">assignment</span>:
+<span style="color:#a6e22e">Square</span> <span style="color:#a6e22e">does</span> <span style="color:#a6e22e">not</span> <span style="color:#a6e22e">implement</span> <span style="color:#a6e22e">Shape</span> (<span style="color:#a6e22e">Area</span> <span style="color:#a6e22e">method</span> <span style="color:#a6e22e">has</span> <span style="color:#a6e22e">pointer</span> <span style="color:#a6e22e">receiver</span>)
+</code></pre></div><p>从报错提示信息可以清楚看出，此时我们尝试将值类型 c3 分配给 s，但 c3 并没有实现接口 Shape。这可能会令我们有点惊讶，因为在方法中，我们可以直接通过值类型或者指针类型调用指针接收者方法。
 记住一点：<strong>对于指针接受者的方法，用一个指针或者一个可取得地址的值来调用都是合法的</strong>。但接口存储的具体值是不可寻址的，对于编译器无法自动获取 c3 的地址，于是程序报错。</p>
-
 <p>关于接口的使用方法总结到这，希望这两篇文章能够给你带来帮助！</p>
-
 <p><strong>作业：</strong>
 文章提到的类型断言：<strong>i.(Type)</strong>，其中 i 是接口，Type 可以是类型或接口，如果 Type 是接口的话，表达式是什么意思呢？下面的程序输出什么？</p>
-
-<pre><code class="language-go">type Shape interface {
-	Area() float32
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Shape</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span>
 }
 
-type Object interface {
-	Perimeter() float32
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Object</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Perimeter</span>() <span style="color:#66d9ef">float32</span>
 }
 
-type Circle struct {
-	radius float32
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Circle</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">radius</span> <span style="color:#66d9ef">float32</span>
 }
 
-func (c Circle) Area() float32 {
-	return math.Pi * (c.radius * c.radius)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Circle</span>) <span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">Pi</span> <span style="color:#f92672">*</span> (<span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">c</span>.<span style="color:#a6e22e">radius</span>)
 }
 
-func main() {
-	var s Shape = Circle{3}
-	value1,ok1 := s.(Shape)
-	value2,ok2 := s.(Object)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Shape</span> = <span style="color:#a6e22e">Circle</span>{<span style="color:#ae81ff">3</span>}
+	<span style="color:#a6e22e">value1</span>,<span style="color:#a6e22e">ok1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>.(<span style="color:#a6e22e">Shape</span>)
+	<span style="color:#a6e22e">value2</span>,<span style="color:#a6e22e">ok2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>.(<span style="color:#a6e22e">Object</span>)
 
-	fmt.Println(value1,ok1)
-	fmt.Println(value2,ok2)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">value1</span>,<span style="color:#a6e22e">ok1</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">value2</span>,<span style="color:#a6e22e">ok2</span>)
 }
-</code></pre>
-
-<p>欢迎大家留言讨论！</p>
-
-<p><br><br>
+</code></pre></div><p>欢迎大家留言讨论！</p>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -512,6 +443,10 @@ func main() {
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -547,10 +482,6 @@ func main() {
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -574,11 +505,11 @@ func main() {
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -586,7 +517,7 @@ func main() {
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -616,21 +547,21 @@ func main() {
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

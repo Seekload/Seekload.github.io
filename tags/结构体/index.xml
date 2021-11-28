@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>结构体 on Seekload&#39;s Blog</title>
@@ -6,11 +6,7 @@
     <description>Recent content in 结构体 on Seekload&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Thu, 31 Jan 2019 12:28:05 +0800</lastBuildDate>
-    
-	<atom:link href="https://seekload.net/tags/%E7%BB%93%E6%9E%84%E4%BD%93/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Thu, 31 Jan 2019 12:28:05 +0800</lastBuildDate><atom:link href="https://seekload.net/tags/%E7%BB%93%E6%9E%84%E4%BD%93/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>包罗万象的结构体</title>
       <link>https://seekload.net/2019/01/31/go-structure.html</link>

@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -125,203 +125,154 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<p>今天，我们来讲下 Go 语言的算术运算符、比较运算符和逻辑运算符。</p>
-
+                            <p>今天，我们来讲下 Go 语言的算术运算符、比较运算符和逻辑运算符。</p>
 <h3 id="算术运算符">算术运算符</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">+</span>    <span style="color:#a6e22e">sum</span>                    <span style="color:#a6e22e">integers</span>, <span style="color:#a6e22e">floats</span>, <span style="color:#a6e22e">complex</span> <span style="color:#a6e22e">values</span> (<span style="color:#a6e22e">复数</span>), <span style="color:#a6e22e">strings</span>
+<span style="color:#f92672">-</span>    <span style="color:#a6e22e">difference</span>             <span style="color:#a6e22e">integers</span>, <span style="color:#a6e22e">floats</span>, <span style="color:#a6e22e">complex</span> <span style="color:#a6e22e">values</span>
+<span style="color:#f92672">*</span>    <span style="color:#a6e22e">product</span>                <span style="color:#a6e22e">integers</span>, <span style="color:#a6e22e">floats</span>, <span style="color:#a6e22e">complex</span> <span style="color:#a6e22e">values</span>
+<span style="color:#f92672">/</span>    <span style="color:#a6e22e">quotient</span>               <span style="color:#a6e22e">integers</span>, <span style="color:#a6e22e">floats</span>, <span style="color:#a6e22e">complex</span> <span style="color:#a6e22e">values</span>
+<span style="color:#f92672">%</span>    <span style="color:#a6e22e">remainder</span>              <span style="color:#a6e22e">integers</span>
 
-<pre><code class="language-go">+    sum                    integers, floats, complex values (复数), strings
--    difference             integers, floats, complex values
-*    product                integers, floats, complex values
-/    quotient               integers, floats, complex values
-%    remainder              integers
+<span style="color:#a6e22e">位运算符</span><span style="color:#960050;background-color:#1e0010">：</span>
+<span style="color:#f92672">&amp;</span>    <span style="color:#a6e22e">bitwise</span> <span style="color:#a6e22e">AND</span> (<span style="color:#a6e22e">按位与</span>)                <span style="color:#a6e22e">integers</span>
+|    <span style="color:#a6e22e">bitwise</span> <span style="color:#a6e22e">OR</span> (<span style="color:#a6e22e">按位或</span>)                 <span style="color:#a6e22e">integers</span>
+^    <span style="color:#a6e22e">bitwise</span> <span style="color:#a6e22e">XOR</span> (<span style="color:#a6e22e">按位异或</span>)              <span style="color:#a6e22e">integers</span>
+<span style="color:#f92672">&amp;^</span>   <span style="color:#a6e22e">bit</span> <span style="color:#a6e22e">clear</span> (<span style="color:#a6e22e">AND</span> <span style="color:#a6e22e">NOT</span> <span style="color:#a6e22e">按位置零</span>)        <span style="color:#a6e22e">integers</span>
 
-位运算符：
-&amp;    bitwise AND (按位与)                integers
-|    bitwise OR (按位或)                 integers
-^    bitwise XOR (按位异或)              integers
-&amp;^   bit clear (AND NOT 按位置零)        integers
-
-移位运算符：
-&lt;&lt;   left shift             integer &lt;&lt; unsigned integer
-&gt;&gt;   right shift            integer &gt;&gt; unsigned integer
-</code></pre>
-
-<ol>
-<li>算术运算符 <code>+</code>、<code>-</code>、<code>*</code>、<code>/</code> 适用于整数、浮点数和复数，<code>+</code> 也适用于字符串，用于字符串连接；<br></li>
-<li>取模运算 <code>%</code> 仅适用整数间的运算，Go 语言中，<code>%</code> 取模运算符的结果的符号和被取模数的符号总是一致的，因此 <code>-5%3</code> 和 <code>-5%-3</code> 结果都是 <code>-2</code>；<br></li>
-<li>除法运算符 <code>/</code> 的结果依赖于操作数是否为全为整数，比如 <code>5.0/4.0</code> 的结果是 <code>1.25</code>，但是 <code>5/4</code> 的结果是 <code>1</code>，因为整数除法会向着 0 方向截断余数；<br></li>
-<li>位运算和移位运算只适用整型；<br></li>
+<span style="color:#a6e22e">移位运算符</span><span style="color:#960050;background-color:#1e0010">：</span>
+<span style="color:#f92672">&lt;&lt;</span>   <span style="color:#a6e22e">left</span> <span style="color:#a6e22e">shift</span>             <span style="color:#a6e22e">integer</span> <span style="color:#f92672">&lt;&lt;</span> <span style="color:#a6e22e">unsigned</span> <span style="color:#a6e22e">integer</span>
+<span style="color:#f92672">&gt;&gt;</span>   <span style="color:#a6e22e">right</span> <span style="color:#a6e22e">shift</span>            <span style="color:#a6e22e">integer</span> <span style="color:#f92672">&gt;&gt;</span> <span style="color:#a6e22e">unsigned</span> <span style="color:#a6e22e">integer</span>
+</code></pre></div><ol>
+<li>算术运算符 <code>+</code>、<code>-</code>、<code>*</code>、<code>/</code> 适用于整数、浮点数和复数，<code>+</code> 也适用于字符串，用于字符串连接；<!-- raw HTML omitted --></li>
+<li>取模运算 <code>%</code> 仅适用整数间的运算，Go 语言中，<code>%</code> 取模运算符的结果的符号和被取模数的符号总是一致的，因此 <code>-5%3</code> 和 <code>-5%-3</code> 结果都是 <code>-2</code>；<!-- raw HTML omitted --></li>
+<li>除法运算符 <code>/</code> 的结果依赖于操作数是否为全为整数，比如 <code>5.0/4.0</code> 的结果是 <code>1.25</code>，但是 <code>5/4</code> 的结果是 <code>1</code>，因为整数除法会向着 0 方向截断余数；<!-- raw HTML omitted --></li>
+<li>位运算和移位运算只适用整型；<!-- raw HTML omitted --></li>
 <li>位操作运算符 <code>^</code>，作为一元运算符，表示<strong>按位取反</strong>，就是说，它返回一个每个 bit 位都取反的数：作用类似在 C、C#、Java 语言中中符号 <code>~</code>，对于<strong>有符号的整数</strong>来说，是按照<strong>补码</strong>进行取反操作的（快速计算方法：对数 a 取反，结果为 <code>-(a+1)</code> ），对于<strong>无符号整数</strong>来说就是按位取反。</li>
 </ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#66d9ef">int8</span> = <span style="color:#ae81ff">3</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> <span style="color:#66d9ef">uint8</span> = <span style="color:#ae81ff">3</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#66d9ef">int8</span> = <span style="color:#f92672">-</span><span style="color:#ae81ff">3</span>
 
-<pre><code class="language-go">var a int8 = 3
-var b uint8 = 3
-var c int8 = -3
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;^%b=%b %d\n&#34;</span>, <span style="color:#a6e22e">a</span>, ^<span style="color:#a6e22e">a</span>, ^<span style="color:#a6e22e">a</span>) <span style="color:#75715e">// ^11=-100 -4
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;^%b=%b %d\n&#34;</span>, <span style="color:#a6e22e">b</span>, ^<span style="color:#a6e22e">b</span>, ^<span style="color:#a6e22e">b</span>) <span style="color:#75715e">// ^11=11111100 252
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;^%b=%b %d\n&#34;</span>, <span style="color:#a6e22e">c</span>, ^<span style="color:#a6e22e">c</span>, ^<span style="color:#a6e22e">c</span>) <span style="color:#75715e">// ^-11=10 2
+</span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">^<span style="color:#ae81ff">11</span>=<span style="color:#f92672">-</span><span style="color:#ae81ff">100</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">4</span>
+^<span style="color:#ae81ff">11</span>=<span style="color:#ae81ff">11111100</span> <span style="color:#ae81ff">252</span>
+^<span style="color:#f92672">-</span><span style="color:#ae81ff">11</span>=<span style="color:#ae81ff">10</span> <span style="color:#ae81ff">2</span>
+</code></pre></div><p>作为二元运算符时是<strong>按位异或</strong>：对应位，相同为 0，相异为 1。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#66d9ef">int8</span> = <span style="color:#ae81ff">3</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#66d9ef">int8</span> = <span style="color:#ae81ff">5</span>
 
-fmt.Printf(&quot;^%b=%b %d\n&quot;, a, ^a, ^a) // ^11=-100 -4
-fmt.Printf(&quot;^%b=%b %d\n&quot;, b, ^b, ^b) // ^11=11111100 252
-fmt.Printf(&quot;^%b=%b %d\n&quot;, c, ^c, ^c) // ^-11=10 2
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">^11=-100 -4
-^11=11111100 252
-^-11=10 2
-</code></pre>
-
-<p>作为二元运算符时是<strong>按位异或</strong>：对应位，相同为 0，相异为 1。</p>
-
-<pre><code class="language-go">var a int8 = 3
-var c int8 = 5
-
-fmt.Printf(&quot;a: %08b\n&quot;,a)
-fmt.Printf(&quot;c: %08b\n&quot;,c)
-fmt.Printf(&quot;a^c: %08b\n&quot;,a ^ c)
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">a: 00000011
-c: 00000101
-a^c: 00000110
-</code></pre>
-
-<p>加法和减法运算符：<code>+</code>、<code>-</code>也可以作为一元操作符：
-对于整数，<code>+x</code>是<code>0+x</code>的简写，<code>-x</code>则是<code>0-x</code>的简写；对于浮点数和复数，<code>+x</code>就是<code>x</code>，<code>-x</code>则是<code>x</code>的负数。<br>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;a: %08b\n&#34;</span>,<span style="color:#a6e22e">a</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;c: %08b\n&#34;</span>,<span style="color:#a6e22e">c</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;a^c: %08b\n&#34;</span>,<span style="color:#a6e22e">a</span> ^ <span style="color:#a6e22e">c</span>)
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">a</span>: <span style="color:#ae81ff">00000011</span>
+<span style="color:#a6e22e">c</span>: <span style="color:#ae81ff">00000101</span>
+<span style="color:#a6e22e">a</span>^<span style="color:#a6e22e">c</span>: <span style="color:#ae81ff">00000110</span>
+</code></pre></div><p>加法和减法运算符：<code>+</code>、<code>-</code>也可以作为一元操作符：
+对于整数，<code>+x</code>是<code>0+x</code>的简写，<code>-x</code>则是<code>0-x</code>的简写；对于浮点数和复数，<code>+x</code>就是<code>x</code>，<code>-x</code>则是<code>x</code>的负数。<!-- raw HTML omitted -->
 需要给大家提一下的是这个操作符：<strong>按位置零<code>&amp;^</code></strong>，表达式<code>z = x &amp;^ y</code>，如果 y 中的 bit 位为 1，则 z 对应 bit 位为 0，否则 z 对应 bit 位等于 x 中相应的 bit 位的值。不知道大家发现没有，我们还可以这样理解<strong>或操作符<code>|</code></strong>，表达式<code>z = x | y</code>，如果 y 中的 bit 位为 1，则 z 对应 bit 位为 1，否则 z 对应 bit 位等于 x 中相应的 bit 位的值，与<code>&amp;^</code>完全相反。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">uint8</span> = <span style="color:#ae81ff">214</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">y</span> <span style="color:#66d9ef">uint8</span> = <span style="color:#ae81ff">92</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;x: %08b\n&#34;</span>,<span style="color:#a6e22e">x</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;y: %08b\n&#34;</span>,<span style="color:#a6e22e">y</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;x|y: %08b\n&#34;</span>,<span style="color:#a6e22e">x</span> | <span style="color:#a6e22e">y</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;x&amp;^y: %08b\n&#34;</span>,<span style="color:#a6e22e">x</span> <span style="color:#f92672">&amp;^</span> <span style="color:#a6e22e">y</span>)
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">x</span>: <span style="color:#ae81ff">11010110</span>
+<span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">01011100</span>
+<span style="color:#a6e22e">x</span>|<span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">11011110</span>
+<span style="color:#a6e22e">x</span><span style="color:#f92672">&amp;^</span><span style="color:#a6e22e">y</span>: <span style="color:#ae81ff">10000010</span>
+</code></pre></div><p>移位运算符<code>x&lt;&lt;n</code>、<code>x&gt;&gt;n</code>，如果左边的操作数是有符号整型，则是算术移位；如果左边的操作数是无符号整型，则是逻辑移位。逻辑移位不用考虑符号位，而算术移位需要考虑符号位，这样能保证<strong>移位操作</strong>和<strong>乘除的操作</strong>一致。对于<code>x&lt;&lt;1</code>，相当于<code>x*2</code>；<code>x&gt;&gt;1</code>，相当于<code>x/2</code>；左移算术移位结果会向下取整：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#66d9ef">int8</span> = <span style="color:#f92672">-</span><span style="color:#ae81ff">51</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;a:&#34;</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%08b\n&#34;</span>,<span style="color:#a6e22e">a</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %08b\n&#34;</span>, <span style="color:#a6e22e">a</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">a</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>)
 
-<pre><code class="language-go">var x uint8 = 214
-var y uint8 = 92
-fmt.Printf(&quot;x: %08b\n&quot;,x)
-fmt.Printf(&quot;y: %08b\n&quot;,y)
-fmt.Printf(&quot;x|y: %08b\n&quot;,x | y)
-fmt.Printf(&quot;x&amp;^y: %08b\n&quot;,x &amp;^ y)
-</code></pre>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> <span style="color:#66d9ef">int8</span> = <span style="color:#ae81ff">51</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;b:&#34;</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%08b\n&#34;</span>,<span style="color:#a6e22e">b</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %08b\n&#34;</span>, <span style="color:#a6e22e">b</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">b</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>)
 
-<p>输出：</p>
-
-<pre><code class="language-go">x: 11010110
-y: 01011100
-x|y: 11011110
-x&amp;^y: 10000010
-</code></pre>
-
-<p>移位运算符<code>x&lt;&lt;n</code>、<code>x&gt;&gt;n</code>，如果左边的操作数是有符号整型，则是算术移位；如果左边的操作数是无符号整型，则是逻辑移位。逻辑移位不用考虑符号位，而算术移位需要考虑符号位，这样能保证<strong>移位操作</strong>和<strong>乘除的操作</strong>一致。对于<code>x&lt;&lt;1</code>，相当于<code>x*2</code>；<code>x&gt;&gt;1</code>，相当于<code>x/2</code>；左移算术移位结果会向下取整：</p>
-
-<pre><code class="language-go">var a int8 = -51
-fmt.Println(&quot;a:&quot;)
-fmt.Printf(&quot;%08b\n&quot;,a)
-fmt.Printf(&quot;%d: %08b\n&quot;, a&gt;&gt;1, a&gt;&gt;1)
-
-var b int8 = 51
-fmt.Println(&quot;b:&quot;)
-fmt.Printf(&quot;%08b\n&quot;,b)
-fmt.Printf(&quot;%d: %08b\n&quot;, b&gt;&gt;1, b&gt;&gt;1)
-
-var i uint8 = 1
-fmt.Println(&quot;i:&quot;)
-fmt.Printf(&quot;%d: %08b\n&quot;, i&lt;&lt;1, i&lt;&lt;1) //2: 00000010
-fmt.Printf(&quot;%d: %08b\n&quot;, i&lt;&lt;7, i&lt;&lt;7) //128: 10000000
-fmt.Printf(&quot;%d: %b\n&quot;, i&lt;&lt;8, i&lt;&lt;8) //0: 0
-var i2 int8 = 1
-fmt.Println(&quot;i2:&quot;)
-fmt.Printf(&quot;%d: %08b\n&quot;, i2&lt;&lt;1, i2&lt;&lt;1) //2: 00000010
-fmt.Printf(&quot;%d: %08b\n&quot;, i2&lt;&lt;7, i2&lt;&lt;7) //-128: -10000000
-fmt.Printf(&quot;%d: %b\n&quot;, i2&lt;&lt;8, i2&lt;&lt;8) //0: 0
-var i3 int8 = -1
-fmt.Println(&quot;i3:&quot;)
-fmt.Printf(&quot;%d: %08b\n&quot;, -i3&lt;&lt;1, -i3&lt;&lt;1) //2: 00000010
-fmt.Printf(&quot;%d: %08b\n&quot;, -i3&lt;&lt;7, -i3&lt;&lt;7) //-128: -10000000
-fmt.Printf(&quot;%d: %b\n&quot;, -i3&lt;&lt;8, -i3&lt;&lt;8) //0: 0
-var i4 int8 = -128
-fmt.Println(&quot;i4:&quot;)
-fmt.Printf(&quot;%d: %08b\n&quot;, -i4&gt;&gt;0, -i4&gt;&gt;0) //-128: -10000000
-fmt.Printf(&quot;%d: %08b\n&quot;, -i4&gt;&gt;1, -i4&gt;&gt;1) //-64: -1000000
-fmt.Printf(&quot;%d: %b\n&quot;, -i4&gt;&gt;2, -i4&gt;&gt;2) //-32: -100000
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">a:
--0110011
--26: -0011010
-b:
-00110011
-25: 00011001
-i:
-2: 00000010
-128: 10000000
-0: 0
-i2:
-2: 00000010
--128: -10000000
-0: 0
-i3:
-2: 00000010
--128: -10000000
-0: 0
-i4:
--128: -10000000
--64: -1000000
--32: -100000
-</code></pre>
-
-<p>字符串连接可以使用<code>+</code>、<code>+=</code>运算符：</p>
-
-<pre><code class="language-go">c := &quot; Seekload&quot;
-s := &quot;Hi&quot; + string(c)
-s += &quot;, good bye&quot;
-</code></pre>
-
-<p>整型溢出：
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">uint8</span> = <span style="color:#ae81ff">1</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;i:&#34;</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %08b\n&#34;</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>) <span style="color:#75715e">//2: 00000010
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %08b\n&#34;</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">7</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">7</span>) <span style="color:#75715e">//128: 10000000
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %b\n&#34;</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">8</span>, <span style="color:#a6e22e">i</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">8</span>) <span style="color:#75715e">//0: 0
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i2</span> <span style="color:#66d9ef">int8</span> = <span style="color:#ae81ff">1</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;i2:&#34;</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %08b\n&#34;</span>, <span style="color:#a6e22e">i2</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">i2</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>) <span style="color:#75715e">//2: 00000010
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %08b\n&#34;</span>, <span style="color:#a6e22e">i2</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">7</span>, <span style="color:#a6e22e">i2</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">7</span>) <span style="color:#75715e">//-128: -10000000
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %b\n&#34;</span>, <span style="color:#a6e22e">i2</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">8</span>, <span style="color:#a6e22e">i2</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">8</span>) <span style="color:#75715e">//0: 0
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i3</span> <span style="color:#66d9ef">int8</span> = <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;i3:&#34;</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %08b\n&#34;</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i3</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i3</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">1</span>) <span style="color:#75715e">//2: 00000010
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %08b\n&#34;</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i3</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">7</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i3</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">7</span>) <span style="color:#75715e">//-128: -10000000
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %b\n&#34;</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i3</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">8</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i3</span><span style="color:#f92672">&lt;&lt;</span><span style="color:#ae81ff">8</span>) <span style="color:#75715e">//0: 0
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i4</span> <span style="color:#66d9ef">int8</span> = <span style="color:#f92672">-</span><span style="color:#ae81ff">128</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;i4:&#34;</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %08b\n&#34;</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i4</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">0</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i4</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">0</span>) <span style="color:#75715e">//-128: -10000000
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %08b\n&#34;</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i4</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i4</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">1</span>) <span style="color:#75715e">//-64: -1000000
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d: %b\n&#34;</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i4</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">2</span>, <span style="color:#f92672">-</span><span style="color:#a6e22e">i4</span><span style="color:#f92672">&gt;&gt;</span><span style="color:#ae81ff">2</span>) <span style="color:#75715e">//-32: -100000
+</span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">a</span>:
+<span style="color:#f92672">-</span><span style="color:#ae81ff">0110011</span>
+<span style="color:#f92672">-</span><span style="color:#ae81ff">26</span>: <span style="color:#f92672">-</span><span style="color:#ae81ff">0011010</span>
+<span style="color:#a6e22e">b</span>:
+<span style="color:#ae81ff">00110011</span>
+<span style="color:#ae81ff">25</span>: <span style="color:#ae81ff">00011001</span>
+<span style="color:#a6e22e">i</span>:
+<span style="color:#ae81ff">2</span>: <span style="color:#ae81ff">00000010</span>
+<span style="color:#ae81ff">128</span>: <span style="color:#ae81ff">10000000</span>
+<span style="color:#ae81ff">0</span>: <span style="color:#ae81ff">0</span>
+<span style="color:#a6e22e">i2</span>:
+<span style="color:#ae81ff">2</span>: <span style="color:#ae81ff">00000010</span>
+<span style="color:#f92672">-</span><span style="color:#ae81ff">128</span>: <span style="color:#f92672">-</span><span style="color:#ae81ff">10000000</span>
+<span style="color:#ae81ff">0</span>: <span style="color:#ae81ff">0</span>
+<span style="color:#a6e22e">i3</span>:
+<span style="color:#ae81ff">2</span>: <span style="color:#ae81ff">00000010</span>
+<span style="color:#f92672">-</span><span style="color:#ae81ff">128</span>: <span style="color:#f92672">-</span><span style="color:#ae81ff">10000000</span>
+<span style="color:#ae81ff">0</span>: <span style="color:#ae81ff">0</span>
+<span style="color:#a6e22e">i4</span>:
+<span style="color:#f92672">-</span><span style="color:#ae81ff">128</span>: <span style="color:#f92672">-</span><span style="color:#ae81ff">10000000</span>
+<span style="color:#f92672">-</span><span style="color:#ae81ff">64</span>: <span style="color:#f92672">-</span><span style="color:#ae81ff">1000000</span>
+<span style="color:#f92672">-</span><span style="color:#ae81ff">32</span>: <span style="color:#f92672">-</span><span style="color:#ae81ff">100000</span>
+</code></pre></div><p>字符串连接可以使用<code>+</code>、<code>+=</code>运算符：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34; Seekload&#34;</span>
+<span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;Hi&#34;</span> <span style="color:#f92672">+</span> string(<span style="color:#a6e22e">c</span>)
+<span style="color:#a6e22e">s</span> <span style="color:#f92672">+=</span> <span style="color:#e6db74">&#34;, good bye&#34;</span>
+</code></pre></div><p>整型溢出：
 有符号整数的<code>+</code>、<code>-</code>、<code>*</code>、<code>&lt;&lt;</code>的操作的结果的溢出不会导致异常，但结果可能不是你想要的，比如<code>x &lt; x+1</code>并不总是成立，比如：</p>
-
-<pre><code class="language-go">var x int8 = 127;
-fmt.Printf(&quot;%d\n&quot;,x+2)   //输出 -127
-</code></pre>
-
-<p>无符号整数的 <code>+</code>、<code>-</code>、<code>*</code>、<code>&lt;&lt;</code> 的操作的结果会取模 <code>2^n</code>， 也就是溢出的位会被丢掉， 比如：</p>
-
-<pre><code class="language-go">var x uint8 = 255;
-fmt.Printf(&quot;%d\n&quot;,x+2)    // 输出：1
-</code></pre>
-
-<h3 id="比较运算符">比较运算符</h3>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int8</span> = <span style="color:#ae81ff">127</span>;
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d\n&#34;</span>,<span style="color:#a6e22e">x</span><span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>)   <span style="color:#75715e">//输出 -127
+</span></code></pre></div><p>无符号整数的 <code>+</code>、<code>-</code>、<code>*</code>、<code>&lt;&lt;</code> 的操作的结果会取模 <code>2^n</code>， 也就是溢出的位会被丢掉， 比如：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">uint8</span> = <span style="color:#ae81ff">255</span>;
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d\n&#34;</span>,<span style="color:#a6e22e">x</span><span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>)    <span style="color:#75715e">// 输出：1
+</span></code></pre></div><h3 id="比较运算符">比较运算符</h3>
 <p>两个相同的整数类型可以使用下面的二元比较运算符进行比较，比较表达式的结果是布尔类型。
-<img src="/img/20181203211833766.png" alt="" />
+<img src="/img/20181203211833766.png" alt="">
 布尔型、数字类型和字符串等基本类型都是可比较的，一些基本的比较操作我就不在这列举了，大家可以实操下，等大家学到后面，我会开一个篇文章详解比较运算符。</p>
-
 <h3 id="逻辑运算符">逻辑运算符</h3>
-
-<pre><code class="language-go">符号  说明
-&amp;&amp;   逻辑与  (p &amp;&amp; q)  p、q全为true,(p &amp;&amp; q)才为true
-||   逻辑或  (p || q)  p、q至少一个为true,(p || q)就为true
-！   逻辑非   !p  若p为true，则!p为false;若p为false，则!p为true;
-</code></pre>
-
-<h3 id="运算符优先级">运算符优先级</h3>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">符号</span>  <span style="color:#a6e22e">说明</span>
+<span style="color:#f92672">&amp;&amp;</span>   <span style="color:#a6e22e">逻辑与</span>  (<span style="color:#a6e22e">p</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">q</span>)  <span style="color:#a6e22e">p</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">q全为true</span>,(<span style="color:#a6e22e">p</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">q</span>)<span style="color:#a6e22e">才为true</span>
+<span style="color:#f92672">||</span>   <span style="color:#a6e22e">逻辑或</span>  (<span style="color:#a6e22e">p</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">q</span>)  <span style="color:#a6e22e">p</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">q至少一个为true</span>,(<span style="color:#a6e22e">p</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">q</span>)<span style="color:#a6e22e">就为true</span>
+<span style="color:#960050;background-color:#1e0010">！</span>   <span style="color:#a6e22e">逻辑非</span>   !<span style="color:#a6e22e">p</span>  <span style="color:#a6e22e">若p为true</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">则</span>!<span style="color:#a6e22e">p为false</span>;<span style="color:#a6e22e">若p为false</span><span style="color:#960050;background-color:#1e0010">，</span><span style="color:#a6e22e">则</span>!<span style="color:#a6e22e">p为true</span>;
+</code></pre></div><h3 id="运算符优先级">运算符优先级</h3>
 <p>一元运算符有最高的优先级。操作符<code>++</code>、<code>--</code>只能构成语句，而不是表达式，因为它们不属于运算符序列。
 下面是关于算术运算、逻辑运算和比较运算的二元运算符，按照优先级递减的顺序排列：</p>
-
-<pre><code class="language-go">优先级   操作符
-  5     *  /  %  &lt;&lt;  &gt;&gt;  &amp;  &amp;^
-  4     +  -  |  ^
-  3     ==  !=  &lt;  &lt;=  &gt;  &gt;=    
-  2     &amp;&amp;
-  1     ||
-</code></pre>
-
-<p>从上面可以看出，二元运算符有五种优先级。在同一个优先级，使用左优先结合规则，但是使用括号可以明确优先顺序，使用括号也可以用于提升优先级，例如：<code>mask &amp; (1 &lt;&lt; 28)</code>。
-<br><br>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">优先级</span>   <span style="color:#a6e22e">操作符</span>
+  <span style="color:#ae81ff">5</span>     <span style="color:#f92672">*</span>  <span style="color:#f92672">/</span>  <span style="color:#f92672">%</span>  <span style="color:#f92672">&lt;&lt;</span>  <span style="color:#f92672">&gt;&gt;</span>  <span style="color:#f92672">&amp;</span>  <span style="color:#f92672">&amp;^</span>
+  <span style="color:#ae81ff">4</span>     <span style="color:#f92672">+</span>  <span style="color:#f92672">-</span>  |  ^
+  <span style="color:#ae81ff">3</span>     <span style="color:#f92672">==</span>  <span style="color:#f92672">!=</span>  &lt;  <span style="color:#f92672">&lt;=</span>  &gt;  <span style="color:#f92672">&gt;=</span>    
+  <span style="color:#ae81ff">2</span>     <span style="color:#f92672">&amp;&amp;</span>
+  <span style="color:#ae81ff">1</span>     <span style="color:#f92672">||</span>
+</code></pre></div><p>从上面可以看出，二元运算符有五种优先级。在同一个优先级，使用左优先结合规则，但是使用括号可以明确优先顺序，使用括号也可以用于提升优先级，例如：<code>mask &amp; (1 &lt;&lt; 28)</code>。
+<!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -403,6 +354,10 @@ fmt.Printf(&quot;%d\n&quot;,x+2)    // 输出：1
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -438,10 +393,6 @@ fmt.Printf(&quot;%d\n&quot;,x+2)    // 输出：1
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -465,11 +416,11 @@ fmt.Printf(&quot;%d\n&quot;,x+2)    // 输出：1
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -477,7 +428,7 @@ fmt.Printf(&quot;%d\n&quot;,x+2)    // 输出：1
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -507,21 +458,21 @@ fmt.Printf(&quot;%d\n&quot;,x+2)    // 输出：1
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -125,127 +125,95 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<blockquote>
-<p>原文地址：<a href="https://spf13.com/post/go-pointers-vs-references/">https://spf13.com/post/go-pointers-vs-references/</a></p>
+                            <blockquote>
+<p>原文地址：https://spf13.com/post/go-pointers-vs-references/</p>
 </blockquote>
-
 <p>包括 C、C++ 在内的一些语言支持指针。其他语言包括 C++、Java、Python、Ruby、Perl 和 PHP 都支持引用。从表面上看，引用和指针非常相似，它们都用来让一个变量提供对另一个变量的访问。由于两者都提供了许多相同的功能，所以常常不清楚它们各自的内部机制有什么不同。在本文中，我将说明指针和引用之间的区别。</p>
-
 <h3 id="为什么这很重要">为什么这很重要</h3>
-
 <p>指针是 Go 语言的核心。大多数程序员都是在上面提到的一种语言的基础上学习 Go 的。因此，理解指针和引用之间的区别对于理解 Go 至关重要。即使你使用过具有指针的语言，Go 对指针的实现也不同于 C 和 C++，因为它保留了引用的一些优秀属性，同时保留了指针的功能。</p>
-
 <p>本文的其余部分旨在广泛地讨论引用的概念，而不是具体的实现。我们将使用 Go 作为指针的参考实现。</p>
-
 <h3 id="有什么不同">有什么不同？</h3>
-
 <p>指针变量存储的是另一个变量的地址。</p>
-
 <p>引用变量指向另外一个变量。</p>
-
 <p>为证明我们的观点，用 C++ 举个例子，它同时支持指针和引用。</p>
-
-<pre><code class="language-go">int i = 3;
-int *ptr = &amp;i;
-int &amp;ref = i;
-</code></pre>
-
-<p>第一行定义了变量 i；第 2 行定义了一个指向变量 i 内存地址的指针 ptr；第 3 行定义了一个指向变量 i 的引用 ref。</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">i</span> = <span style="color:#ae81ff">3</span>;
+<span style="color:#66d9ef">int</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">ptr</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">i</span>;
+<span style="color:#66d9ef">int</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">ref</span> = <span style="color:#a6e22e">i</span>;
+</code></pre></div><p>第一行定义了变量 i；第 2 行定义了一个指向变量 i 内存地址的指针 ptr；第 3 行定义了一个指向变量 i 的引用 ref。</p>
 <p>不仅操作符不同，而且使用的方法也不同。对于指针，必须使用 * 操作符来解引用。对于引用，不需要任何操作符。据了解，你倾向于使用引用的变量。</p>
-
 <p>继续我们的示例，下面两行代码都将把 i 的值更改为13。</p>
-
-<pre><code class="language-go">*ptr = 13;
-ref = 13;
-</code></pre>
-
-<p>你可能会问，如果我尝试直接访问变量 ptr 而不使用解引用。这就引出了指针和引用之间的第二个关键区别。指针可以重分配，而引用不能。换句话说，指针可以被分配另一个不同的地址。</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">*</span><span style="color:#a6e22e">ptr</span> = <span style="color:#ae81ff">13</span>;
+<span style="color:#a6e22e">ref</span> = <span style="color:#ae81ff">13</span>;
+</code></pre></div><p>你可能会问，如果我尝试直接访问变量 ptr 而不使用解引用。这就引出了指针和引用之间的第二个关键区别。指针可以重分配，而引用不能。换句话说，指针可以被分配另一个不同的地址。</p>
 <p>看下 Go 的例子</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<pre><code class="language-go">package main
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
 
-import &quot;fmt&quot;
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ap</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
 
-var ap *int
-
-func main() {
-    a := 1          // define int
-    b := 2          // define int
-
-    ap = &amp;a
-     // set ap to address of a (&amp;a)
-     //   ap address: 0x2101f1018
-     //   ap value  : 1
-
-    *ap = 3
-     // change the value at address &amp;a to 3
-     //   ap address: 0x2101f1018
-     //   ap value  : 3
-
-    a = 4
-     // change the value of a to 4
-     //   ap address: 0x2101f1018
-     //   ap value  : 4
-
-    ap = &amp;b
-     // set ap to the address of b (&amp;b)
-     //   ap address: 0x2101f1020
-     //   ap value  : 2
-}
-</code></pre>
-
-<p>到目前为止，你可以使用引用以一种相当类似的方式完成上述所有操作，而且通常使用更简单的语法。</p>
-
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#a6e22e">a</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>          <span style="color:#75715e">// define int
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">b</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">2</span>          <span style="color:#75715e">// define int
+</span><span style="color:#75715e"></span>
+    <span style="color:#a6e22e">ap</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">a</span>
+     <span style="color:#75715e">// set ap to address of a (&amp;a)
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap address: 0x2101f1018
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap value  : 1
+</span><span style="color:#75715e"></span>
+    <span style="color:#f92672">*</span><span style="color:#a6e22e">ap</span> = <span style="color:#ae81ff">3</span>
+     <span style="color:#75715e">// change the value at address &amp;a to 3
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap address: 0x2101f1018
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap value  : 3
+</span><span style="color:#75715e"></span>
+    <span style="color:#a6e22e">a</span> = <span style="color:#ae81ff">4</span>
+     <span style="color:#75715e">// change the value of a to 4
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap address: 0x2101f1018
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap value  : 4
+</span><span style="color:#75715e"></span>
+    <span style="color:#a6e22e">ap</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">b</span>
+     <span style="color:#75715e">// set ap to the address of b (&amp;b)
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap address: 0x2101f1020
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap value  : 2
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>到目前为止，你可以使用引用以一种相当类似的方式完成上述所有操作，而且通常使用更简单的语法。</p>
 <p>跟我一起，下面的例子将说明为什么指针比引用更强大。</p>
-
 <p>扩展下上面的函数：</p>
-
-<pre><code class="language-go">    ...
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">    <span style="color:#f92672">...</span>
     
-    ap2 := ap
-     // set ap2 to the address in ap
-     //   ap  address: 0x2101f1020
-     //   ap  value  : 2
-     //   ap2 address: 0x2101f1020
-     //   ap2 value  : 2
-
-    *ap = 5
-     // change the value at the address &amp;b to 5
-     //   ap  address: 0x2101f1020
-     //   ap  value  : 5
-     //   ap2 address: 0x2101f1020
-     //   ap2 value  : 5
-    // If this was a reference ap &amp; ap2 would now
-    // have different values
-
-    ap = &amp;a
-     // change ap to address of a (&amp;a)
-     //   ap  address: 0x2101f1018
-     //   ap  value  : 4
-     //   ap2 address: 0x2101f1020
-     //   ap2 value  : 5
-    // Since we've changed the address of ap, it now
-    // has a different value then ap2
-}
-</code></pre>
-
-<p>你可以在这里做个<a href="https://play.golang.org/p/XJtdLxFoeO">练习</a></p>
-
+    <span style="color:#a6e22e">ap2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">ap</span>
+     <span style="color:#75715e">// set ap2 to the address in ap
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap  address: 0x2101f1020
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap  value  : 2
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap2 address: 0x2101f1020
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap2 value  : 2
+</span><span style="color:#75715e"></span>
+    <span style="color:#f92672">*</span><span style="color:#a6e22e">ap</span> = <span style="color:#ae81ff">5</span>
+     <span style="color:#75715e">// change the value at the address &amp;b to 5
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap  address: 0x2101f1020
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap  value  : 5
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap2 address: 0x2101f1020
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap2 value  : 5
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// If this was a reference ap &amp; ap2 would now
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// have different values
+</span><span style="color:#75715e"></span>
+    <span style="color:#a6e22e">ap</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">a</span>
+     <span style="color:#75715e">// change ap to address of a (&amp;a)
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap  address: 0x2101f1018
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap  value  : 4
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap2 address: 0x2101f1020
+</span><span style="color:#75715e"></span>     <span style="color:#75715e">//   ap2 value  : 5
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// Since we&#39;ve changed the address of ap, it now
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// has a different value then ap2
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>你可以在这里做个<a href="https://play.golang.org/p/XJtdLxFoeO">练习</a></p>
 <p>理解引用和指针的关键在第二个例子。</p>
-
 <p>如果我们使用引用处理，我们将无法通过 <code>*ap</code> 更改 b 的值，并将其反映在 *ap2 中。因为一旦你复制了一个引用，它们就各自独立，没有任何联系。然而，它们可能指向相同的变量，但你操作引用时将会改变它指向，而不是指向的值。</p>
-
 <p>最后一个示例向你演示了更改一个指针的赋值以指向新地址。由于引用的限制，这是唯一可行的操作。</p>
-
-<p><br><br>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -329,6 +297,10 @@ func main() {
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -364,10 +336,6 @@ func main() {
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -391,11 +359,11 @@ func main() {
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -403,7 +371,7 @@ func main() {
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -433,21 +401,21 @@ func main() {
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

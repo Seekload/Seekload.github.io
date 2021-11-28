@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:235
+                                字数:227
                             </span>
                         </div>
                         
@@ -125,44 +125,34 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
+                            <p>下面这段代码输出的内容</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<p>下面这段代码输出的内容</p>
-
-<pre><code class="language-go">package main
-
-import (
-    &quot;fmt&quot;
+<span style="color:#f92672">import</span> (
+    <span style="color:#e6db74">&#34;fmt&#34;</span>
 )
 
-func main() {
-    defer_call()
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#a6e22e">defer_call</span>()
 }
 
-func defer_call() {
-    defer func() { fmt.Println(&quot;打印前&quot;) }()
-    defer func() { fmt.Println(&quot;打印中&quot;) }()
-    defer func() { fmt.Println(&quot;打印后&quot;) }()
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">defer_call</span>() {
+    <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>() { <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;打印前&#34;</span>) }()
+    <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>() { <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;打印中&#34;</span>) }()
+    <span style="color:#66d9ef">defer</span> <span style="color:#66d9ef">func</span>() { <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;打印后&#34;</span>) }()
 
-    panic(&quot;触发异常&quot;)
+    panic(<span style="color:#e6db74">&#34;触发异常&#34;</span>)
 }
-</code></pre>
-
-<p>答案：</p>
-
-<pre><code class="language-go">打印后
-打印中
-打印前
-panic: 触发异常
-</code></pre>
-
-<p>解析：defer 的执行顺序是后进先出。当出现 panic 语句的时候，会先按照 defer 的后进先出的顺序执行，最后才会执行panic。</p>
-
-<p><br><br>
+</code></pre></div><p>答案：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">打印后</span>
+<span style="color:#a6e22e">打印中</span>
+<span style="color:#a6e22e">打印前</span>
+<span style="color:#a6e22e">panic</span>: <span style="color:#a6e22e">触发异常</span>
+</code></pre></div><p>解析：defer 的执行顺序是后进先出。当出现 panic 语句的时候，会先按照 defer 的后进先出的顺序执行，最后才会执行panic。</p>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -244,6 +234,10 @@ panic: 触发异常
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -279,10 +273,6 @@ panic: 触发异常
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -306,11 +296,11 @@ panic: 触发异常
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -318,7 +308,7 @@ panic: 触发异常
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -348,21 +338,21 @@ panic: 触发异常
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -114,7 +114,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:3023
+                                字数:3019
                             </span>
                         </div>
                         
@@ -123,167 +123,93 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<p>via:<br>
+                            <p>via:<!-- raw HTML omitted -->
 <a href="https://medium.com/rungo/understanding-the-context-package-b2e407a9cdae">https://medium.com/rungo/understanding-the-context-package-b2e407a9cdae</a>
-<br>
+<!-- raw HTML omitted -->
 作者：Uday Hiwarale</p>
-
-<p><br></p>
-
+<!-- raw HTML omitted -->
 <p>在数据密集型和网络密集型的 Go 项目里，你可能会使用并发模式，多个协程并发或者并行地处理各种任务。</p>
-
 <p>我们知道，channel 是不同协程之间通信最安全的方式，channel 在协程之间传输数据或者消息。channel 也可用于协程之间发送取消信号，通知其他相关协程停止执行。</p>
-
-<p><img src="/img/understanding-the-context-package_1.png" alt="1" /></p>
-
+<p><img src="/img/understanding-the-context-package_1.png" alt="1"></p>
 <p><a href="https://play.studygolang.com/p/weqWhW-RoGB">详细代码</a></p>
-
 <p>上面的代码中，我们创建了 printNumbers 协程并在后台执行 for 无限循环，接着 main 协程睡眠了 1s。</p>
-
 <p>等到 main 协程再次醒来时，printNumbers 协程仍然在后台运行或者至少占用可能对执行其他任务有用的系统资源。我们可以从输出信息验证这一点，main 协程执行快结束时，仍然有两个活跃的协程（其中一个是 main 协程）。</p>
-
 <p>这是个极端的例子，但却有意义。我们想要的是一旦 main 协程苏醒，就立刻停止 printNumbers 协程，并释放占用的系统资源和不必要的 CPU 开销。这个可以通过使用 channel 发送停止信号来实现。</p>
-
-<p><img src="/img/understanding-the-context-package_2.png" alt="2" /></p>
-
+<p><img src="/img/understanding-the-context-package_2.png" alt="2"></p>
 <p><a href="https://play.studygolang.com/p/orgAz9P4d9E">详细代码</a></p>
-
 <p>上面的例子中，我们创建了 signal channel 用于 main 协程和 printNumbers 协程之间通信。一旦 main 协程苏醒，向 signal channel 发送值但没有其他协程接收这个值，便会再次阻塞。</p>
-
 <p>由于 printNumbers 协程的 select 语句，至少在 1 秒钟时间内，从 signal channel 是读取不到任何值的，便会一直执行 default case。一旦 channel 有值，便会执行 return 语句终止 for 循环，printNumbers 协程退出。</p>
-
 <p>我们可以看到，当 main 协程返回时，只剩下一个活跃的协程。通过这种办法我们可以释放 printNumbers 协程占用的任何系统资源。两个协程之间通信可以用类似上面提到的简单方式。</p>
-
 <p>然而，一个协程可以创建许多协程并且这些协程之间关系复杂，这种情况下使用 channel 发送取消信号将会变得异常困难。</p>
-
 <p>情况是这样的，一个协程创建其他协程，衍生出的协程又开启子协程，这样一级一级创建，第一个协程应该将取消信号发送到所有的衍生协程。</p>
-
 <p>例如，printNumbers 协程创建子协程，但是 main 协程并不知道，所以向子协程发送取消信号的责任就交给了 PrintNumbers 协程。如果协程衍生出更多的子协程，这种情况就会变得更加复杂。</p>
-
 <p>那还有解决办法吗？</p>
-
 <p>这就是 context 包的用处所在，context 包的主要目的就是在 goroutine 之间传递取消信号，不论这些协程是如何创建的，context 包都能覆盖到。</p>
-
 <p>PS：前面这一大段都是为了引进我们今天的主题：context。</p>
-
 <p>context.Context 对象是接口类型，用于在协程之间传递截止时间、取消信号和值。创建该对象后返回 cancel 函数，调用该函数会关闭 Done 信号 channel，这个 channel 可以通过 Context 对象提供的 Done() 方法获取。</p>
-
-<pre><code class="language-go">type Context interface {
-    Deadline() (deadline time.Time, ok bool)
-    Done() &lt;-chan struct{}
-    Err() error
-    Value(key interface{}) interface{}
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Context</span> <span style="color:#66d9ef">interface</span> {
+    <span style="color:#a6e22e">Deadline</span>() (<span style="color:#a6e22e">deadline</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>, <span style="color:#a6e22e">ok</span> <span style="color:#66d9ef">bool</span>)
+    <span style="color:#a6e22e">Done</span>() <span style="color:#f92672">&lt;-</span><span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">struct</span>{}
+    <span style="color:#a6e22e">Err</span>() <span style="color:#66d9ef">error</span>
+    <span style="color:#a6e22e">Value</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">interface</span>{}) <span style="color:#66d9ef">interface</span>{}
 }
-</code></pre>
-
-<p>简而言之，我们可以在协程里创建 Context 对象并将它传递给其他协程。其他协程可以使用 Done() 方法获取到信号 channel 并开始工作。一旦 Done channel 关闭，相关的协程便会停止任何操作并立即返回。</p>
-
+</code></pre></div><p>简而言之，我们可以在协程里创建 Context 对象并将它传递给其他协程。其他协程可以使用 Done() 方法获取到信号 channel 并开始工作。一旦 Done channel 关闭，相关的协程便会停止任何操作并立即返回。</p>
 <p>Context 也可能会与时间相关，当到了自定义时间之后便会关闭信号 channel。就是说，我们可以指定截止时间或者超时时间，到了之后 Context 便会关闭信号 channel。</p>
-
 <p>Context 最大的好处是可以从一个 Context 衍生出其他 Context。当我们使用 Context 派生出另一个 Context 时，它们会形成共生关系。如果父 Context 关闭 Done channel，子 Context 的 Done channel 会自动关闭，反之是同样的原理。</p>
-
 <p>Context 对象也可以包含一个值。从父 Context 派生子 Context 时可以携带一个值，并通过 Value(key) 方法可以从子 Context 获取这个值。</p>
-
 <p>现在，我们可以假设在使并发程序更安全更有效率方面，Context 发挥着巨大作用。下面让我们通过 Context 的实际使用案例，深入了解下它的特定用法。</p>
-
-<h3 id="context-background">context.Background()</h3>
-
+<h3 id="contextbackground">context.Background()</h3>
 <p>一个空的 Context 没有携带任何值、没有截止时间并且不能取消。context.Background() 函数返回默认的空 Context，它通常用来派生其他 Context，还可以用在测试用例中。</p>
-
 <p>由于 Context 是一个接口，所以它的值也可以是 nil，但是不推荐传递 nil Context，context.Background() 是个不错的选择。context.TODO() 也会返回一个空的 Context，如果我们还不清楚使用什么 Context 时，可以用它来占个位。</p>
-
-<h3 id="context-withcancel">context.WithCancel</h3>
-
+<h3 id="contextwithcancel">context.WithCancel</h3>
 <p>context.WithCancel 函数返回一个衍生的 Context 和 CancelFunction 函数。当调用取消函数时或者父 Context 的 Done channel 关闭时，子 Context 的 Done channel 会关闭。</p>
-
-<pre><code class="language-go">func WithCancel(parent Context) (ctx Context, cancel CancelFunc)
-</code></pre>
-
-<p><img src="/img/understanding-the-context-package_3.png" alt="3" /></p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WithCancel</span>(<span style="color:#a6e22e">parent</span> <span style="color:#a6e22e">Context</span>) (<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#a6e22e">CancelFunc</span>)
+</code></pre></div><p><img src="/img/understanding-the-context-package_3.png" alt="3"></p>
 <p><a href="https://play.studygolang.com/p/24NF68Nbl_T">详细代码</a></p>
-
 <p>上面的代码中，我们创建了信道 c 用于传输计算结果，square 协程执行 for 循环依次发送。</p>
-
 <p>main 协程里面，执行 for 循环依次读取计算结果。计算结果读取完成之后，square 协程空闲着，什么也没做。</p>
-
 <p>当 main 协程结束返回时，仍然有两个活跃的协程。为了能及时关闭 square 协程（防止系统资源浪费），可以关闭信道 c，并且在 square 协程里面通过 val, ok := &lt;- c 判断信道是否关闭来结束 for 循环。</p>
-
 <p>但是有的时候，我们无法直接控制 channel 或者处理机制过于复杂，这个时候使用 Context 是最好的选择。</p>
-
-<p><img src="/img/understanding-the-context-package_4.png" alt="4" /></p>
-
+<p><img src="/img/understanding-the-context-package_4.png" alt="4"></p>
 <p><a href="https://play.studygolang.com/p/CjDfFsHWttl">详细代码</a></p>
-
 <p>上面的例子，我们通过 context.WithCancel 函数从 context.Background 派生出一个 Context，返回的是父 Context 的副本，但有 Done channel 和取消函数，我们可以随时调用取消函数。</p>
-
 <p>我们将返回的 Context 作为参数传递给 square 协程，在 square 协程里，我们在 for 循环里使用了 select 语句，有两个 case，第一个 case 在什么情况会执行？当调用 cancel 函数、Done channel 关闭时；当 c channel 能写入时会执行第二个 case。</p>
-
 <p>main 协程里，for 循环经过 5 次迭代以后，调用了 cancel 函数，将会关闭 ctx 的 Done channel，将会执行第一个 case，square 协程会终止并正常退出。</p>
-
 <p>通常，大多数人习惯使用 defer cancel() 来取消 Context，然而取消 Context 能够释放其相关的系统资源，因此建议确定不再需要使用 Context 并且子协程应立即停止工作时立即调用 cancel 函数。</p>
-
 <p>一个 Context 可以传递给多个协程，调用 cancel 函数之后再次调用不会有任何作用。</p>
-
 <p>Context 仅可以作为参数传递给函数或者 goroutine，并且最好命名为 ctx，不推荐将 Context 放在结构体中。</p>
-
-<h3 id="context-withdeadline">context.WithDeadline</h3>
-
+<h3 id="contextwithdeadline">context.WithDeadline</h3>
 <p>除了标准的 cancel 函数，如果你想 Context 在某一给定的时间自动取消，这时就可以使用 context.WithDeadline。</p>
-
-<pre><code class="language-go">func WithDeadline(parent Context, d time.Time) (Context, CancelFunc)
-</code></pre>
-
-<p>与 context.WithCancel 类似，context.WithDeadline 函数也会返回 cancel 函数，方便我们手动取消。参数 d 可以指定将来某一时间，到了这一时间点 Done channel 将会自动关闭。</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WithDeadline</span>(<span style="color:#a6e22e">parent</span> <span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">d</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>) (<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">CancelFunc</span>)
+</code></pre></div><p>与 context.WithCancel 类似，context.WithDeadline 函数也会返回 cancel 函数，方便我们手动取消。参数 d 可以指定将来某一时间，到了这一时间点 Done channel 将会自动关闭。</p>
 <p>如果父 Context 也有截止时间并且早于子 Context 的截止时间，默认会与父 Context 截止时间保持一致。</p>
-
-<p>这种情况下，如果发生以下 3 种条件之一，Context 都会被取消：
-1. 父 Context 的 Done channel 关闭；
-1. 调用 cancel 函数；
-1. 到了截止时间；</p>
-
+<p>这种情况下，如果发生以下 3 种条件之一，Context 都会被取消：</p>
+<ol>
+<li>父 Context 的 Done channel 关闭；</li>
+<li>调用 cancel 函数；</li>
+<li>到了截止时间；</li>
+</ol>
 <p>这种类型的 Context 一般用于对时间比较敏感的操作，比如一组协程必须同时结束运行。</p>
-
-<p><img src="/img/understanding-the-context-package_5.png" alt="5" /></p>
-
+<p><img src="/img/understanding-the-context-package_5.png" alt="5"></p>
 <p><a href="https://play.studygolang.com/p/2RQ9sC1nbIB">详细代码</a></p>
-
 <p>上面的例子，我们设置的 Context 的截止时间是 3s 后。我们将 context 作为参数，创建了三个 worker 协程，使用 seelct 语句，等待 n 秒钟后执行特定任务。</p>
-
 <p>然而，如果 Context ctx 早于等待时间过期，那么理想情况下，我们应当正常返回保证 worker 协程正常终止。这样才能释放协程占用的任何系统资源，并且待执行的任务就来不会意外执行。</p>
-
 <p>上面代码 case 语句块的顺序无关紧要，因为大概率两个 channel 不会同时有数据（即同时准备好）。如果这两个 channel 同时准备好，select 语句会随机选择一个 channe 读取数据。</p>
-
-<h3 id="context-withtimeout">context.WithTimeout</h3>
-
+<h3 id="contextwithtimeout">context.WithTimeout</h3>
 <p>使用 context.WithTimeout 可以得到一个带有过期时间的 Context。</p>
-
-<pre><code class="language-go">func WithTimeout(parent Context, timeout time.Duration) (Context, CancelFunc)
-</code></pre>
-
-<p>该函数语法与 context.WithDeadline 类似，除了第二个参数是 time.Duration 类型，内部实现上，context.WithTimeout 调用了 context.WithDeadline，截止时间是当前时间加上超时时间（timeout）。</p>
-
-<pre><code class="language-go">func WithTimeout(p Context, t time.Duration) (Context, CancelFunc) {
-    return WithDeadline(p, time.Now().Add(t))
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WithTimeout</span>(<span style="color:#a6e22e">parent</span> <span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) (<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">CancelFunc</span>)
+</code></pre></div><p>该函数语法与 context.WithDeadline 类似，除了第二个参数是 time.Duration 类型，内部实现上，context.WithTimeout 调用了 context.WithDeadline，截止时间是当前时间加上超时时间（timeout）。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WithTimeout</span>(<span style="color:#a6e22e">p</span> <span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">t</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) (<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">CancelFunc</span>) {
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">WithDeadline</span>(<span style="color:#a6e22e">p</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">t</span>))
 }
-</code></pre>
-
-<p>上一个例子中，通过在当前时间基础上加 3s 钟手动创建了截止时间。context.WithTimeout 的含义类似于 deadline := context.WithTimeout(3 * time.Second)。</p>
-
+</code></pre></div><p>上一个例子中，通过在当前时间基础上加 3s 钟手动创建了截止时间。context.WithTimeout 的含义类似于 deadline := context.WithTimeout(3 * time.Second)。</p>
 <p>这种类型的 Context 可以为某些操作设置超时时间，比如 HTTP 请求等。但是，Go 提供了一种内置机制来处理大多数 API 中与超时相关的问题。</p>
-
-<h3 id="context-withvalue">context.WithValue</h3>
-
+<h3 id="contextwithvalue">context.WithValue</h3>
 <p>context 包提供了 WithValue 函数，父 context 派生子 context 的时候可以携带值。但是，使用哪种类型的键存放值存在一定的限制，更多详细内容可以看<a href="https://golang.google.cn/pkg/context/">官方文档</a>。</p>
-
-<p><br><br>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -365,6 +291,10 @@ var _hmt = _hmt || [];
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -400,10 +330,6 @@ var _hmt = _hmt || [];
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -427,11 +353,11 @@ var _hmt = _hmt || [];
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -439,7 +365,7 @@ var _hmt = _hmt || [];
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -469,21 +395,21 @@ var _hmt = _hmt || [];
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

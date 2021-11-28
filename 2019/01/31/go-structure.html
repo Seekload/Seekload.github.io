@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:1883
+                                字数:1889
                             </span>
                         </div>
                         
@@ -125,333 +125,252 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<p>Go 语言的数组可以存储一组相同类型的数据，而结构体可以将不同类型的变量数据组合在一起，每一个变量都是结构体的成员。</p>
-
+                            <p>Go 语言的数组可以存储一组相同类型的数据，而结构体可以将不同类型的变量数据组合在一起，每一个变量都是结构体的成员。</p>
 <h3 id="创建并初始化一个结构体">创建并初始化一个结构体</h3>
-
 <p>可以使用下面的语法创建一个结构体：</p>
-
-<pre><code class="language-Go">type StructName struct{
-    field1 fieldType1
-    field2 fieldType2
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-Go" data-lang="Go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">StructName</span> <span style="color:#66d9ef">struct</span>{
+    <span style="color:#a6e22e">field1</span> <span style="color:#a6e22e">fieldType1</span>
+    <span style="color:#a6e22e">field2</span> <span style="color:#a6e22e">fieldType2</span>
 }
-</code></pre>
-
-<p>创建一个含有 <code>firstName</code>、<code>lastName</code>、<code>salary</code> 和 <code>fullTime</code> 成员变量的结构体 <code>Employee</code>:</p>
-
-<pre><code class="language-go">type Empolyee struct{
-	firstName string
-	lastName string
-	salary int
-	fullTime bool
+</code></pre></div><p>创建一个含有 <code>firstName</code>、<code>lastName</code>、<code>salary</code> 和 <code>fullTime</code> 成员变量的结构体 <code>Employee</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Empolyee</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">firstName</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">lastName</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">salary</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">fullTime</span> <span style="color:#66d9ef">bool</span>
 }
-</code></pre>
-
-<p>相同类型的成员变量可以放在一行，所以，上面的代码可以简写成：</p>
-
-<pre><code class="language-go">type Empolyee struct{
-	firstName,lastName string
-	salary int
-	fullTime bool
+</code></pre></div><p>相同类型的成员变量可以放在一行，所以，上面的代码可以简写成：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Empolyee</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">firstName</span>,<span style="color:#a6e22e">lastName</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">salary</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">fullTime</span> <span style="color:#66d9ef">bool</span>
 }
-</code></pre>
-
-<p>使用类型别名 <code>Employee</code> 创建一个结构体变量 <code>ross</code>:</p>
-
-<pre><code class="language-go">var ross Empolyee
-ross.firstName = &quot;ross&quot;
-ross.lastName = &quot;Bingo&quot;
-ross.salary = 1000
-ross.fullTime = true
-fmt.Println(ross)
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">{ross Bingo 1000 true}
-</code></pre>
-
-<p>上面的代码创建了结构体变量 <code>ross</code>，并为每一个成员变量赋值。使用<code>.</code>访问结构体的成员。
+</code></pre></div><p>使用类型别名 <code>Employee</code> 创建一个结构体变量 <code>ross</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ross</span> <span style="color:#a6e22e">Empolyee</span>
+<span style="color:#a6e22e">ross</span>.<span style="color:#a6e22e">firstName</span> = <span style="color:#e6db74">&#34;ross&#34;</span>
+<span style="color:#a6e22e">ross</span>.<span style="color:#a6e22e">lastName</span> = <span style="color:#e6db74">&#34;Bingo&#34;</span>
+<span style="color:#a6e22e">ross</span>.<span style="color:#a6e22e">salary</span> = <span style="color:#ae81ff">1000</span>
+<span style="color:#a6e22e">ross</span>.<span style="color:#a6e22e">fullTime</span> = <span style="color:#66d9ef">true</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ross</span>)
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">{<span style="color:#a6e22e">ross</span> <span style="color:#a6e22e">Bingo</span> <span style="color:#ae81ff">1000</span> <span style="color:#66d9ef">true</span>}
+</code></pre></div><p>上面的代码创建了结构体变量 <code>ross</code>，并为每一个成员变量赋值。使用<code>.</code>访问结构体的成员。
 还可以使用<strong>字面量</strong>的方式初始化结构体：</p>
-
-<pre><code class="language-go">1、方式一
-ross := Empolyee{
-	&quot;ross&quot;,
-	&quot;Bingo&quot;,
-	1000,
-	true,
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">方式一</span>
+<span style="color:#a6e22e">ross</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Empolyee</span>{
+	<span style="color:#e6db74">&#34;ross&#34;</span>,
+	<span style="color:#e6db74">&#34;Bingo&#34;</span>,
+	<span style="color:#ae81ff">1000</span>,
+	<span style="color:#66d9ef">true</span>,
 }
-输出：{ross Bingo 1000 true}
+<span style="color:#a6e22e">输出</span><span style="color:#960050;background-color:#1e0010">：</span>{<span style="color:#a6e22e">ross</span> <span style="color:#a6e22e">Bingo</span> <span style="color:#ae81ff">1000</span> <span style="color:#66d9ef">true</span>}
 
-2、方式二
-ross := Empolyee{
-	lastName:&quot;Bingo&quot;,
-	firstName:&quot;ross&quot;,
-	salary:1000,
+<span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">方式二</span>
+<span style="color:#a6e22e">ross</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Empolyee</span>{
+	<span style="color:#a6e22e">lastName</span>:<span style="color:#e6db74">&#34;Bingo&#34;</span>,
+	<span style="color:#a6e22e">firstName</span>:<span style="color:#e6db74">&#34;ross&#34;</span>,
+	<span style="color:#a6e22e">salary</span>:<span style="color:#ae81ff">1000</span>,
 }
-输出：{ross Bingo 1000 false}
-</code></pre>
-
-<p>方式一，初始化时省略了成员变量名称，但是必须按顺序地将给出所有的成员的值。必须记住所有成员的类型且按顺序赋值，这给开发人员带来了额外的负担且代码的维护性差，一般不采用这种方式；
+<span style="color:#a6e22e">输出</span><span style="color:#960050;background-color:#1e0010">：</span>{<span style="color:#a6e22e">ross</span> <span style="color:#a6e22e">Bingo</span> <span style="color:#ae81ff">1000</span> <span style="color:#66d9ef">false</span>}
+</code></pre></div><p>方式一，初始化时省略了成员变量名称，但是必须按顺序地将给出所有的成员的值。必须记住所有成员的类型且按顺序赋值，这给开发人员带来了额外的负担且代码的维护性差，一般不采用这种方式；
 提倡采用方式二，不用关心成员变量的顺序，给需要初始化的成员赋值，未赋值的成员默认就是类型对应的零值。<strong>注意</strong>：方式一和方式二初始化方式不可以混用：</p>
-
-<pre><code class="language-go">ross := Empolyee{
-	firstName:&quot;ross&quot;,
-	lastName:&quot;Bingo&quot;,
-	1000,
-	fullTime:true,
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">ross</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Empolyee</span>{
+	<span style="color:#a6e22e">firstName</span>:<span style="color:#e6db74">&#34;ross&#34;</span>,
+	<span style="color:#a6e22e">lastName</span>:<span style="color:#e6db74">&#34;Bingo&#34;</span>,
+	<span style="color:#ae81ff">1000</span>,
+	<span style="color:#a6e22e">fullTime</span>:<span style="color:#66d9ef">true</span>,
 }
-</code></pre>
-
-<p>编译出错：<code>mixture of field:value and value initializers</code></p>
-
+</code></pre></div><p>编译出错：<code>mixture of field:value and value initializers</code></p>
 <p><strong>成员变量的顺序对于结构体的同一性很重要，如果将上面的 <code>firstName</code>、<code>lastName</code> 互换顺序或者将 <code>fullTime</code>、<code>salary</code> 互换顺序，都是在定义一个不同的结构体类型</strong></p>
-
 <h3 id="结构体指针">结构体指针</h3>
-
 <p>初始化结构体的时候，可以声明一个指向结构体的指针：</p>
-
-<pre><code class="language-go">ross_pointer := &amp;Empolyee{
-	firstName:&quot;ross&quot;,
-	lastName:&quot;Bingo&quot;,
-	salary:1000,
-	fullTime:true,
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">ross_pointer</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Empolyee</span>{
+	<span style="color:#a6e22e">firstName</span>:<span style="color:#e6db74">&#34;ross&#34;</span>,
+	<span style="color:#a6e22e">lastName</span>:<span style="color:#e6db74">&#34;Bingo&#34;</span>,
+	<span style="color:#a6e22e">salary</span>:<span style="color:#ae81ff">1000</span>,
+	<span style="color:#a6e22e">fullTime</span>:<span style="color:#66d9ef">true</span>,
 }
-</code></pre>
-
-<p>上面的代码，创建了一个指向 <code>Empolyee</code> 结构体的指针 <code>ross_pointer</code>。可以通过指针访问结构体的成员：</p>
-
-<pre><code class="language-go">fmt.Println(*ross_pointer)
-fmt.Println(&quot;firstName:&quot;,(*ross_pointer).firstName)
-fmt.Println(&quot;firstName:&quot;,ross_pointer.lastName)
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">{ross Bingo 1000 true}
-firstName: ross
-firstName: Bingo
-</code></pre>
-
-<p><code>ross_pointer</code> 是一个结构体变量，所以 <code>(*ross_pointer).firstName</code> 和 <code>ross_pointer.lastName</code> 都是正确的访问方式 。</p>
-
+</code></pre></div><p>上面的代码，创建了一个指向 <code>Empolyee</code> 结构体的指针 <code>ross_pointer</code>。可以通过指针访问结构体的成员：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">ross_pointer</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;firstName:&#34;</span>,(<span style="color:#f92672">*</span><span style="color:#a6e22e">ross_pointer</span>).<span style="color:#a6e22e">firstName</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;firstName:&#34;</span>,<span style="color:#a6e22e">ross_pointer</span>.<span style="color:#a6e22e">lastName</span>)
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">{<span style="color:#a6e22e">ross</span> <span style="color:#a6e22e">Bingo</span> <span style="color:#ae81ff">1000</span> <span style="color:#66d9ef">true</span>}
+<span style="color:#a6e22e">firstName</span>: <span style="color:#a6e22e">ross</span>
+<span style="color:#a6e22e">firstName</span>: <span style="color:#a6e22e">Bingo</span>
+</code></pre></div><p><code>ross_pointer</code> 是一个结构体变量，所以 <code>(*ross_pointer).firstName</code> 和 <code>ross_pointer.lastName</code> 都是正确的访问方式 。</p>
 <h3 id="匿名成员">匿名成员</h3>
-
 <p>定义结构体时可以只指定成员类型，不用指定成员名，Go 会自动地将成员类型作为成员名。这种结构体成员称为<strong>匿名成员</strong>。这个结构体成员的类型必须是命名类型或者是指向命名类型的指针。</p>
-
-<pre><code class="language-go">type Week struct{
-	string
-	int
-	bool
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Week</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#66d9ef">string</span>
+	<span style="color:#66d9ef">int</span>
+	<span style="color:#66d9ef">bool</span>
 }
-func main() {
-	week := Week{&quot;Friday&quot;,1000,true}
-	fmt.Println(week)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">week</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Week</span>{<span style="color:#e6db74">&#34;Friday&#34;</span>,<span style="color:#ae81ff">1000</span>,<span style="color:#66d9ef">true</span>}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">week</span>)
 }
-</code></pre>
-
-<p>上面的代码定义了结构体 <code>Week</code> ，有 <code>string</code>、<code>int</code> 和 <code>bool</code> 三个成员变量，变量名与类型相同。
+</code></pre></div><p>上面的代码定义了结构体 <code>Week</code> ，有 <code>string</code>、<code>int</code> 和 <code>bool</code> 三个成员变量，变量名与类型相同。
 这种定义方式可以和指定成员名混合使用，例如：</p>
-
-<pre><code class="language-go">type Empolyee struct{
-	firstName,lastName string
-	salary int
-	bool
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Empolyee</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">firstName</span>,<span style="color:#a6e22e">lastName</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">salary</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#66d9ef">bool</span>
 }
-</code></pre>
-
-<h3 id="结构体嵌套">结构体嵌套</h3>
-
+</code></pre></div><h3 id="结构体嵌套">结构体嵌套</h3>
 <p>Go 有<strong>结构体嵌套</strong>机制，一个结构体可以作为另一个结构体类型的成员：</p>
-
-<pre><code class="language-go">type Salary struct {
-	basic int
-	workovertime int
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Salary</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">basic</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">workovertime</span> <span style="color:#66d9ef">int</span>
 }
 
-type Empolyee struct{
-	firstName,lastName string
-	salary Salary
-	bool
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Empolyee</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">firstName</span>,<span style="color:#a6e22e">lastName</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">salary</span> <span style="color:#a6e22e">Salary</span>
+	<span style="color:#66d9ef">bool</span>
 }
 
-func main() {
-	ross := Empolyee{
-		firstName:&quot;Ross&quot;,
-		lastName:&quot;Bingo&quot;,
-		bool:true,
-		salary:Salary{1000,100},
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ross</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Empolyee</span>{
+		<span style="color:#a6e22e">firstName</span>:<span style="color:#e6db74">&#34;Ross&#34;</span>,
+		<span style="color:#a6e22e">lastName</span>:<span style="color:#e6db74">&#34;Bingo&#34;</span>,
+		<span style="color:#66d9ef">bool</span>:<span style="color:#66d9ef">true</span>,
+		<span style="color:#a6e22e">salary</span>:<span style="color:#a6e22e">Salary</span>{<span style="color:#ae81ff">1000</span>,<span style="color:#ae81ff">100</span>},
 	}
-	fmt.Println(ross.salary.basic);
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ross</span>.<span style="color:#a6e22e">salary</span>.<span style="color:#a6e22e">basic</span>);
 }
-</code></pre>
-
-<p>我们新定义了结构体类型 <code>Salary</code>，将 <code>Empolyee</code> 成员类型修改成结构体类型 <code>Salary</code>。 创建了结构体 <code>ross</code>，想要访问成员 <code>salary</code> 里面的成员还是可以采用 <code>.</code> 的方式，例如：<code>ross.salary.basic</code>。
-如果结构体嵌套层数过多时，想要访问最里面结构体成员时，采用上面这种访问方式就会牵扯很多中间变量，造成代码很臃肿。可以采用上面的匿名成员方式简化这种操作。<br>
+</code></pre></div><p>我们新定义了结构体类型 <code>Salary</code>，将 <code>Empolyee</code> 成员类型修改成结构体类型 <code>Salary</code>。 创建了结构体 <code>ross</code>，想要访问成员 <code>salary</code> 里面的成员还是可以采用 <code>.</code> 的方式，例如：<code>ross.salary.basic</code>。
+如果结构体嵌套层数过多时，想要访问最里面结构体成员时，采用上面这种访问方式就会牵扯很多中间变量，造成代码很臃肿。可以采用上面的匿名成员方式简化这种操作。<!-- raw HTML omitted -->
 采用匿名成员方式重新定义结构体类型 <code>Empolyee</code>:</p>
-
-<pre><code class="language-go">type Empolyee struct{
-	firstName,lastName string
-	Salary    // 匿名成员
-	bool
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Empolyee</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">firstName</span>,<span style="color:#a6e22e">lastName</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Salary</span>    <span style="color:#75715e">// 匿名成员
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">bool</span>
 }
-func main() {
-	ross := Empolyee{
-		firstName:&quot;Ross&quot;,
-		lastName:&quot;Bingo&quot;,
-		bool:true,
-		Salary:Salary{1000,100},
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ross</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Empolyee</span>{
+		<span style="color:#a6e22e">firstName</span>:<span style="color:#e6db74">&#34;Ross&#34;</span>,
+		<span style="color:#a6e22e">lastName</span>:<span style="color:#e6db74">&#34;Bingo&#34;</span>,
+		<span style="color:#66d9ef">bool</span>:<span style="color:#66d9ef">true</span>,
+		<span style="color:#a6e22e">Salary</span>:<span style="color:#a6e22e">Salary</span>{<span style="color:#ae81ff">1000</span>,<span style="color:#ae81ff">100</span>},
 	}
-	fmt.Println(ross.basic);         // 访问方式一
-	fmt.Println(ross.Salary.basic);  // 访问方式二
-	ross.basic = 1200
-	fmt.Println(ross.basic)          // update
-}
-</code></pre>
-
-<p>上面两种方式是等价的。通过这种方式，简化了访问过程。
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ross</span>.<span style="color:#a6e22e">basic</span>);         <span style="color:#75715e">// 访问方式一
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ross</span>.<span style="color:#a6e22e">Salary</span>.<span style="color:#a6e22e">basic</span>);  <span style="color:#75715e">// 访问方式二
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ross</span>.<span style="color:#a6e22e">basic</span> = <span style="color:#ae81ff">1200</span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ross</span>.<span style="color:#a6e22e">basic</span>)          <span style="color:#75715e">// update
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>上面两种方式是等价的。通过这种方式，简化了访问过程。
 需要<strong>注意</strong>的是，被嵌套的匿名结构体成员中，不能与上一层结构体成员同名。</p>
-
-<pre><code class="language-go">type Empolyee struct{
-	firstName,lastName string
-	Salary
-	basic int
-	bool
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Empolyee</span> <span style="color:#66d9ef">struct</span>{
+	<span style="color:#a6e22e">firstName</span>,<span style="color:#a6e22e">lastName</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Salary</span>
+	<span style="color:#a6e22e">basic</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#66d9ef">bool</span>
 }
-func main() {
-	ross := Empolyee{
-		firstName:&quot;Ross&quot;,
-		lastName:&quot;Bingo&quot;,
-		bool:true,
-		Salary{1000,100},
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ross</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Empolyee</span>{
+		<span style="color:#a6e22e">firstName</span>:<span style="color:#e6db74">&#34;Ross&#34;</span>,
+		<span style="color:#a6e22e">lastName</span>:<span style="color:#e6db74">&#34;Bingo&#34;</span>,
+		<span style="color:#66d9ef">bool</span>:<span style="color:#66d9ef">true</span>,
+		<span style="color:#a6e22e">Salary</span>{<span style="color:#ae81ff">1000</span>,<span style="color:#ae81ff">100</span>},
 	}
-	fmt.Println(ross.basic)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ross</span>.<span style="color:#a6e22e">basic</span>)
 }
-</code></pre>
-
-<p>上面的代码，我们修改了结构体 <code>Empolyee</code> ，多添加了一个与 <code>Salary.basic</code> 同名的成员，但是编译出错：<br>
+</code></pre></div><p>上面的代码，我们修改了结构体 <code>Empolyee</code> ，多添加了一个与 <code>Salary.basic</code> 同名的成员，但是编译出错：<!-- raw HTML omitted -->
 <code>mixture of field:value and value initializers</code></p>
-
 <h3 id="可导出的成员">可导出的成员</h3>
-
-<p>一个 Go 包中的变量、函数首字母大写，那这个变量或函数是可以导出的。这是 Go 最主要的访问控制机制。如果一个结构体的成员变量名首字母大写，那这个成员也是可导出的。一个结构体可以同时包含可导出和不可导出的成员变量。<br>
+<p>一个 Go 包中的变量、函数首字母大写，那这个变量或函数是可以导出的。这是 Go 最主要的访问控制机制。如果一个结构体的成员变量名首字母大写，那这个成员也是可导出的。一个结构体可以同时包含可导出和不可导出的成员变量。<!-- raw HTML omitted -->
 在路径 <code>WORKSPACE/src/org/employee.go</code> 创建一个名为 <code>org</code> 的包，添加如下代码：</p>
-
-<pre><code class="language-go">// employee.go
-package org
-type Employee struct {
-	FirstName,LastName string
-	salary int
-	fullTime bool
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// employee.go
+</span><span style="color:#75715e"></span><span style="color:#f92672">package</span> <span style="color:#a6e22e">org</span>
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Employee</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">FirstName</span>,<span style="color:#a6e22e">LastName</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">salary</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">fullTime</span> <span style="color:#66d9ef">bool</span>
 }
-</code></pre>
-
-<p>上面的 <code>Employee</code> 结构体，只有变量 <code>FirstName</code>、<code>LastName</code> 是可导出的。当然，<code>Employee</code> 也是可导出的。
+</code></pre></div><p>上面的 <code>Employee</code> 结构体，只有变量 <code>FirstName</code>、<code>LastName</code> 是可导出的。当然，<code>Employee</code> 也是可导出的。
 在 <code>main</code> 包中导入 <code>org</code> 包：</p>
-
-<pre><code class="language-go">// main.go
-package main
-import (
-	&quot;org&quot;
-	&quot;fmt&quot;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// main.go
+</span><span style="color:#75715e"></span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;org&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
 )
-func main() {
-	ross := org.Employee{
-		FirstName:&quot;Ross&quot;,
-		LastName:&quot;Bingo&quot;,
-		salary:1000,     
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ross</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">org</span>.<span style="color:#a6e22e">Employee</span>{
+		<span style="color:#a6e22e">FirstName</span>:<span style="color:#e6db74">&#34;Ross&#34;</span>,
+		<span style="color:#a6e22e">LastName</span>:<span style="color:#e6db74">&#34;Bingo&#34;</span>,
+		<span style="color:#a6e22e">salary</span>:<span style="color:#ae81ff">1000</span>,     
 	}
-	fmt.Println(ross)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ross</span>)
 }
-</code></pre>
-
-<p>上面的代码编译出错，因为成员变量 <code>salary</code> 是不可导出的：
+</code></pre></div><p>上面的代码编译出错，因为成员变量 <code>salary</code> 是不可导出的：
 <code>unknown field 'salary' in struct literal of type org.Employee</code></p>
-
 <p>因为 <code>Employee</code> 来自包 <code>org</code>，所以用 <code>org.Employee</code> 去创建结构体 <code>ross</code>。可以采用类型别名简化：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<pre><code class="language-go">package main
-
-import (
-	&quot;org&quot;
-	&quot;fmt&quot;
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;org&#34;</span>
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
 )
 
-type Employee org.Employee; 
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Employee</span> <span style="color:#a6e22e">org</span>.<span style="color:#a6e22e">Employee</span>; 
 
-func main() {
-	ross := Employee{
-		FirstName:&quot;Ross&quot;,
-		LastName:&quot;Bingo&quot;,
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ross</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Employee</span>{
+		<span style="color:#a6e22e">FirstName</span>:<span style="color:#e6db74">&#34;Ross&#34;</span>,
+		<span style="color:#a6e22e">LastName</span>:<span style="color:#e6db74">&#34;Bingo&#34;</span>,
 	}
-	fmt.Println(ross)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ross</span>)
 }
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">{Ross Bingo 0 false}
-</code></pre>
-
-<h3 id="结构体比较">结构体比较</h3>
-
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">{<span style="color:#a6e22e">Ross</span> <span style="color:#a6e22e">Bingo</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">false</span>}
+</code></pre></div><h3 id="结构体比较">结构体比较</h3>
 <p>如果结构体的所有成员都是可比较的，则这个结构体就是可比较的。可以使用 <code>==</code> 和 <code>!=</code> 作比较，其中 <code>==</code> 是按照顺序比较两个结构体变量的成员变量。</p>
-
-<pre><code class="language-go">type Employee struct {
-	FirstName,LastName string
-	salary int
-	fullTime bool
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Employee</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">FirstName</span>,<span style="color:#a6e22e">LastName</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">salary</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">fullTime</span> <span style="color:#66d9ef">bool</span>
 }
-func main() {
-	ross := Employee{
-		FirstName:&quot;Ross&quot;,
-		LastName:&quot;Bingo&quot;,
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ross</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Employee</span>{
+		<span style="color:#a6e22e">FirstName</span>:<span style="color:#e6db74">&#34;Ross&#34;</span>,
+		<span style="color:#a6e22e">LastName</span>:<span style="color:#e6db74">&#34;Bingo&#34;</span>,
 	}
-	jack := Employee{
-		FirstName:&quot;Jack&quot;,
-		LastName:&quot;Lee&quot;,
+	<span style="color:#a6e22e">jack</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Employee</span>{
+		<span style="color:#a6e22e">FirstName</span>:<span style="color:#e6db74">&#34;Jack&#34;</span>,
+		<span style="color:#a6e22e">LastName</span>:<span style="color:#e6db74">&#34;Lee&#34;</span>,
 	}
-	fmt.Println(ross == jack)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ross</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">jack</span>)
 }
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">false
-</code></pre>
-
-<p>不同类型的结构体变量是不能比较的：</p>
-
-<pre><code class="language-go">type User struct {
-	username string
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">false</span>
+</code></pre></div><p>不同类型的结构体变量是不能比较的：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">username</span> <span style="color:#66d9ef">string</span>
 }
-type Employee struct {
-	FirstName,LastName string
-	salary int
-	fullTime bool
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Employee</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">FirstName</span>,<span style="color:#a6e22e">LastName</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">salary</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#a6e22e">fullTime</span> <span style="color:#66d9ef">bool</span>
 }
-func main() {
-	ross := Employee{
-		FirstName:&quot;Ross&quot;,
-		LastName:&quot;Bingo&quot;,
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ross</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Employee</span>{
+		<span style="color:#a6e22e">FirstName</span>:<span style="color:#e6db74">&#34;Ross&#34;</span>,
+		<span style="color:#a6e22e">LastName</span>:<span style="color:#e6db74">&#34;Bingo&#34;</span>,
 	}
-	user := User{
-		username:&quot;Seekload&quot;,
+	<span style="color:#a6e22e">user</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">User</span>{
+		<span style="color:#a6e22e">username</span>:<span style="color:#e6db74">&#34;Seekload&#34;</span>,
 	}
-	fmt.Println(ross == user)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ross</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">user</span>)
 }
-</code></pre>
-
-<p>编译出错：
-<code>invalid operation: ross == user (mismatched types Employee and User)</code>。<br>
+</code></pre></div><p>编译出错：
+<code>invalid operation: ross == user (mismatched types Employee and User)</code>。<!-- raw HTML omitted -->
 然而，如果有成员是不能比较的，例如：<code>map</code>，则这个结构体是不能比较的。
-<br><br>
+<!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -533,6 +452,10 @@ func main() {
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -568,10 +491,6 @@ func main() {
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -595,11 +514,11 @@ func main() {
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -607,7 +526,7 @@ func main() {
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -637,21 +556,21 @@ func main() {
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -125,93 +125,68 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<h3 id="前言">前言</h3>
-
+                            <h3 id="前言">前言</h3>
 <p>学完之前的几篇文章，大家对 Go 语言有了些基本的认识，比如包的概念、导入包<code>fmt</code>打印字符串等。这还不够，本文开始，将推出系列文章&ndash;就要学习 Golang 系列。抓紧上车，Go!</p>
-
 <h3 id="变量命名原则">变量命名原则</h3>
-
-<p>Go 语言的变量由字母、数字和下划线组成，但不能以数字开头。（<strong>注意</strong>：关键字和保留字不能当做变量使用）<br>
-有效的变量：_firstgo 、abc、abc360、go_abc<br>
+<p>Go 语言的变量由字母、数字和下划线组成，但不能以数字开头。（<strong>注意</strong>：关键字和保留字不能当做变量使用）<!-- raw HTML omitted -->
+有效的变量：_firstgo 、abc、abc360、go_abc<!-- raw HTML omitted -->
 无效的变量：360abc（数字开头）、case（关键字）、a+b+c（含有运算符）</p>
-
 <h3 id="声明与初始化">声明与初始化</h3>
-
 <p>变量的声明有点像 javascript，使用 var 关键字</p>
-
-<pre><code class="language-go">// 变量声明格式
-var identifier type
-</code></pre>
-
-<p>注意：<strong>Go 语言变量类型放在变量名之后</strong></p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 变量声明格式
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">identifier</span> <span style="color:#66d9ef">type</span>
+</code></pre></div><p>注意：<strong>Go 语言变量类型放在变量名之后</strong></p>
 <p>声明的几种方式</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//只声明不赋值，使用默认值
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
 
-<pre><code class="language-go">//只声明不赋值，使用默认值
-var x int
+<span style="color:#75715e">//先声明再初始化
+</span><span style="color:#75715e"></span> <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">str</span> <span style="color:#66d9ef">string</span>
+ <span style="color:#a6e22e">str</span> = <span style="color:#e6db74">&#34;Hello World&#34;</span>
 
-//先声明再初始化
- var str string
- str = &quot;Hello World&quot;
+<span style="color:#75715e">//声明初始化一个变量
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">100</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">str</span> <span style="color:#66d9ef">string</span> = <span style="color:#e6db74">&#34;Hello World&#34;</span>
 
-//声明初始化一个变量
-var x int = 100
-var str string = &quot;Hello World&quot;
+<span style="color:#75715e">//不用指明类型，编译器自动通过初始值来推导
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> = <span style="color:#66d9ef">true</span>   <span style="color:#75715e">//bool型
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">//还有一种省略var关键字的简便方法
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">x</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">100</span>    
+<span style="color:#75715e">//等同于 var x int 100
+</span></code></pre></div><p>注意：<strong>:=左侧的变量不应该是已经声明过的，否则会导致编译错误</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">10</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> = <span style="color:#ae81ff">4</span>	
+<span style="color:#a6e22e">b</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">10</span>
+<span style="color:#a6e22e">编译结果</span><span style="color:#960050;background-color:#1e0010">：</span><span style="color:#a6e22e">no</span> <span style="color:#a6e22e">new</span> <span style="color:#a6e22e">variables</span> <span style="color:#a6e22e">on</span> <span style="color:#a6e22e">left</span> <span style="color:#a6e22e">side</span> <span style="color:#a6e22e">of</span> <span style="color:#f92672">:=</span>
+</code></pre></div><h3 id="多变量的声明和初始化">多变量的声明和初始化</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//非全局变量
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>,<span style="color:#a6e22e">c</span> <span style="color:#66d9ef">int</span>
+<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>,<span style="color:#a6e22e">c</span> = <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>
 
-//不用指明类型，编译器自动通过初始值来推导
-var c = true   //bool型
+<span style="color:#75715e">//全局或者局部
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>,<span style="color:#a6e22e">c</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>,<span style="color:#a6e22e">c</span> = <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#e6db74">&#34;str&#34;</span>
 
-//还有一种省略var关键字的简便方法
-x := 100    
-//等同于 var x int 100
-</code></pre>
+<span style="color:#75715e">//局部
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>,<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#e6db74">&#34;str&#34;</span>
 
-<p>注意：<strong>:=左侧的变量不应该是已经声明过的，否则会导致编译错误</strong></p>
-
-<pre><code class="language-go">var a int = 10
-var b = 4	
-b := 10
-编译结果：no new variables on left side of :=
-</code></pre>
-
-<h3 id="多变量的声明和初始化">多变量的声明和初始化</h3>
-
-<pre><code class="language-go">//非全局变量
-var a,b,c int
-a,b,c = 1,2,3
-
-//全局或者局部
-var a,b,c int = 1,2,3
-var a,b,c = 1,2,&quot;str&quot;
-
-//局部
-a,b,c := 1,2,&quot;str&quot;
-
-//因式分解声明方式，这种方式一般用于全局变量的声明（局部声明也不会报错）
-var (
-	a = 1
-	b string = &quot;go&quot;
+<span style="color:#75715e">//因式分解声明方式，这种方式一般用于全局变量的声明（局部声明也不会报错）
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> (
+	<span style="color:#a6e22e">a</span> = <span style="color:#ae81ff">1</span>
+	<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">string</span> = <span style="color:#e6db74">&#34;go&#34;</span>
 )
-</code></pre>
-
-<h3 id="常量">常量</h3>
-
+</code></pre></div><h3 id="常量">常量</h3>
 <p>常量很简单，使用 const 关键字：</p>
-
-<pre><code class="language-go">const a int = 10       //显示定义
-const str = &quot;Hello,Go&quot;	//隐式定义，编译器根据实际值自动推导变量类型
-const lenth = len(str)
-const a, b, c = 1, false, &quot;str&quot; //多重赋值
-</code></pre>
-
-<p>好了，讲到这，看完之后，大家可以实践一下，验证下变量的各种声明方式，实践的真知！
-<br><br>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">a</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">10</span>       <span style="color:#75715e">//显示定义
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">str</span> = <span style="color:#e6db74">&#34;Hello,Go&#34;</span>	<span style="color:#75715e">//隐式定义，编译器根据实际值自动推导变量类型
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">lenth</span> = len(<span style="color:#a6e22e">str</span>)
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">a</span>, <span style="color:#a6e22e">b</span>, <span style="color:#a6e22e">c</span> = <span style="color:#ae81ff">1</span>, <span style="color:#66d9ef">false</span>, <span style="color:#e6db74">&#34;str&#34;</span> <span style="color:#75715e">//多重赋值
+</span></code></pre></div><p>好了，讲到这，看完之后，大家可以实践一下，验证下变量的各种声明方式，实践的真知！
+<!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -225,7 +200,7 @@ const a, b, c = 1, false, &quot;str&quot; //多重赋值
         
         <li><a href="/2019/01/27/go-workspace.html">聊聊 Go 工作空间</a></li>
         
-        <li><a href="/about/">关于我</a></li>
+        <li><a href="/golang100/">Go语言知识站</a></li>
         
     </ul>
 </div>
@@ -293,6 +268,10 @@ const a, b, c = 1, false, &quot;str&quot; //多重赋值
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -328,10 +307,6 @@ const a, b, c = 1, false, &quot;str&quot; //多重赋值
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -355,11 +330,11 @@ const a, b, c = 1, false, &quot;str&quot; //多重赋值
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -367,7 +342,7 @@ const a, b, c = 1, false, &quot;str&quot; //多重赋值
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -397,21 +372,21 @@ const a, b, c = 1, false, &quot;str&quot; //多重赋值
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>工作空间 on Seekload&#39;s Blog</title>
@@ -6,11 +6,7 @@
     <description>Recent content in 工作空间 on Seekload&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Sun, 27 Jan 2019 15:41:56 +0800</lastBuildDate>
-    
-	<atom:link href="https://seekload.net/tags/%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 27 Jan 2019 15:41:56 +0800</lastBuildDate><atom:link href="https://seekload.net/tags/%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>聊聊 Go 工作空间</title>
       <link>https://seekload.net/2019/01/27/go-workspace.html</link>

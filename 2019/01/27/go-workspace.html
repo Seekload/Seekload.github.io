@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:1438
+                                字数:1439
                             </span>
                         </div>
                         
@@ -125,114 +125,86 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<h3 id="前言">前言</h3>
-
+                            <h3 id="前言">前言</h3>
 <p>对于刚开始学 Go 的同学，可能会对几个概念比较迷糊：GOROOT 和 GOPATH，今天就来聊聊它们。
 执行<code>go env</code>，给大家看下我开发环境的相关参数配置（部分）：</p>
-
-<pre><code class="language-go">GOARCH=&quot;amd64&quot;
-GOBIN=&quot;/Users/chengguilu/goProjects/bin&quot;
-GOCACHE=&quot;/Users/chengguilu/Library/Caches/go-build&quot;
-GOHOSTARCH=&quot;amd64&quot;
-GOHOSTOS=&quot;darwin&quot;
-GOOS=&quot;darwin&quot;
-GOPATH=&quot;/Users/chengguilu/goProjects&quot;
-GOROOT=&quot;/usr/local/go&quot;
-GOTOOLDIR=&quot;/usr/local/go/pkg/tool/darwin_amd64&quot;
-GCCGO=&quot;gccgo&quot;
-CC=&quot;clang&quot;
-CXX=&quot;clang++&quot;
-</code></pre>
-
-<h3 id="goroot">GOROOT</h3>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">GOARCH</span>=<span style="color:#e6db74">&#34;amd64&#34;</span>
+<span style="color:#a6e22e">GOBIN</span>=<span style="color:#e6db74">&#34;/Users/chengguilu/goProjects/bin&#34;</span>
+<span style="color:#a6e22e">GOCACHE</span>=<span style="color:#e6db74">&#34;/Users/chengguilu/Library/Caches/go-build&#34;</span>
+<span style="color:#a6e22e">GOHOSTARCH</span>=<span style="color:#e6db74">&#34;amd64&#34;</span>
+<span style="color:#a6e22e">GOHOSTOS</span>=<span style="color:#e6db74">&#34;darwin&#34;</span>
+<span style="color:#a6e22e">GOOS</span>=<span style="color:#e6db74">&#34;darwin&#34;</span>
+<span style="color:#a6e22e">GOPATH</span>=<span style="color:#e6db74">&#34;/Users/chengguilu/goProjects&#34;</span>
+<span style="color:#a6e22e">GOROOT</span>=<span style="color:#e6db74">&#34;/usr/local/go&#34;</span>
+<span style="color:#a6e22e">GOTOOLDIR</span>=<span style="color:#e6db74">&#34;/usr/local/go/pkg/tool/darwin_amd64&#34;</span>
+<span style="color:#a6e22e">GCCGO</span>=<span style="color:#e6db74">&#34;gccgo&#34;</span>
+<span style="color:#a6e22e">CC</span>=<span style="color:#e6db74">&#34;clang&#34;</span>
+<span style="color:#a6e22e">CXX</span>=<span style="color:#e6db74">&#34;clang++&#34;</span>
+</code></pre></div><h3 id="goroot">GOROOT</h3>
 <p>这个比较好理解，GOROOT 表示的是 Go 语言编译、工具、标准库等的安装路径（比如：<code>/usr/local/go</code>），简而言之，就是安装路径，GO 安装好之后就有了。</p>
-
 <h3 id="gopath">GOPATH</h3>
-
-<p><strong>（画重点）</strong> 可自定义路径的工作空间 - workspace，Go1.7 之前必须设置这个变量，且不能够与 Go 的安装目录相同。1.8 之后，GOPATH 有默认值&ndash;<code>$HOME/go</code>。可以执行<code>go env GOPATH</code>查看，从上面可以看到，我的 GOPATH 是<code>/Users/chengguilu/goProjects</code>。其实，说白了，GOPATH 对应计算机的一个目录。   <br><br>
+<p><strong>（画重点）</strong> 可自定义路径的工作空间 - workspace，Go1.7 之前必须设置这个变量，且不能够与 Go 的安装目录相同。1.8 之后，GOPATH 有默认值&ndash;<code>$HOME/go</code>。可以执行<code>go env GOPATH</code>查看，从上面可以看到，我的 GOPATH 是<code>/Users/chengguilu/goProjects</code>。其实，说白了，GOPATH 对应计算机的一个目录。   <!-- raw HTML omitted --><!-- raw HTML omitted -->
 <strong>作用</strong>：用来存放 Go 代码，Go 的可运行文件，以及相应的编译之后的包文件。
 Go 代码必须放在工作空间内，workspace 目录包含三个子目录</p>
-
 <ul>
 <li>src 存放 Go 源代码，它们被组织成包（每个目录都对应一个包）</li>
 <li>pkg 存放编译后生成的文件，比如：.a 文件（静态库文件）</li>
 <li>bin 存放编译后的可执行文件</li>
 </ul>
-
-<p>我们可以通过 go 工具构建源码包，并将其生成的二进制文件安装到 pkg 和 bin 目录中。<br>
+<p>我们可以通过 go 工具构建源码包，并将其生成的二进制文件安装到 pkg 和 bin 目录中。<!-- raw HTML omitted -->
 我们实际操练下，上一节的<code>Hello World</code>入门程序就按照这种方式存放。在 workspace 创建相关目录 src、pkg 和 bin，将写好的<code>hello.go</code>保存在<code>GOPATH/src/hello</code>目录。</p>
-
-<p><img src="/img/20181118232904611.png" alt="创建目录" />
+<p><img src="/img/20181118232904611.png" alt="创建目录">
 现在，我们就可以 go 工具构建并安装<code>hello.go</code></p>
-
-<pre><code class="language-go">go install hello/
-</code></pre>
-
-<p>我们可以在系统的任一目录中执行此命令，go 工具会根据指定的 GOPATH，在 <code>hello/</code> 包内查找源码（下一节给大家讲包的概念，现在大家了解概念就可以，不必深究）。若在包路径下执行<code>go install</code>，可以省略包路径。<br>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">go</span> <span style="color:#a6e22e">install</span> <span style="color:#a6e22e">hello</span><span style="color:#f92672">/</span>
+</code></pre></div><p>我们可以在系统的任一目录中执行此命令，go 工具会根据指定的 GOPATH，在 <code>hello/</code> 包内查找源码（下一节给大家讲包的概念，现在大家了解概念就可以，不必深究）。若在包路径下执行<code>go install</code>，可以省略包路径。<!-- raw HTML omitted -->
 <code>go install</code>命令产生可执行的二进制文件，接着它会将该二进制文件安装到工作空间的 bin 目录中，例子中为 <code>$GOPATH/bin/hello</code>。
-<img src="/img/20181119000459133.png" alt="go install" />
+<img src="/img/20181119000459133.png" alt="go install">
 通过命令行<code>$GOPATH/bin/hello</code>来运行（<code>$GOPATH</code>请自行替换）
-<img src="/img/20181119000833200.png" alt="" />
+<img src="/img/20181119000833200.png" alt="">
 还有一种更简便的方法，直接执行可执行文件，不过这需要将<code>$GOPATH/bin</code> 添加到 PATH 中。
-<img src="/img/20181119001259547.png" alt="" />
-<br></p>
-
+<img src="/img/20181119001259547.png" alt="">
+<!-- raw HTML omitted --></p>
 <h3 id="你的第一个库">你的第一个库</h3>
-
 <p>编写一个库，并让 hello 程序来调用它。
 在<code>$GOPATH/src</code>下创建包目录<code>github.com/Seekload/stringutil</code>
-<img src="/img/20181119003021590.png" alt="" />
-之后，在该目录中创建的文件<code>reverse.go</code>并保存（文件看不懂没关系，随着学习深入，相关知识点都会讲到，这里只做演示使用）：</p>
-
-<pre><code class="language-go">package stringutil
-// Reverse 将其实参字符串以符文为单位左右反转。
-func Reverse(s string) string {
-	r := []rune(s)
-	for i, j := 0, len(r)-1; i &lt; len(r)/2; i, j = i+1, j-1 {
-		r[i], r[j] = r[j], r[i]
+<img src="/img/20181119003021590.png" alt="">
+之后，在该目录中创建的文件<code>reverse.go </code>并保存（文件看不懂没关系，随着学习深入，相关知识点都会讲到，这里只做演示使用）：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">stringutil</span>
+<span style="color:#75715e">// Reverse 将其实参字符串以符文为单位左右反转。
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Reverse</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> []rune(<span style="color:#a6e22e">s</span>)
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>, len(<span style="color:#a6e22e">r</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span> &lt; len(<span style="color:#a6e22e">r</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>; <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> = <span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> {
+		<span style="color:#a6e22e">r</span>[<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">r</span>[<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">r</span>[<span style="color:#a6e22e">j</span>], <span style="color:#a6e22e">r</span>[<span style="color:#a6e22e">i</span>]
 	}
-	return string(r)
+	<span style="color:#66d9ef">return</span> string(<span style="color:#a6e22e">r</span>)
 }
-</code></pre>
-
-<p>目录如图：
-<img src="/img/20181119003835969.png" alt="" />
-用 <code>go build</code> 命令来测试该包的编译：</p>
-
-<pre><code class="language-go">go build github.com/Seekload/stringutil
-</code></pre>
-
-<p>也可以在包目录下直接执行<code>go build</code>。
+</code></pre></div><p>目录如图：
+<img src="/img/20181119003835969.png" alt="">
+用 <code>go build </code> 命令来测试该包的编译：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">go</span> <span style="color:#a6e22e">build</span> <span style="color:#a6e22e">github</span>.<span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">Seekload</span><span style="color:#f92672">/</span><span style="color:#a6e22e">stringutil</span>
+</code></pre></div><p>也可以在包目录下直接执行<code>go build</code>。
 这个命令不会产生输出文件。想要输出的话，必须使用 <code>go install</code> 命令，它会将编译之后的静态文件放到工作空间的 pkg 目录中。
-<img src="/img/20181119004630957.png" alt="" />
+<img src="/img/20181119004630957.png" alt="">
 确认 <code>stringutil</code>包构建完毕后，修改原来的 hello.go 文件并使用它：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<pre><code class="language-go">package main
-
-import (
-	&quot;fmt&quot;
-	&quot;github.com/Seekload/stringutil&quot;
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/Seekload/stringutil&#34;</span>
 )
 
-func main() {
-	fmt.Println(stringutil.Reverse(&quot;!oG ,daolkeeS&quot;))
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">stringutil</span>.<span style="color:#a6e22e">Reverse</span>(<span style="color:#e6db74">&#34;!oG ,daolkeeS&#34;</span>))
 }
-</code></pre>
-
-<p>执行<code>go install hello/</code>，重新编译<code>hello.go</code>，生成可执行文件<code>hello</code>并执行：
-<img src="https://img-blog.csdnimg.cn/20181119005425411.png" alt="" />
-在<code>hello.go</code>中，我们引入了<code>github.com/Seekload/stringutil</code> 包，所以重新执行<code>go intall hello/</code>时，<code>stringutil</code> 包会被自动安装。<br><br>
+</code></pre></div><p>执行<code>go install hello/</code>，重新编译<code>hello.go</code>，生成可执行文件<code>hello</code>并执行：
+<img src="https://img-blog.csdnimg.cn/20181119005425411.png" alt="">
+在<code>hello.go</code>中，我们引入了<code>github.com/Seekload/stringutil</code> 包，所以重新执行<code>go intall hello/</code>时，<code>stringutil</code> 包会被自动安装。<!-- raw HTML omitted --><!-- raw HTML omitted -->
 <strong>注意：</strong><code>go install github.com/Seekload/stringutil</code> 是将 <code>stringutil.a</code> 放到 <code>pkg/darwin_amd64</code> 目录中，反映出其源码目录。  <code>darwin_amd64</code> 这部分能帮助跨平台编译，并反映出你的操作系统和架构。</p>
-
 <p>这一节涉及了包的概念，有些同学可能还不太清楚。别急，将在下节给大家讲解 Go 语言中的包。
-<br><br>
+<!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -316,6 +288,10 @@ func main() {
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -351,10 +327,6 @@ func main() {
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -378,11 +350,11 @@ func main() {
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -390,7 +362,7 @@ func main() {
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -420,21 +392,21 @@ func main() {
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

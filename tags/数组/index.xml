@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>数组 on Seekload&#39;s Blog</title>
@@ -6,11 +6,7 @@
     <description>Recent content in 数组 on Seekload&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Tue, 29 Jan 2019 07:35:08 +0800</lastBuildDate>
-    
-	<atom:link href="https://seekload.net/tags/%E6%95%B0%E7%BB%84/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 29 Jan 2019 07:35:08 +0800</lastBuildDate><atom:link href="https://seekload.net/tags/%E6%95%B0%E7%BB%84/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>我是数组</title>
       <link>https://seekload.net/2019/01/29/go-array.html</link>

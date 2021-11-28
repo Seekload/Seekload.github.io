@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:1226
+                                字数:1209
                             </span>
                         </div>
                         
@@ -125,238 +125,194 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<blockquote>
+                            <blockquote>
 <p><strong>这是『就要学习 Go 语言』系列的第 23 篇分享文章</strong></p>
 </blockquote>
-
 <h3 id="select-的作用">Select 的作用</h3>
-
 <p>select 的用法有点类似 switch 语句，但 select 不会有输入值而且只用于信道操作。select 用于从多个发送或接收信道操作中进行选择，语句会阻塞直到其中有信道可以操作，如果有多个信道可以操作，会随机选择其中一个 case 执行。
 看下例子：</p>
-
-<pre><code class="language-go">func service1(ch chan string) {
-	time.Sleep(2 * time.Second)
-	ch &lt;- &quot;from service1&quot;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service1&#34;</span>
 }
-func service2(ch chan string) {
-	time.Sleep(1 * time.Second)
-	ch &lt;- &quot;from service2&quot;
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service2</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service2&#34;</span>
 }
 
-func main() {
-	ch1 := make(chan string)
-	ch2 := make(chan string)
-	go service1(ch1)
-	go service2(ch2)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ch1</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)
+	<span style="color:#a6e22e">ch2</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch1</span>)
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service2</span>(<span style="color:#a6e22e">ch2</span>)
 	
-	select {       // 会发送阻塞
-	case s1 := &lt;-ch1:
-		fmt.Println(s1)
-	case s2 := &lt;-ch2:
-		fmt.Println(s2)
+	<span style="color:#66d9ef">select</span> {       <span style="color:#75715e">// 会发送阻塞
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch1</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s1</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s2</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch2</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s2</span>)
 	}
 }
-</code></pre>
-
-<p>输出：from service2 <br>
+</code></pre></div><p>输出：from service2 <!-- raw HTML omitted -->
 上面的例子执行到 select 语句的时候回发生阻塞，main 协程等待一个 case 操作可执行，很明显是 service2 先准备好读取的数据（休眠 1s），所以输出 from service2。
 看下在两种操作都准备好的情况：</p>
-
-<pre><code class="language-go">func service1(ch chan string) {
-	//time.Sleep(2 * time.Second)
-	ch &lt;- &quot;from service1&quot;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#75715e">//time.Sleep(2 * time.Second)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service1&#34;</span>
 }
-func service2(ch chan string) {
-	//time.Sleep(1 * time.Second)
-	ch &lt;- &quot;from service2&quot;
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service2</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#75715e">//time.Sleep(1 * time.Second)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service2&#34;</span>
 }
 
-func main() {
-	ch1 := make(chan string)
-	ch2 := make(chan string)
-	go service1(ch1)
-	go service2(ch2)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ch1</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)
+	<span style="color:#a6e22e">ch2</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch1</span>)
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service2</span>(<span style="color:#a6e22e">ch2</span>)
 
-	time.Sleep(2*time.Second)
-	select {
-	case s1 := &lt;-ch1:
-		fmt.Println(s1)
-	case s2 := &lt;-ch2:
-		fmt.Println(s2)
+	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+	<span style="color:#66d9ef">select</span> {
+	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch1</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s1</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s2</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch2</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s2</span>)
 	}
 }
-</code></pre>
-
-<p>我们把函数里的延时注释掉，主函数 select 之前加 2s 的延时以等待两个信道的数据准备好，select 会随机选取其中一个 case 执行，所以输出也是随机的。</p>
-
+</code></pre></div><p>我们把函数里的延时注释掉，主函数 select 之前加 2s 的延时以等待两个信道的数据准备好，select 会随机选取其中一个 case 执行，所以输出也是随机的。</p>
 <h3 id="default-case">default case</h3>
-
 <p>与 switch 语句类似，select 也有 default case，是的 select 语句不在阻塞，如果其他信道操作还没有准备好，将会直接执行 default 分支。</p>
-
-<pre><code class="language-go">func service1(ch chan string) {
-	ch &lt;- &quot;from service1&quot;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service1&#34;</span>
 }
-func service2(ch chan string) {
-	ch &lt;- &quot;from service2&quot;
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service2</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service2&#34;</span>
 }
 
-func main() {
-	ch1 := make(chan string)
-	ch2 := make(chan string)
-	go service1(ch1)
-	go service2(ch2)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ch1</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)
+	<span style="color:#a6e22e">ch2</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch1</span>)
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service2</span>(<span style="color:#a6e22e">ch2</span>)
 
-	select {         // ch1 ch2 都还没有准备好，直接执行 default 分支 
-	case s1 := &lt;-ch1:
-		fmt.Println(s1)
-	case s2 := &lt;-ch2:
-		fmt.Println(s2)
-	default:
-		fmt.Println(&quot;no case ok&quot;)
+	<span style="color:#66d9ef">select</span> {         <span style="color:#75715e">// ch1 ch2 都还没有准备好，直接执行 default 分支 
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch1</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s1</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s2</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch2</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s2</span>)
+	<span style="color:#66d9ef">default</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;no case ok&#34;</span>)
 	}
 }
-</code></pre>
-
-<p>输出：no case ok <br>
+</code></pre></div><p>输出：no case ok <!-- raw HTML omitted -->
 执行到 select 语句的时候，由于信道 ch1、ch2 都没准备好，直接执行 default 语句。</p>
-
-<pre><code class="language-go">func service1(ch chan string) {
-	ch &lt;- &quot;from service1&quot;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service1&#34;</span>
 }
-func service2(ch chan string) {
-	ch &lt;- &quot;from service2&quot;
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service2</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service2&#34;</span>
 }
 
-func main() {
-	ch1 := make(chan string)
-	ch2 := make(chan string)
-	go service1(ch1)
-	go service2(ch2)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ch1</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)
+	<span style="color:#a6e22e">ch2</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch1</span>)
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service2</span>(<span style="color:#a6e22e">ch2</span>)
 
-	time.Sleep(time.Second)   // 延时 1s,等待 ch1 ch2 准备就绪
-	
-	select {
-	case s1 := &lt;-ch1:
-		fmt.Println(s1)
-	case s2 := &lt;-ch2:
-		fmt.Println(s2)
-	default:
-		fmt.Println(&quot;no case ok&quot;)
+	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)   <span style="color:#75715e">// 延时 1s,等待 ch1 ch2 准备就绪
+</span><span style="color:#75715e"></span>	
+	<span style="color:#66d9ef">select</span> {
+	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch1</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s1</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s2</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch2</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s2</span>)
+	<span style="color:#66d9ef">default</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;no case ok&#34;</span>)
 	}
 }
-</code></pre>
-
-<p>在 select 语句之前加了 1s 延时，等待 ch1 ch2 准备就绪。因为两个通道都准备好了，所以不会走 default 语句。随机输出 from service1 或 from service2。</p>
-
+</code></pre></div><p>在 select 语句之前加了 1s 延时，等待 ch1 ch2 准备就绪。因为两个通道都准备好了，所以不会走 default 语句。随机输出 from service1 或 from service2。</p>
 <h3 id="nil-channel">nil channel</h3>
-
 <p>信道的默认值是 nil，不能对 nil 信道进行读写操作。看下面的例子</p>
-
-<pre><code class="language-go">func service1(ch chan string) {
-	ch &lt;- &quot;from service1&quot;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service1&#34;</span>
 }
 
-func main() {
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
 
-	var ch chan string
-	go service1(ch)
-	select {
-	case str := &lt;-ch:
-		fmt.Println(str)
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch</span>)
+	<span style="color:#66d9ef">select</span> {
+	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">str</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">str</span>)
 	}
 }
-</code></pre>
+</code></pre></div><p>报错：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">fatal</span> <span style="color:#66d9ef">error</span>: <span style="color:#a6e22e">all</span> <span style="color:#a6e22e">goroutines</span> <span style="color:#a6e22e">are</span> <span style="color:#a6e22e">asleep</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">deadlock</span>!
 
-<p>报错：</p>
+<span style="color:#a6e22e">goroutine</span> <span style="color:#ae81ff">1</span> [<span style="color:#66d9ef">select</span> (<span style="color:#a6e22e">no</span> <span style="color:#a6e22e">cases</span>)]:
 
-<pre><code class="language-go">fatal error: all goroutines are asleep - deadlock!
-
-goroutine 1 [select (no cases)]:
-
-goroutine 18 [chan send (nil chan)]:
-</code></pre>
-
-<p>有两个错误的地方需要注意：
+<span style="color:#a6e22e">goroutine</span> <span style="color:#ae81ff">18</span> [<span style="color:#66d9ef">chan</span> <span style="color:#a6e22e">send</span> (<span style="color:#66d9ef">nil</span> <span style="color:#66d9ef">chan</span>)]:
+</code></pre></div><p>有两个错误的地方需要注意：
 [select (no cases)]  case 分支中如果信道是 nil，<strong>该分支就会被忽略</strong>，那么上面就变成空 select{} 语句，阻塞主协程，调度 service1 协程，在 nil 信道上操作，便报[chan send (nil chan)] 错误。可以使用上面的 default case 避免发生这样的错误。</p>
-
-<pre><code class="language-go">func service1(ch chan string) {
-	ch &lt;- &quot;from service1&quot;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service1&#34;</span>
 }
 
-func main() {
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
 
-	var ch chan string
-	go service1(ch)
-	select {
-	case str := &lt;-ch:
-		fmt.Println(str)
-	default:
-		fmt.Println(&quot;I am default&quot;)
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch</span>)
+	<span style="color:#66d9ef">select</span> {
+	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">str</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">str</span>)
+	<span style="color:#66d9ef">default</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;I am default&#34;</span>)
 	}
 }
-</code></pre>
-
-<p>输出：I am default</p>
-
+</code></pre></div><p>输出：I am default</p>
 <h3 id="添加超时时间">添加超时时间</h3>
-
 <p>有时候，我们不希望立即执行 default 语句，而是希望等待一段时间，若这个时间段内还没有可操作的信道，则执行规定的语句。可以在 case 语句后面设置超时时间。</p>
-
-<pre><code class="language-go">func service1(ch chan string) {
-	time.Sleep(5 * time.Second)
-	ch &lt;- &quot;from service1&quot;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">5</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service1&#34;</span>
 }
-func service2(ch chan string) {
-	time.Sleep(3 * time.Second)
-	ch &lt;- &quot;from service2&quot;
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">service2</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
+	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">3</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;from service2&#34;</span>
 }
 
-func main() {
-	ch1 := make(chan string)
-	ch2 := make(chan string)
-	go service1(ch1)
-	go service2(ch2)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ch1</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)
+	<span style="color:#a6e22e">ch2</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service1</span>(<span style="color:#a6e22e">ch1</span>)
+	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">service2</span>(<span style="color:#a6e22e">ch2</span>)
 
-	select {       // 会发送阻塞
-	case s1 := &lt;-ch1:
-		fmt.Println(s1)
-	case s2 := &lt;-ch2:
-		fmt.Println(s2)
-	case &lt;-time.After(2*time.Second):     // 等待 2s
-		fmt.Println(&quot;no case ok&quot;)
+	<span style="color:#66d9ef">select</span> {       <span style="color:#75715e">// 会发送阻塞
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch1</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s1</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">s2</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch2</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s2</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">After</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>):     <span style="color:#75715e">// 等待 2s
+</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;no case ok&#34;</span>)
 	}
 }
-</code></pre>
-
-<p>输出：no case ok <br>
+</code></pre></div><p>输出：no case ok <!-- raw HTML omitted -->
 在第三个 case 语句中设置了 2s 的超时时间，这 2s 内如果其他可操作的信道，便会执行该 case。</p>
-
 <h3 id="空-select">空 select</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<pre><code class="language-go">package main
-
-func main() {  
-    select {}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {  
+    <span style="color:#66d9ef">select</span> {}
 }
-</code></pre>
-
-<p>我们知道 select 语句会发生阻塞，直到有 case 可以操作。但是空 select 语句没有 case 分支，所以便一直阻塞引起死锁。
+</code></pre></div><p>我们知道 select 语句会发生阻塞，直到有 case 可以操作。但是空 select 语句没有 case 分支，所以便一直阻塞引起死锁。
 报错：</p>
-
-<pre><code class="language-go">fatal error: all goroutines are asleep - deadlock!
-goroutine 1 [select (no cases)]
-</code></pre>
-
-<p><br>
-希望这篇文章能够帮助你，Good day!</p>
-
-<p><br><br>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">fatal</span> <span style="color:#66d9ef">error</span>: <span style="color:#a6e22e">all</span> <span style="color:#a6e22e">goroutines</span> <span style="color:#a6e22e">are</span> <span style="color:#a6e22e">asleep</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">deadlock</span>!
+<span style="color:#a6e22e">goroutine</span> <span style="color:#ae81ff">1</span> [<span style="color:#66d9ef">select</span> (<span style="color:#a6e22e">no</span> <span style="color:#a6e22e">cases</span>)]
+</code></pre></div><!-- raw HTML omitted -->
+<p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -440,6 +396,10 @@ goroutine 1 [select (no cases)]
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -475,10 +435,6 @@ goroutine 1 [select (no cases)]
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -502,11 +458,11 @@ goroutine 1 [select (no cases)]
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -514,7 +470,7 @@ goroutine 1 [select (no cases)]
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -544,21 +500,21 @@ goroutine 1 [select (no cases)]
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

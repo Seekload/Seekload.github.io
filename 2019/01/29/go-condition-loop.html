@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:1201
+                                字数:1187
                             </span>
                         </div>
                         
@@ -125,171 +125,134 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<h3 id="前言">前言</h3>
-
+                            <h3 id="前言">前言</h3>
 <p>今天，我们来看下条件语句和循环语句，学起来！</p>
-
 <h3 id="条件语句">条件语句</h3>
-
 <h4 id="if语句">if语句</h4>
-
-<pre><code class="language-go">//if
-if a%2 == 0 {
-	println(&quot;偶数&quot;)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//if
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span><span style="color:#f92672">%</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+	println(<span style="color:#e6db74">&#34;偶数&#34;</span>)
 }
-//if else
-if a%2 == 0 {
-	println(&quot;偶数&quot;)
-}else {
-	println(&quot;奇数&quot;)
+<span style="color:#75715e">//if else
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span><span style="color:#f92672">%</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+	println(<span style="color:#e6db74">&#34;偶数&#34;</span>)
+}<span style="color:#66d9ef">else</span> {
+	println(<span style="color:#e6db74">&#34;奇数&#34;</span>)
 }
-//多分支
-if a &gt; 0 {
-	println(&quot;大于零&quot;)
-}else if a == 0 {
-	println(&quot;等于零&quot;)
-}else {
-	println(&quot;小于零&quot;)
+<span style="color:#75715e">//多分支
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span> &gt; <span style="color:#ae81ff">0</span> {
+	println(<span style="color:#e6db74">&#34;大于零&#34;</span>)
+}<span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+	println(<span style="color:#e6db74">&#34;等于零&#34;</span>)
+}<span style="color:#66d9ef">else</span> {
+	println(<span style="color:#e6db74">&#34;小于零&#34;</span>)
 }
-</code></pre>
-
-<p>在 if 或 else if 语句中嵌入一个或多个 if 或 else if 语句，形如</p>
-
-<pre><code class="language-go">if a &gt; 0 {
-	if x {
-		//...
-	}else {
-		//...
-	}
-}else {
-	//...
-}
-</code></pre>
-
-<p>注意：if 语句没有圆括号，但是必须要有花括号</p>
-
+</code></pre></div><p>在 if 或 else if 语句中嵌入一个或多个 if 或 else if 语句，形如</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span> &gt; <span style="color:#ae81ff">0</span> {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">x</span> {
+		<span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>	}<span style="color:#66d9ef">else</span> {
+		<span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>	}
+}<span style="color:#66d9ef">else</span> {
+	<span style="color:#75715e">//...
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>注意：if 语句没有圆括号，但是必须要有花括号</p>
 <h4 id="switch">switch</h4>
-
-<pre><code class="language-go">switch i {
-	case 0:
-		fmt.Printf(&quot;zero&quot;)
-	case 1:
-		fmt.Printf(&quot;one&quot;)
-	case 2:
-		fallthrough
-	case 3:
-		fmt.Printf(&quot;three&quot;)
-	case 4, 5, 6:
-		fmt.Printf(&quot;four, five, six&quot;)
-	default:
-		fmt.Printf(&quot;Default&quot;)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">switch</span> <span style="color:#a6e22e">i</span> {
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">0</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;zero&#34;</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">1</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;one&#34;</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">2</span>:
+		<span style="color:#66d9ef">fallthrough</span>
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">3</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;three&#34;</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;four, five, six&#34;</span>)
+	<span style="color:#66d9ef">default</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Default&#34;</span>)
 	}
-</code></pre>
-
-<p>不知道大家有没有注意到，<code>switch</code>语句是没有<code>break</code>的，而且还可以<code>case</code>多个值。这里大家会有个疑惑，当 i==2 时，会输出什么，答案是：three。因为如果在<code>case</code>中明确添加 <code>fallthrough</code> 关键字，才会继续执行紧跟的下一个 case。<br>
+</code></pre></div><p>不知道大家有没有注意到，<code>switch</code>语句是没有<code>break</code>的，而且还可以<code>case</code>多个值。这里大家会有个疑惑，当 i==2 时，会输出什么，答案是：three。因为如果在<code>case</code>中明确添加 <code>fallthrough</code> 关键字，才会继续执行紧跟的下一个 case。<!-- raw HTML omitted -->
 注意到一个比较有意思的地方，<code>switch</code>后面的表达式并不是必须的：</p>
-
-<pre><code class="language-go">switch {
-	case 0 &lt;= Num &amp;&amp; Num &lt;= 3:
-		fmt.Printf(&quot;0-3&quot;)
-	case 4 &lt;= Num &amp;&amp; Num &lt;= 6:
-		fmt.Printf(&quot;4-6&quot;)
-	case 7 &lt;= Num &amp;&amp; Num &lt;= 9:
-		fmt.Printf(&quot;7-9&quot;)
-	default:
-		fmt.Printf(&quot;&gt;9&quot;)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">switch</span> {
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&lt;=</span> <span style="color:#a6e22e">Num</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">Num</span> <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">3</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;0-3&#34;</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">4</span> <span style="color:#f92672">&lt;=</span> <span style="color:#a6e22e">Num</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">Num</span> <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">6</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;4-6&#34;</span>)
+	<span style="color:#66d9ef">case</span> <span style="color:#ae81ff">7</span> <span style="color:#f92672">&lt;=</span> <span style="color:#a6e22e">Num</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">Num</span> <span style="color:#f92672">&lt;=</span> <span style="color:#ae81ff">9</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;7-9&#34;</span>)
+	<span style="color:#66d9ef">default</span>:
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;&gt;9&#34;</span>)
 	}
-</code></pre>
-
-<p>看了上面代码，其实这段代码逻辑与使用<code>if-else</code>结构等同。
+</code></pre></div><p>看了上面代码，其实这段代码逻辑与使用<code>if-else</code>结构等同。
 <code>select</code>大家可以暂且不用管，到后面我会单独写一篇文章介绍的。</p>
-
 <h3 id="循环语句">循环语句</h3>
-
 <h4 id="for语句">for语句</h4>
-
 <p>for语句的三种格式</p>
-
-<pre><code class="language-go">//1、经典的for循环
-for i:=0;i&lt;10 ;i++  {
-	fmt.Printf(&quot;%d\n&quot;,i)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//1、经典的for循环
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">i</span>&lt;<span style="color:#ae81ff">10</span> ;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>  {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d\n&#34;</span>,<span style="color:#a6e22e">i</span>)
 }
-//2、简洁的for循环
-i := 1
-for i &lt; 10  {
-	fmt.Printf(&quot;%d\n&quot;,i)
-	i++
+<span style="color:#75715e">//2、简洁的for循环
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">10</span>  {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d\n&#34;</span>,<span style="color:#a6e22e">i</span>)
+	<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>
 }
-//3、死循环的for语句
-i := 1
-for {
-	if i&gt;5 {
-		break
+<span style="color:#75715e">//3、死循环的for语句
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">for</span> {
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span>&gt;<span style="color:#ae81ff">5</span> {
+		<span style="color:#66d9ef">break</span>
 	}
-	fmt.Printf(&quot;%d\n&quot;,i)
-	i++
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%d\n&#34;</span>,<span style="color:#a6e22e">i</span>)
+	<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>
 }
-</code></pre>
-
-<p>另一种用法：for 循环的 range 格式可以对 slice、map、数组、字符串等进行迭代循环。</p>
-
-<pre><code class="language-go">numbers := [6]int{1, 2, 3, 4}
-for i, x := range numbers {
-	fmt.Printf(&quot;第 %d 位 x 的值 = %d\n&quot;, i, x)
+</code></pre></div><p>另一种用法：for 循环的 range 格式可以对 slice、map、数组、字符串等进行迭代循环。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">numbers</span> <span style="color:#f92672">:=</span> [<span style="color:#ae81ff">6</span>]<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>}
+<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">x</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">numbers</span> {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;第 %d 位 x 的值 = %d\n&#34;</span>, <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">x</span>)
 }
-</code></pre>
-
-<p>不难想到，上面这段代码的输出：</p>
-
-<pre><code class="language-go">第 0 位 x 的值 = 1
-第 1 位 x 的值 = 2
-第 2 位 x 的值 = 3
-第 3 位 x 的值 = 4
-第 4 位 x 的值 = 0
-第 5 位 x 的值 = 0
-</code></pre>
-
-<p><strong>注意</strong>：Go 语言中没有 while 语句。<br><br>
+</code></pre></div><p>不难想到，上面这段代码的输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">第</span> <span style="color:#ae81ff">0</span> <span style="color:#a6e22e">位</span> <span style="color:#a6e22e">x</span> <span style="color:#a6e22e">的值</span> = <span style="color:#ae81ff">1</span>
+<span style="color:#a6e22e">第</span> <span style="color:#ae81ff">1</span> <span style="color:#a6e22e">位</span> <span style="color:#a6e22e">x</span> <span style="color:#a6e22e">的值</span> = <span style="color:#ae81ff">2</span>
+<span style="color:#a6e22e">第</span> <span style="color:#ae81ff">2</span> <span style="color:#a6e22e">位</span> <span style="color:#a6e22e">x</span> <span style="color:#a6e22e">的值</span> = <span style="color:#ae81ff">3</span>
+<span style="color:#a6e22e">第</span> <span style="color:#ae81ff">3</span> <span style="color:#a6e22e">位</span> <span style="color:#a6e22e">x</span> <span style="color:#a6e22e">的值</span> = <span style="color:#ae81ff">4</span>
+<span style="color:#a6e22e">第</span> <span style="color:#ae81ff">4</span> <span style="color:#a6e22e">位</span> <span style="color:#a6e22e">x</span> <span style="color:#a6e22e">的值</span> = <span style="color:#ae81ff">0</span>
+<span style="color:#a6e22e">第</span> <span style="color:#ae81ff">5</span> <span style="color:#a6e22e">位</span> <span style="color:#a6e22e">x</span> <span style="color:#a6e22e">的值</span> = <span style="color:#ae81ff">0</span>
+</code></pre></div><p><strong>注意</strong>：Go 语言中没有 while 语句。<!-- raw HTML omitted --><!-- raw HTML omitted -->
 有循环语句，那就必定要提提循环控制语句：<strong>continue、break</strong>和<strong>goto</strong>
-<img src="/img/20181130200827114.png" alt="" />
+<img src="/img/20181130200827114.png" alt="">
 其中，<code>continue</code>和<code>break</code>和其他语言的中的用法类似，这里给出一个 goto 的使用例子。但是，在实际编写结构化程序的时候，一般都不主张使用 goto 语句，不然会给代码 Review 和调试程序造成困难。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">/* 定义局部变量 */</span>
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">10</span>
 
-<pre><code class="language-go">/* 定义局部变量 */
-	var a int = 10
-
-	/* 循环 */
-	LOOP: for a &lt; 20 {
-		if a == 15 {
-			/* 跳过迭代 */
-			a = a + 1
-			goto LOOP
+	<span style="color:#75715e">/* 循环 */</span>
+	<span style="color:#a6e22e">LOOP</span>: <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">a</span> &lt; <span style="color:#ae81ff">20</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">15</span> {
+			<span style="color:#75715e">/* 跳过迭代 */</span>
+			<span style="color:#a6e22e">a</span> = <span style="color:#a6e22e">a</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+			<span style="color:#66d9ef">goto</span> <span style="color:#a6e22e">LOOP</span>
 		}
-		fmt.Printf(&quot;a的值为 : %d\n&quot;, a)
-		a++
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;a的值为 : %d\n&#34;</span>, <span style="color:#a6e22e">a</span>)
+		<span style="color:#a6e22e">a</span><span style="color:#f92672">++</span>
 	}
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">a的值为 : 10
-a的值为 : 11
-a的值为 : 12
-a的值为 : 13
-a的值为 : 14
-a的值为 : 16
-a的值为 : 17
-a的值为 : 18
-a的值为 : 19
-</code></pre>
-
-<p>看到这里，对于 Go 的运算符、条件语句和循环语句有了大概的了解。从其他语言转学 Go 的同学，可以比较下这部分语法跟你之前掌握的语言的异同。比如之前掌握 Java、PHP 或者 C，就可以对比下这部分，这样对比学习可以加深对知识的理解，能够更快掌握。不管之前有没有开发语言的基础，学习一门新语言的重点还是自己要多多练习。
-<br><br>
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">a的值为</span> : <span style="color:#ae81ff">10</span>
+<span style="color:#a6e22e">a的值为</span> : <span style="color:#ae81ff">11</span>
+<span style="color:#a6e22e">a的值为</span> : <span style="color:#ae81ff">12</span>
+<span style="color:#a6e22e">a的值为</span> : <span style="color:#ae81ff">13</span>
+<span style="color:#a6e22e">a的值为</span> : <span style="color:#ae81ff">14</span>
+<span style="color:#a6e22e">a的值为</span> : <span style="color:#ae81ff">16</span>
+<span style="color:#a6e22e">a的值为</span> : <span style="color:#ae81ff">17</span>
+<span style="color:#a6e22e">a的值为</span> : <span style="color:#ae81ff">18</span>
+<span style="color:#a6e22e">a的值为</span> : <span style="color:#ae81ff">19</span>
+</code></pre></div><p>看到这里，对于 Go 的运算符、条件语句和循环语句有了大概的了解。从其他语言转学 Go 的同学，可以比较下这部分语法跟你之前掌握的语言的异同。比如之前掌握 Java、PHP 或者 C，就可以对比下这部分，这样对比学习可以加深对知识的理解，能够更快掌握。不管之前有没有开发语言的基础，学习一门新语言的重点还是自己要多多练习。
+<!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -373,6 +336,10 @@ a的值为 : 19
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -408,10 +375,6 @@ a的值为 : 19
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -435,11 +398,11 @@ a的值为 : 19
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -447,7 +410,7 @@ a的值为 : 19
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -477,21 +440,21 @@ a的值为 : 19
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

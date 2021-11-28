@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:2036
+                                字数:2039
                             </span>
                         </div>
                         
@@ -125,282 +125,232 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<blockquote>
+                            <blockquote>
 <p><strong>『就要学习 Go 语言』系列 &ndash; 第 26 篇分享好文</strong></p>
 </blockquote>
-
 <p>今天接着给大家分享关于 Go 面向对象的好文。原文作者是 William Kennedy，《Go 语言实战》作者之一，
-<a href="https://www.ardanlabs.com/blog/" target="_blank">博客</a> 的维护者。大部分中国的 Gopher 都是通过这个博客认识了这位 Go 大神。</p>
-
+<!-- raw HTML omitted -->博客<!-- raw HTML omitted --> 的维护者。大部分中国的 Gopher 都是通过这个博客认识了这位 Go 大神。</p>
 <p>有些与知识点无关的语句，翻译过来有点拗口，大家一眼带过，看看就好。但与知识点相关的，都会尽量忠于原文。另外，文章做了简单的排版，方便阅读。翻译水平有限，有误的地方，请大家在下方留言指正。</p>
-
 <h3 id="基础">基础</h3>
-
 <p>今天有人在论坛上问我一个问题，如何在不通过嵌入的情况下而获得继承的优点。重要的是，每个人都应该考虑 Go 语言，而不是他们留下的语言。我不能告诉你我从早期的 Go 实现中删除了多少代码，因为这是不必要的。语言设计师有多年的经验和知识，正在帮助创建一种快速、精简且编写代码非常有趣的语言。</p>
-
 <p>我认为 Go 是一门轻量级的面向对象编程语言。是的，它具有封装和类型成员函数，但它缺乏继承，因此缺乏传统的多态性。对我来说，除非想实现多态性，否则继承是无用的。通过在 Go 中实现接口的方式，不需要继承。Go采用 OOP 中最好的部分，而忽略了其他部分，为我们提供了一种编写多态代码的更好方法。</p>
-
 <p>下面是 Go 中的 OOP 快速概览。先从这三个结构体开始。</p>
-
-<pre><code class="language-go">type Animal struct {
-    Name string
-    mean bool
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Animal</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+    <span style="color:#a6e22e">mean</span> <span style="color:#66d9ef">bool</span>
 }
 
-type Cat struct {
-    Basics Animal
-    MeowStrength int
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Cat</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">Basics</span> <span style="color:#a6e22e">Animal</span>
+    <span style="color:#a6e22e">MeowStrength</span> <span style="color:#66d9ef">int</span>
 }
 
-type Dog struct {
-    Animal
-    BarkStrength int
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Dog</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">Animal</span>
+    <span style="color:#a6e22e">BarkStrength</span> <span style="color:#66d9ef">int</span>
 }
-</code></pre>
-
-<p>在任何关于 OOP 的示例中，你都可能看到上面三个结构体。一个基础结构体 Animal 和基于 Animal 声明的结构体 Cat 和 Dog。结构体 Animal 拥有所有动物共同的属性。</p>
-
+</code></pre></div><p>在任何关于 OOP 的示例中，你都可能看到上面三个结构体。一个基础结构体 Animal 和基于 Animal 声明的结构体 Cat 和 Dog。结构体 Animal 拥有所有动物共同的属性。</p>
 <p>除了成员 mean，其他所有成员都是公共的、可被外部访问的。结构体 Animal 的 mean 成员以小写字母开头。在 Go 中，变量、结构体、成员、函数等的第一个字母的大小写决定了访问权限。大写字母开头表示公共的，可供外部调用；小写字母开头表示私有的，外部不能调用。</p>
-
 <p>由于 Go 里没有继承，所以组合是你唯一的选择。结构体 Cat 的一个成员是 Basics，类型是 Animal。而结构体 Dog 通过匿名的方式嵌入了结构体 Animal。哪种实现方式更好取决于你，我会展示这两种实现方式。</p>
-
 <p>给结构体 Cat 和 Dog 创建各自的方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">dog</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Dog</span>) <span style="color:#a6e22e">MakeNoise</span>() {
+    <span style="color:#a6e22e">barkStrength</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">dog</span>.<span style="color:#a6e22e">BarkStrength</span>
 
-<pre><code class="language-go">func (dog *Dog) MakeNoise() {
-    barkStrength := dog.BarkStrength
-
-    if dog.mean == true {
-        barkStrength = barkStrength * 5
+    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">dog</span>.<span style="color:#a6e22e">mean</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span> {
+        <span style="color:#a6e22e">barkStrength</span> = <span style="color:#a6e22e">barkStrength</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">5</span>
     }
 
-    for bark := 0; bark &lt; barkStrength; bark++ {
-        fmt.Printf(&quot;BARK &quot;)
+    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">bark</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">bark</span> &lt; <span style="color:#a6e22e">barkStrength</span>; <span style="color:#a6e22e">bark</span><span style="color:#f92672">++</span> {
+        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;BARK &#34;</span>)
     }
 
-    fmt.Println(&quot;&quot;)
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&#34;</span>)
 }
 
-func (cat *Cat) MakeNoise() {
-    meowStrength := cat.MeowStrength
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cat</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Cat</span>) <span style="color:#a6e22e">MakeNoise</span>() {
+    <span style="color:#a6e22e">meowStrength</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">cat</span>.<span style="color:#a6e22e">MeowStrength</span>
 
-    if cat.Basics.mean == true {
-        meowStrength = meowStrength * 5
+    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">cat</span>.<span style="color:#a6e22e">Basics</span>.<span style="color:#a6e22e">mean</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span> {
+        <span style="color:#a6e22e">meowStrength</span> = <span style="color:#a6e22e">meowStrength</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">5</span>
     }
 
-    for meow := 0; meow &lt; meowStrength; meow++ {
-        fmt.Printf(&quot;MEOW &quot;)
+    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">meow</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">meow</span> &lt; <span style="color:#a6e22e">meowStrength</span>; <span style="color:#a6e22e">meow</span><span style="color:#f92672">++</span> {
+        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;MEOW &#34;</span>)
     }
 
-    fmt.Println(&quot;&quot;)
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&#34;</span>)
 }
-</code></pre>
-
-<p>使用指针接收者实现各自的方法 MakeNoise()。这两个方法做同样的事情，如果 mean 为 true 话，每个动物会基于吠或喵的强度，用各自的母语说话。很无聊，但它展示了如何访问引用的对象。</p>
-
+</code></pre></div><p>使用指针接收者实现各自的方法 MakeNoise()。这两个方法做同样的事情，如果 mean 为 true 话，每个动物会基于吠或喵的强度，用各自的母语说话。很无聊，但它展示了如何访问引用的对象。</p>
 <p>我们可以使用 Dog 引用直接调用结构体 Animal 的成员，而 Cat 必须通过成员 Basics 访问到 Animal 的成员。</p>
-
 <p>到目前为止，我们已经讨论了封装、组合、访问规范和成员函数，剩下的就是如何创建多态行为。</p>
-
 <p>通过接口实现多态：</p>
-
-<pre><code class="language-go">type AnimalSounder interface {
-    MakeNoise()
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AnimalSounder</span> <span style="color:#66d9ef">interface</span> {
+    <span style="color:#a6e22e">MakeNoise</span>()
 }
 
-func MakeSomeNoise(animalSounder AnimalSounder) {
-    animalSounder.MakeNoise()
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">MakeSomeNoise</span>(<span style="color:#a6e22e">animalSounder</span> <span style="color:#a6e22e">AnimalSounder</span>) {
+    <span style="color:#a6e22e">animalSounder</span>.<span style="color:#a6e22e">MakeNoise</span>()
 }
-</code></pre>
-
-<p>上面的代码，我们添加一个接口 AnimalSounder 和一个公共函数 MakeSomeNoise()，该函数接受接口类型的值。实际上，该函数将引用实现此接口的类型的值。接口不是可以实例化的类型，是行为声明，其他类型可以去实现接口声明的行为。</p>
-
+</code></pre></div><p>上面的代码，我们添加一个接口 AnimalSounder 和一个公共函数 MakeSomeNoise()，该函数接受接口类型的值。实际上，该函数将引用实现此接口的类型的值。接口不是可以实例化的类型，是行为声明，其他类型可以去实现接口声明的行为。</p>
 <p>在 Go 中，<strong>通过方法实现接口的任何类型都表示接口类型</strong>。在我们的例子中，结构体 Dog 和 Cat 都通过指针接收者实现了接口 AnimalSounder，所以它们都可以看成是 AnimalSounder 类型。</p>
-
 <p>这意味着，Dog 和 Cat 的指针可以作为参数传递给函数 MakeSomeNoise()。MakeSomeNoise() 函数通过 AnimalSounder 接口实现多态行为。</p>
-
-<p><a href="https://play.golang.org/p/Qy7GJ7lpkM3" target="_blank">查看完整代码</a></p>
-
+<p><!-- raw HTML omitted -->查看完整代码<!-- raw HTML omitted --></p>
 <h3 id="进阶">进阶</h3>
-
 <p>如果你想减少 Cat 和 Dog 的 MakeNoise() 方法中的代码重复，可以为 Animal 类型创建一个方法来处理：</p>
-
-<pre><code class="language-go">func (animal *Animal) PerformNoise(strength int, sound string) {
-    if animal.mean == true {
-        strength = strength * 5
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">animal</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Animal</span>) <span style="color:#a6e22e">PerformNoise</span>(<span style="color:#a6e22e">strength</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">sound</span> <span style="color:#66d9ef">string</span>) {
+    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">animal</span>.<span style="color:#a6e22e">mean</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span> {
+        <span style="color:#a6e22e">strength</span> = <span style="color:#a6e22e">strength</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">5</span>
     }
 
-    for voice := 0; voice &lt; strength; voice++ {
-        fmt.Printf(&quot;%s &quot;, sound)
+    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">voice</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">voice</span> &lt; <span style="color:#a6e22e">strength</span>; <span style="color:#a6e22e">voice</span><span style="color:#f92672">++</span> {
+        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s &#34;</span>, <span style="color:#a6e22e">sound</span>)
     }
 
-    fmt.Println(&quot;&quot;)
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&#34;</span>)
 }
 
-func (dog *Dog) MakeNoise() {
-    dog.PerformNoise(dog.BarkStrength, &quot;BARK&quot;)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">dog</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Dog</span>) <span style="color:#a6e22e">MakeNoise</span>() {
+    <span style="color:#a6e22e">dog</span>.<span style="color:#a6e22e">PerformNoise</span>(<span style="color:#a6e22e">dog</span>.<span style="color:#a6e22e">BarkStrength</span>, <span style="color:#e6db74">&#34;BARK&#34;</span>)
 }
 
-func (cat *Cat) MakeNoise() {
-    cat.Basics.PerformNoise(cat.MeowStrength, &quot;MEOW&quot;)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cat</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Cat</span>) <span style="color:#a6e22e">MakeNoise</span>() {
+    <span style="color:#a6e22e">cat</span>.<span style="color:#a6e22e">Basics</span>.<span style="color:#a6e22e">PerformNoise</span>(<span style="color:#a6e22e">cat</span>.<span style="color:#a6e22e">MeowStrength</span>, <span style="color:#e6db74">&#34;MEOW&#34;</span>)
 }
-</code></pre>
-
-<p>现在 Animal 类型有一个处理 noise 的方法，可以被其外部类型调用，例如 Dog、Cat 类型。还有一个好处，我们不需要将 mean 成员作为参数传递，因为它就属于 Animal 结构体。
+</code></pre></div><p>现在 Animal 类型有一个处理 noise 的方法，可以被其外部类型调用，例如 Dog、Cat 类型。还有一个好处，我们不需要将 mean 成员作为参数传递，因为它就属于 Animal 结构体。
 下面是完整代码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<pre><code class="language-go">package main
-
-import (
-    &quot;fmt&quot;
+<span style="color:#f92672">import</span> (
+    <span style="color:#e6db74">&#34;fmt&#34;</span>
 )
 
-type Animal struct {
-    Name string
-    mean bool
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Animal</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+    <span style="color:#a6e22e">mean</span> <span style="color:#66d9ef">bool</span>
 }
 
-type AnimalSounder interface {
-    MakeNoise()
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">AnimalSounder</span> <span style="color:#66d9ef">interface</span> {
+    <span style="color:#a6e22e">MakeNoise</span>()
 }
 
-type Dog struct {
-    Animal
-    BarkStrength int
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Dog</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">Animal</span>
+    <span style="color:#a6e22e">BarkStrength</span> <span style="color:#66d9ef">int</span>
 }
 
-type Cat struct {
-    Basics Animal
-    MeowStrength int
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Cat</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">Basics</span> <span style="color:#a6e22e">Animal</span>
+    <span style="color:#a6e22e">MeowStrength</span> <span style="color:#66d9ef">int</span>
 }
 
-func main() {
-    myDog := &amp;Dog{
-        Animal{
-           &quot;Rover&quot;, // Name
-           false,   // mean
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#a6e22e">myDog</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Dog</span>{
+        <span style="color:#a6e22e">Animal</span>{
+           <span style="color:#e6db74">&#34;Rover&#34;</span>, <span style="color:#75715e">// Name
+</span><span style="color:#75715e"></span>           <span style="color:#66d9ef">false</span>,   <span style="color:#75715e">// mean
+</span><span style="color:#75715e"></span>        },
+        <span style="color:#ae81ff">2</span>, <span style="color:#75715e">// BarkStrength
+</span><span style="color:#75715e"></span>    }
+
+    <span style="color:#a6e22e">myCat</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Cat</span>{
+        <span style="color:#a6e22e">Basics</span>: <span style="color:#a6e22e">Animal</span>{
+            <span style="color:#a6e22e">Name</span>: <span style="color:#e6db74">&#34;Julius&#34;</span>,
+            <span style="color:#a6e22e">mean</span>: <span style="color:#66d9ef">true</span>,
         },
-        2, // BarkStrength
+        <span style="color:#a6e22e">MeowStrength</span>: <span style="color:#ae81ff">3</span>,
     }
 
-    myCat := &amp;Cat{
-        Basics: Animal{
-            Name: &quot;Julius&quot;,
-            mean: true,
-        },
-        MeowStrength: 3,
+    <span style="color:#a6e22e">MakeSomeNoise</span>(<span style="color:#a6e22e">myDog</span>)
+    <span style="color:#a6e22e">MakeSomeNoise</span>(<span style="color:#a6e22e">myCat</span>)
+}
+
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">animal</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Animal</span>) <span style="color:#a6e22e">PerformNoise</span>(<span style="color:#a6e22e">strength</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">sound</span> <span style="color:#66d9ef">string</span>) {
+    <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">animal</span>.<span style="color:#a6e22e">mean</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">true</span> {
+        <span style="color:#a6e22e">strength</span> = <span style="color:#a6e22e">strength</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">5</span>
     }
 
-    MakeSomeNoise(myDog)
-    MakeSomeNoise(myCat)
-}
-
-func (animal *Animal) PerformNoise(strength int, sound string) {
-    if animal.mean == true {
-        strength = strength * 5
+    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">voice</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">voice</span> &lt; <span style="color:#a6e22e">strength</span>; <span style="color:#a6e22e">voice</span><span style="color:#f92672">++</span> {
+        <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%s &#34;</span>, <span style="color:#a6e22e">sound</span>)
     }
 
-    for voice := 0; voice &lt; strength; voice++ {
-        fmt.Printf(&quot;%s &quot;, sound)
-    }
-
-    fmt.Println(&quot;&quot;)
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&#34;</span>)
 }
 
-func (dog *Dog) MakeNoise() {
-    dog.PerformNoise(dog.BarkStrength, &quot;BARK&quot;)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">dog</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Dog</span>) <span style="color:#a6e22e">MakeNoise</span>() {
+    <span style="color:#a6e22e">dog</span>.<span style="color:#a6e22e">PerformNoise</span>(<span style="color:#a6e22e">dog</span>.<span style="color:#a6e22e">BarkStrength</span>, <span style="color:#e6db74">&#34;BARK&#34;</span>)
 }
 
-func (cat *Cat) MakeNoise() {
-    cat.Basics.PerformNoise(cat.MeowStrength, &quot;MEOW&quot;)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">cat</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Cat</span>) <span style="color:#a6e22e">MakeNoise</span>() {
+    <span style="color:#a6e22e">cat</span>.<span style="color:#a6e22e">Basics</span>.<span style="color:#a6e22e">PerformNoise</span>(<span style="color:#a6e22e">cat</span>.<span style="color:#a6e22e">MeowStrength</span>, <span style="color:#e6db74">&#34;MEOW&#34;</span>)
 }
 
-func MakeSomeNoise(animalSounder AnimalSounder) {
-    animalSounder.MakeNoise()
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">MakeSomeNoise</span>(<span style="color:#a6e22e">animalSounder</span> <span style="color:#a6e22e">AnimalSounder</span>) {
+    <span style="color:#a6e22e">animalSounder</span>.<span style="color:#a6e22e">MakeNoise</span>()
 }
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">BARK BARK
-MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW MEOW
-</code></pre>
-
-<h3 id="结构体中嵌入接口">结构体中嵌入接口</h3>
-
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">BARK</span> <span style="color:#a6e22e">BARK</span>
+<span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span> <span style="color:#a6e22e">MEOW</span>
+</code></pre></div><h3 id="结构体中嵌入接口">结构体中嵌入接口</h3>
 <p>有人在后台给出了一个在结构体中嵌入接口的例子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<pre><code class="language-go">package main
-
-import (
-    &quot;fmt&quot;
+<span style="color:#f92672">import</span> (
+    <span style="color:#e6db74">&#34;fmt&#34;</span>
 )
 
-type HornSounder interface {
-    SoundHorn()
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">HornSounder</span> <span style="color:#66d9ef">interface</span> {
+    <span style="color:#a6e22e">SoundHorn</span>()
 }
 
-type Vehicle struct {
-    List [2]HornSounder
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Vehicle</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">List</span> [<span style="color:#ae81ff">2</span>]<span style="color:#a6e22e">HornSounder</span>
 }
 
-type Car struct {
-    Sound string
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Car</span> <span style="color:#66d9ef">struct</span> {
+    <span style="color:#a6e22e">Sound</span> <span style="color:#66d9ef">string</span>
 }
 
-type Bike struct {
-   Sound string
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Bike</span> <span style="color:#66d9ef">struct</span> {
+   <span style="color:#a6e22e">Sound</span> <span style="color:#66d9ef">string</span>
 }
 
-func main() {
-    vehicle := new(Vehicle)
-    vehicle.List[0] = &amp;Car{&quot;BEEP&quot;}
-    vehicle.List[1] = &amp;Bike{&quot;RING&quot;}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#a6e22e">vehicle</span> <span style="color:#f92672">:=</span> new(<span style="color:#a6e22e">Vehicle</span>)
+    <span style="color:#a6e22e">vehicle</span>.<span style="color:#a6e22e">List</span>[<span style="color:#ae81ff">0</span>] = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Car</span>{<span style="color:#e6db74">&#34;BEEP&#34;</span>}
+    <span style="color:#a6e22e">vehicle</span>.<span style="color:#a6e22e">List</span>[<span style="color:#ae81ff">1</span>] = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">Bike</span>{<span style="color:#e6db74">&#34;RING&#34;</span>}
 
-    for _, hornSounder := range vehicle.List {
-        hornSounder.SoundHorn()
-        // PressHorn(hornSounder) 这种方式也可以
-    }
+    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">hornSounder</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">vehicle</span>.<span style="color:#a6e22e">List</span> {
+        <span style="color:#a6e22e">hornSounder</span>.<span style="color:#a6e22e">SoundHorn</span>()
+        <span style="color:#75715e">// PressHorn(hornSounder) 这种方式也可以
+</span><span style="color:#75715e"></span>    }
 }
 
-func (car *Car) SoundHorn() {
-    fmt.Println(car.Sound)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">car</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Car</span>) <span style="color:#a6e22e">SoundHorn</span>() {
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">car</span>.<span style="color:#a6e22e">Sound</span>)
 }
 
-func (bike *Bike) SoundHorn() {
-    fmt.Println(bike.Sound)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">bike</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Bike</span>) <span style="color:#a6e22e">SoundHorn</span>() {
+    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">bike</span>.<span style="color:#a6e22e">Sound</span>)
 }
 
-func PressHorn(hornSounder HornSounder) {
-    hornSounder.SoundHorn()
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">PressHorn</span>(<span style="color:#a6e22e">hornSounder</span> <span style="color:#a6e22e">HornSounder</span>) {
+    <span style="color:#a6e22e">hornSounder</span>.<span style="color:#a6e22e">SoundHorn</span>()
 }
-</code></pre>
-
-<p>在这个例子中，结构体 Vehicle 维护了一个实现 HornSounder 接口的值列表。在 main 函数中创建了变量 vehicle，并存储了 Car 类型变量和 Bike 变量的指针。这种赋值操作是可以的，因为 Car 和 Bike 都实现了接口。接着就是要一个简单的 loop 操作，循环调用 SoundHorn() 方法。</p>
-
+</code></pre></div><p>在这个例子中，结构体 Vehicle 维护了一个实现 HornSounder 接口的值列表。在 main 函数中创建了变量 vehicle，并存储了 Car 类型变量和 Bike 变量的指针。这种赋值操作是可以的，因为 Car 和 Bike 都实现了接口。接着就是要一个简单的 loop 操作，循环调用 SoundHorn() 方法。</p>
 <p>在你的应用程序中，任何你需要实现面向对象的东西在 Go 语言中都有。正如我之前所说的，Go 采用了 OOP 中最好的部分，省略了其他部分，为我们提供了编写多态代码的更好方法。</p>
-
-<p>与主题相关联的几篇文章：<br>
+<p>与主题相关联的几篇文章：<!-- raw HTML omitted -->
 1.
-<a href="http://www.goinggo.net/2014/05/methods-interfaces-and-embedded-types.html" target="_blank">Methods, Interfaces and Embedded Types in Go</a><br></p>
-
-<p>2.<a href="http://www.goinggo.net/2013/07/how-packages-work-in-go-language.html" target="_blank">How Packages Work in Go</a><br></p>
-
-<p>3.<a href="http://www.goinggo.net/2013/07/singleton-design-pattern-in-go.html" target="_blank">Singleton Design Pattern in Go</a><br></p>
-
-<p>希望这几个简单的例子能对你的 Go 编程有帮助！<br><br><br></p>
-
-<p>推荐阅读：<br>
-1.<a href="https://seekload.net/2019/06/06/go-study-method.html" target="_blank">教女朋友写方法（续）</a><br></p>
-
-<p>2.<a href="https://seekload.net/2019/06/10/go-oop.html" target="_blank">Go 面向对象式编程</a><br></p>
-
-<p><br><br>
+<!-- raw HTML omitted -->Methods, Interfaces and Embedded Types in Go<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p>2.<!-- raw HTML omitted -->How Packages Work in Go<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p>3.<!-- raw HTML omitted -->Singleton Design Pattern in Go<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p>希望这几个简单的例子能对你的 Go 编程有帮助！<!-- raw HTML omitted --><!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p>推荐阅读：<!-- raw HTML omitted -->
+1.<!-- raw HTML omitted -->教女朋友写方法（续）<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p>2.<!-- raw HTML omitted -->Go 面向对象式编程<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -484,6 +434,10 @@ func PressHorn(hornSounder HornSounder) {
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -519,10 +473,6 @@ func PressHorn(hornSounder HornSounder) {
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -546,11 +496,11 @@ func PressHorn(hornSounder HornSounder) {
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -558,7 +508,7 @@ func PressHorn(hornSounder HornSounder) {
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -588,21 +538,21 @@ func PressHorn(hornSounder HornSounder) {
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

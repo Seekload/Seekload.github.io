@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:1738
+                                字数:1751
                             </span>
                         </div>
                         
@@ -125,231 +125,164 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<blockquote>
+                            <blockquote>
 <p><strong>这是『就要学习 Go 语言』系列的第 19 篇分享文章</strong></p>
 </blockquote>
-
 <h3 id="什么是接口">什么是接口</h3>
-
 <p>在一些面向对象的编程语言中，例如 Java、PHP 等，接口定义了对象的行为，只指定了对象应该做什么。行为的具体实现取决于对象。</p>
-
 <p>在 Go 语言中，接口是一组方法的集合，但不包含方法的实现、是抽象的，接口中也不能包含变量。当一个类型 T 提供了接口中所有方法的定义时，就说 T 实现了接口。接口指定类型应该有哪些方法，类型决定如何去实现这些方法。</p>
-
 <h3 id="接口声明">接口声明</h3>
-
 <p>接口的声明类似于结构体，使用类型别名且需要关键字 interface，语法如下：</p>
-
-<pre><code class="language-go">type Name interface {
-    Method1(param_list) return_type
-    Method2(param_list) return_type
-    ...
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">interface</span> {
+    <span style="color:#a6e22e">Method1</span>(<span style="color:#a6e22e">param_list</span>) <span style="color:#a6e22e">return_type</span>
+    <span style="color:#a6e22e">Method2</span>(<span style="color:#a6e22e">param_list</span>) <span style="color:#a6e22e">return_type</span>
+    <span style="color:#f92672">...</span>
 }
-</code></pre>
-
-<p>实际定义一个接口：</p>
-
-<pre><code class="language-go">type Shape interface {
-    Area() float32
+</code></pre></div><p>实际定义一个接口：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Shape</span> <span style="color:#66d9ef">interface</span> {
+    <span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span>
 }
-</code></pre>
-
-<p>上面的代码定义了接口类型 Shape，接口中包含了一个不带参数、返回值为 float32  的方法 Area()。任何实现了方法 Area() 的类型 T，我们就说它实现了接口 Shape。</p>
-
-<pre><code class="language-go">type Shape interface {
-	Area() float32
+</code></pre></div><p>上面的代码定义了接口类型 Shape，接口中包含了一个不带参数、返回值为 float32  的方法 Area()。任何实现了方法 Area() 的类型 T，我们就说它实现了接口 Shape。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Shape</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span>
 }
 
-func main() {
-	var s Shape
-	fmt.Println(&quot;value of s is&quot;, s)
-	fmt.Printf(&quot;type of s is %T\n&quot;, s)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Shape</span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;value of s is&#34;</span>, <span style="color:#a6e22e">s</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;type of s is %T\n&#34;</span>, <span style="color:#a6e22e">s</span>)
 }
-</code></pre>
-
-<p><a href="https://play.golang.org/p/jAYhZrCe4Iv" target="_blank">输出：</a></p>
-
-<pre><code class="language-go">value of s is &lt;nil&gt;
-type of s is &lt;nil&gt;
-</code></pre>
-
-<p>上面的代码，由于接口是一种类型，所以可以创建 Shape 类型的变量 s，你是不是很疑惑 s 的类型为什么是 nil？让我们来看下一节！</p>
-
+</code></pre></div><p><!-- raw HTML omitted -->输出：<!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">value</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">is</span> &lt;<span style="color:#66d9ef">nil</span>&gt;
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">is</span> &lt;<span style="color:#66d9ef">nil</span>&gt;
+</code></pre></div><p>上面的代码，由于接口是一种类型，所以可以创建 Shape 类型的变量 s，你是不是很疑惑 s 的类型为什么是 nil？让我们来看下一节！</p>
 <h3 id="接口类型值">接口类型值</h3>
-
 <h4 id="静态类型和动态类型">静态类型和动态类型</h4>
-
 <p>变量的类型在声明时指定、且不能改变，称为静态类型。接口类型的静态类型就是接口本身。接口没有静态值，它指向的是动态值。接口类型的变量存的是实现接口的类型的值。该值就是接口的动态值，实现接口的类型就是接口的动态类型。</p>
-
-<pre><code class="language-go">type Iname interface {
-	Mname()
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Iname</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Mname</span>()
 }
 
-type St1 struct {}
-func (St1) Mname() {}
-type St2 struct {}
-func (St2) Mname() {}
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">St1</span> <span style="color:#66d9ef">struct</span> {}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">St1</span>) <span style="color:#a6e22e">Mname</span>() {}
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">St2</span> <span style="color:#66d9ef">struct</span> {}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">St2</span>) <span style="color:#a6e22e">Mname</span>() {}
 
-func main() {
-	var i Iname = St1{}
-	fmt.Printf(&quot;type is %T\n&quot;,i)
-	fmt.Printf(&quot;value is %v\n&quot;,i)
-	i = St2{}
-	fmt.Printf(&quot;type is %T\n&quot;,i)
-	fmt.Printf(&quot;value is %v\n&quot;,i)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#a6e22e">Iname</span> = <span style="color:#a6e22e">St1</span>{}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;type is %T\n&#34;</span>,<span style="color:#a6e22e">i</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;value is %v\n&#34;</span>,<span style="color:#a6e22e">i</span>)
+	<span style="color:#a6e22e">i</span> = <span style="color:#a6e22e">St2</span>{}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;type is %T\n&#34;</span>,<span style="color:#a6e22e">i</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;value is %v\n&#34;</span>,<span style="color:#a6e22e">i</span>)
 }
-</code></pre>
-
-<p><a href="https://play.golang.org/p/D5XGg2WEDN2" target="_blank">输出：</a></p>
-
-<pre><code class="language-go">type is main.St1
-value is {}
-type is main.St2
-value is {}
-</code></pre>
-
-<p>变量 i 的静态类型是 Iname，是不能改变的。动态类型却是不固定的，第一次分配之后，i 的动态类型是 St1，第二次分配之后，i 的动态类型是 St2，动态值都是空结构体。</p>
-
+</code></pre></div><p><!-- raw HTML omitted -->输出：<!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">is</span> <span style="color:#a6e22e">main</span>.<span style="color:#a6e22e">St1</span>
+<span style="color:#a6e22e">value</span> <span style="color:#a6e22e">is</span> {}
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">is</span> <span style="color:#a6e22e">main</span>.<span style="color:#a6e22e">St2</span>
+<span style="color:#a6e22e">value</span> <span style="color:#a6e22e">is</span> {}
+</code></pre></div><p>变量 i 的静态类型是 Iname，是不能改变的。动态类型却是不固定的，第一次分配之后，i 的动态类型是 St1，第二次分配之后，i 的动态类型是 St2，动态值都是空结构体。</p>
 <p>有时候，接口的动态类型又称为<strong>具体类型</strong>，当我们访问接口类型的时候，返回的是底层动态值的类型。</p>
-
 <h4 id="nil-接口值">nil 接口值</h4>
-
 <p>我们来看个例子：</p>
-
-<pre><code class="language-go">type Iname interface {
-	Mname()
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Iname</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Mname</span>()
 }
-type St struct {}
-func (St) Mname() {}
-func main() {
-	var t *St
-	if t == nil {
-		fmt.Println(&quot;t is nil&quot;)
-	} else {
-		fmt.Println(&quot;t is not nil&quot;)
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">St</span> <span style="color:#66d9ef">struct</span> {}
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">St</span>) <span style="color:#a6e22e">Mname</span>() {}
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">t</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">St</span>
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">t</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;t is nil&#34;</span>)
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;t is not nil&#34;</span>)
 	}
-	var i Iname = t
-	fmt.Printf(&quot;%T\n&quot;, i)
-	if i == nil {
-		fmt.Println(&quot;i is nil&quot;)
-	} else {
-		fmt.Println(&quot;i is not nil&quot;)
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#a6e22e">Iname</span> = <span style="color:#a6e22e">t</span>
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%T\n&#34;</span>, <span style="color:#a6e22e">i</span>)
+	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;i is nil&#34;</span>)
+	} <span style="color:#66d9ef">else</span> {
+		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;i is not nil&#34;</span>)
 	}
-	fmt.Printf(&quot;i is nil pointer:%v&quot;,i == (*St)(nil))
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;i is nil pointer:%v&#34;</span>,<span style="color:#a6e22e">i</span> <span style="color:#f92672">==</span> (<span style="color:#f92672">*</span><span style="color:#a6e22e">St</span>)(<span style="color:#66d9ef">nil</span>))
 }
-</code></pre>
-
-<p><a href="https://play.golang.org/p/-hZ2Y7sEhX2" target="_blank">输出：</a></p>
-
-<pre><code class="language-go">t is nil
-*main.St
-i is not nil
-i is nil pointer:true
-</code></pre>
-
-<p>是不是很惊讶，我们分配给变量 i 的值明明是 nil，然而 i 却不是 nil。 来看下怎么回事！</p>
-
+</code></pre></div><p><!-- raw HTML omitted -->输出：<!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">t</span> <span style="color:#a6e22e">is</span> <span style="color:#66d9ef">nil</span>
+<span style="color:#f92672">*</span><span style="color:#a6e22e">main</span>.<span style="color:#a6e22e">St</span>
+<span style="color:#a6e22e">i</span> <span style="color:#a6e22e">is</span> <span style="color:#a6e22e">not</span> <span style="color:#66d9ef">nil</span>
+<span style="color:#a6e22e">i</span> <span style="color:#a6e22e">is</span> <span style="color:#66d9ef">nil</span> <span style="color:#a6e22e">pointer</span>:<span style="color:#66d9ef">true</span>
+</code></pre></div><p>是不是很惊讶，我们分配给变量 i 的值明明是 nil，然而 i 却不是 nil。 来看下怎么回事！</p>
 <p>动态类型在上面已经讲过，动态值是实际分配的值。记住一点：<strong>当且仅当动态值和动态类型都为 nil 时，接口类型值才为 nil</strong>。上面的代码，给变量 i  赋值之后，i 的动态值是 nil，但是动态类型却是 *St， i 是一个 nill 指针，所以相等条件不成立。</p>
-
 <p>看下 Go 语言规范：</p>
-
-<pre><code class="language-go"> var x interface{}  // x is nil and has static type interface{}
- var v *T           // v has value nil, static type *T
- x = 42             // x has value 42 and dynamic type int
- x = v              // x has value (*T)(nil) and dynamic type *T
-</code></pre>
-
-<p>通过这一节学习，相信你已经很清楚为什么上一节的 Shape 类型的变量的 s 输出的类型是 nil，因为 var s Shape 声明时，s 的动态类型是 nil。</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"> <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">interface</span>{}  <span style="color:#75715e">// x is nil and has static type interface{}
+</span><span style="color:#75715e"></span> <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">v</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">T</span>           <span style="color:#75715e">// v has value nil, static type *T
+</span><span style="color:#75715e"></span> <span style="color:#a6e22e">x</span> = <span style="color:#ae81ff">42</span>             <span style="color:#75715e">// x has value 42 and dynamic type int
+</span><span style="color:#75715e"></span> <span style="color:#a6e22e">x</span> = <span style="color:#a6e22e">v</span>              <span style="color:#75715e">// x has value (*T)(nil) and dynamic type *T
+</span></code></pre></div><p>通过这一节学习，相信你已经很清楚为什么上一节的 Shape 类型的变量的 s 输出的类型是 nil，因为 var s Shape 声明时，s 的动态类型是 nil。</p>
 <h3 id="实现接口">实现接口</h3>
-
 <p>看示例：</p>
-
-<pre><code class="language-go">type Shape interface {
-	Area() float32
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Shape</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span>
 }
 
-type Rect struct {
-	width  float32
-	height float32
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Rect</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">width</span>  <span style="color:#66d9ef">float32</span>
+	<span style="color:#a6e22e">height</span> <span style="color:#66d9ef">float32</span>
 }
 
-func (r Rect) Area() float32 {
-	return r.width * r.height
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">r</span> <span style="color:#a6e22e">Rect</span>) <span style="color:#a6e22e">Area</span>() <span style="color:#66d9ef">float32</span> {
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">width</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">height</span>
 }
 
-func main() {
-	var s Shape
-	s = Rect{5.0, 4.0}
-	r := Rect{5.0, 4.0}
-	fmt.Printf(&quot;type of s is %T\n&quot;, s)
-	fmt.Printf(&quot;value of s is %v\n&quot;, s)
-	fmt.Println(&quot;area of rectange s&quot;, s.Area())
-	fmt.Println(&quot;s == r is&quot;, s == r)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Shape</span>
+	<span style="color:#a6e22e">s</span> = <span style="color:#a6e22e">Rect</span>{<span style="color:#ae81ff">5.0</span>, <span style="color:#ae81ff">4.0</span>}
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Rect</span>{<span style="color:#ae81ff">5.0</span>, <span style="color:#ae81ff">4.0</span>}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;type of s is %T\n&#34;</span>, <span style="color:#a6e22e">s</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;value of s is %v\n&#34;</span>, <span style="color:#a6e22e">s</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;area of rectange s&#34;</span>, <span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Area</span>())
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;s == r is&#34;</span>, <span style="color:#a6e22e">s</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">r</span>)
 }
-</code></pre>
-
-<p><a href="https://play.golang.org/p/JCuHi2ei886" target="_blank">输出：</a></p>
-
-<pre><code class="language-go">type of s is main.Rect
-value of s is {5 4}
-area of rectange s 20
-s == r is true
-</code></pre>
-
-<p>上面的代码，创建了接口 Shape、结构体 Rect 以及方法 Area()。由于 Rect 实现了接口定义的所有方法，虽然只有一个，所以说 Rect 实现了接口 Shape。</p>
-
+</code></pre></div><p><!-- raw HTML omitted -->输出：<!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">is</span> <span style="color:#a6e22e">main</span>.<span style="color:#a6e22e">Rect</span>
+<span style="color:#a6e22e">value</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">is</span> {<span style="color:#ae81ff">5</span> <span style="color:#ae81ff">4</span>}
+<span style="color:#a6e22e">area</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">rectange</span> <span style="color:#a6e22e">s</span> <span style="color:#ae81ff">20</span>
+<span style="color:#a6e22e">s</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">r</span> <span style="color:#a6e22e">is</span> <span style="color:#66d9ef">true</span>
+</code></pre></div><p>上面的代码，创建了接口 Shape、结构体 Rect 以及方法 Area()。由于 Rect 实现了接口定义的所有方法，虽然只有一个，所以说 Rect 实现了接口 Shape。</p>
 <p>在主函数里，创建了接口类型的变量 s ，值为 nil，并用 Rect 类型的结构体初始化，因为 Rect 结构体实现了接口，所以这是有效的。赋值之后，s 的动态类型变成了 Rect，动态值就是结构体的值 {5.0,4.0}。</p>
-
 <p>可以直接使用 <code>.</code> 语法调用 Area() 方法，因为 s 的具体类型是 Rect，而 Rect 实现了 Area() 方法。</p>
-
 <h3 id="空接口">空接口</h3>
-
 <p>一个不包含任何方法的接口，称之为空接口，形如：interface{}。因为空接口不包含任何方法，所以任何类型都默认实现了空接口。</p>
-
 <p>举个例子，fmt 包中的 Println() 函数，可以接收多种类型的值，比如：int、string、array等。为什么，因为它的形参就是接口类型，可以接收任意类型的值。</p>
-
-<pre><code class="language-go">func Println(a ...interface{}) (n int, err error) {}
-</code></pre>
-
-<p>我们来看个例子：</p>
-
-<pre><code class="language-go">type MyString string
-type Rect struct {
-	width  float32
-	height float32
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">a</span> <span style="color:#f92672">...</span><span style="color:#66d9ef">interface</span>{}) (<span style="color:#a6e22e">n</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">err</span> <span style="color:#66d9ef">error</span>) {}
+</code></pre></div><p>我们来看个例子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">MyString</span> <span style="color:#66d9ef">string</span>
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Rect</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">width</span>  <span style="color:#66d9ef">float32</span>
+	<span style="color:#a6e22e">height</span> <span style="color:#66d9ef">float32</span>
 }
-func explain(i interface{}) {
-	fmt.Printf(&quot;type of s is %T\n&quot;, i)
-	fmt.Printf(&quot;value of s is %v\n\n&quot;, i)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">explain</span>(<span style="color:#a6e22e">i</span> <span style="color:#66d9ef">interface</span>{}) {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;type of s is %T\n&#34;</span>, <span style="color:#a6e22e">i</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;value of s is %v\n\n&#34;</span>, <span style="color:#a6e22e">i</span>)
 }
-func main() {
-	ms := MyString(&quot;Seekload&quot;)
-	r := Rect{5.0, 4.0}
-	explain(ms)
-	explain(r)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">ms</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">MyString</span>(<span style="color:#e6db74">&#34;Seekload&#34;</span>)
+	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Rect</span>{<span style="color:#ae81ff">5.0</span>, <span style="color:#ae81ff">4.0</span>}
+	<span style="color:#a6e22e">explain</span>(<span style="color:#a6e22e">ms</span>)
+	<span style="color:#a6e22e">explain</span>(<span style="color:#a6e22e">r</span>)
 }
-</code></pre>
+</code></pre></div><p><!-- raw HTML omitted -->输出：<!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">is</span> <span style="color:#a6e22e">main</span>.<span style="color:#a6e22e">MyString</span>
+<span style="color:#a6e22e">value</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">is</span> <span style="color:#a6e22e">Seekload</span>
 
-<p><a href="https://play.golang.org/p/VxarANnUPUE" target="_blank">输出：</a></p>
-
-<pre><code class="language-go">type of s is main.MyString
-value of s is Seekload
-
-type of s is main.Rect
-value of s is {5 4}
-</code></pre>
-
-<p>上面的代码，创建了自定义的字符串类型 MyString 、结构体 Rect 和 explain() 函数。explain() 函数的形参是空接口，所以可以接收任意类型的值。</p>
-
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">is</span> <span style="color:#a6e22e">main</span>.<span style="color:#a6e22e">Rect</span>
+<span style="color:#a6e22e">value</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">s</span> <span style="color:#a6e22e">is</span> {<span style="color:#ae81ff">5</span> <span style="color:#ae81ff">4</span>}
+</code></pre></div><p>上面的代码，创建了自定义的字符串类型 MyString 、结构体 Rect 和 explain() 函数。explain() 函数的形参是空接口，所以可以接收任意类型的值。</p>
 <p>关于接口使用的第一部分就讲到这，后续会再开文章给大家讲剩余部分，继续关注！</p>
-
-<p><br><br>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -431,6 +364,10 @@ value of s is {5 4}
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -466,10 +403,6 @@ value of s is {5 4}
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -493,11 +426,11 @@ value of s is {5 4}
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -505,7 +438,7 @@ value of s is {5 4}
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -535,21 +468,21 @@ value of s is {5 4}
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

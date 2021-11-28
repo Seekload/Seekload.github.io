@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -125,131 +125,87 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<p>这一节，我们来讨论更多关于<code>Slice</code>的用法。</p>
-
-<h3 id="nil-切片与空切片"><code>nil</code>切片与空切片</h3>
-
-<h4 id="nil-切片"><code>nil</code>切片</h4>
-
-<pre><code class="language-go">var s []int
-fmt.Println(s == nil)   // 输出 true
-fmt.Println(len(s),cap(s))   // 输出：0 0
-</code></pre>
-
-<p>上面这段代码声明了一个<code>nil</code>切片<code>s</code>，其实，切片的零值就是<code>nil</code>。为什么？通过<a href="/2019/01/27/go-slice-first.html">上一节</a>我们知道，因为切片就是一个数组的引用。切片的类型在初始化时已经确认，就是<code>[]Type</code>，上面的代码就声明了<code>[]int</code>类型的<code>nil</code>切片<code>s</code>。<code>nil</code>切片的指向底层数组的指针为<code>nil</code>。</p>
-
+                            <p>这一节，我们来讨论更多关于<code>Slice</code>的用法。</p>
+<h3 id="nil切片与空切片"><code>nil</code>切片与空切片</h3>
+<h4 id="nil切片"><code>nil</code>切片</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s</span> []<span style="color:#66d9ef">int</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span>)   <span style="color:#75715e">// 输出 true
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(len(<span style="color:#a6e22e">s</span>),cap(<span style="color:#a6e22e">s</span>))   <span style="color:#75715e">// 输出：0 0
+</span></code></pre></div><p>上面这段代码声明了一个<code>nil</code>切片<code>s</code>，其实，切片的零值就是<code>nil</code>。为什么？通过<a href="/2019/01/27/go-slice-first.html">上一节</a>我们知道，因为切片就是一个数组的引用。切片的类型在初始化时已经确认，就是<code>[]Type</code>，上面的代码就声明了<code>[]int</code>类型的<code>nil</code>切片<code>s</code>。<code>nil</code>切片的指向底层数组的指针为<code>nil</code>。</p>
 <h4 id="空切片">空切片</h4>
-
 <p>如何声明空切片？有两种方式：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 1、使用 make 创建空的整型切片
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">int</span>, <span style="color:#ae81ff">0</span>)
 
-<pre><code class="language-go">// 1、使用 make 创建空的整型切片
-s := make([]int, 0)
-
-// 2、使用切片字面量创建空的整型切片
-s := []int{}
-fmt.Println(s)   // 输出：[]
-fmt.Println(len(s),cap(s))   // 输出：0 0
-</code></pre>
-
-<p>通过上面代码可以得出，与<code>nil</code>切片一样，空切片的长度和容量也都是 0，说明切片底层的数组大小为 0，是一个空数组（没有分配任何的存储空间）。<br></p>
-
+<span style="color:#75715e">// 2、使用切片字面量创建空的整型切片
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{}
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)   <span style="color:#75715e">// 输出：[]
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(len(<span style="color:#a6e22e">s</span>),cap(<span style="color:#a6e22e">s</span>))   <span style="color:#75715e">// 输出：0 0
+</span></code></pre></div><p>通过上面代码可以得出，与<code>nil</code>切片一样，空切片的长度和容量也都是 0，说明切片底层的数组大小为 0，是一个空数组（没有分配任何的存储空间）。<!-- raw HTML omitted --></p>
 <blockquote>
 <p>不管是使用 <code>nil</code> 切片还是空切片，对其调用内置函数<code>append()</code>、<code>len()</code>和<code>cap()</code>的效果都是一样的。</p>
 </blockquote>
-
-<h3 id="copy-函数"><code>copy()</code>函数</h3>
-
+<h3 id="copy函数"><code>copy()</code>函数</h3>
 <p>Go 提供了内置函数<code>copy()</code>，可以讲一个切片复制到另一个切片。函数原型：</p>
-
-<pre><code class="language-go">func copy(dst, src []Type) int
-</code></pre>
-
-<p><code>dst</code>是目标切片，<code>src</code>是源切片，函数返回两者长度的最小值。</p>
-
-<pre><code class="language-go">var s1 []int
-s2 := []int{1, 2, 3}
-s3 := []int{4, 5, 6, 7}
-s4 := []int{1, 2, 3}
-// 1、
-n1 := copy(s1, s2)
-fmt.Printf(&quot;n1=%d, s1=%v, s2=%v\n&quot;, n1, s1, s2)
-fmt.Println(&quot;s1 == nil&quot;, s1 == nil)
-// 2、
-n2 := copy(s2, s3)
-fmt.Printf(&quot;n2=%d, s2=%v, s3=%v\n&quot;, n2, s2, s3)
-// 3、
-n3 := copy(s3, s4)
-fmt.Printf(&quot;n3=%d, s3=%v, s4=%v\n&quot;, n3, s3, s4)
-</code></pre>
-
-<p><a href="https://play.golang.org/p/Fo5hq9jLD2e" target="_blank">输出</a>：</p>
-
-<pre><code class="language-go">n1=0, s1=[], s2=[1 2 3]
-s1 == nil true
-n2=3, s2=[4 5 6], s3=[4 5 6 7]
-n3=3, s3=[1 2 3 7], s4=[1 2 3]
-</code></pre>
-
-<p>上面代码生声明了<code>nil</code>切片<code>s1</code>和三个非空切片<code>s2</code>、<code>s3</code>和<code>s4</code>。从第一块代码块可以看到，因为<code>s1</code>是<code>nil</code>切片，执行完<code>copy</code>操作之后，<code>s1</code>依然还是<code>nil</code>。这有别于<code>append()</code>函数：</p>
-
-<pre><code class="language-go">var s1 []int
-s2 := []int{1, 2, 3}
-s1 = append(s1, s2...)
-fmt.Println(s1)   // 输出：[1 2 3]
-</code></pre>
-
-<p>第二段代码：由于<code>s2</code>的长度是 3，<code>s3</code>的长度是 4，所以执行<code>copy</code>操作只会从<code>s3</code>复制 3 个元素至<code>s2</code>。<code>copy</code>只会复制，不会追加。
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> copy(<span style="color:#a6e22e">dst</span>, <span style="color:#a6e22e">src</span> []<span style="color:#a6e22e">Type</span>) <span style="color:#66d9ef">int</span>
+</code></pre></div><p><code>dst</code>是目标切片，<code>src</code>是源切片，函数返回两者长度的最小值。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s1</span> []<span style="color:#66d9ef">int</span>
+<span style="color:#a6e22e">s2</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>}
+<span style="color:#a6e22e">s3</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>}
+<span style="color:#a6e22e">s4</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>}
+<span style="color:#75715e">// 1、
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">n1</span> <span style="color:#f92672">:=</span> copy(<span style="color:#a6e22e">s1</span>, <span style="color:#a6e22e">s2</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;n1=%d, s1=%v, s2=%v\n&#34;</span>, <span style="color:#a6e22e">n1</span>, <span style="color:#a6e22e">s1</span>, <span style="color:#a6e22e">s2</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;s1 == nil&#34;</span>, <span style="color:#a6e22e">s1</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span>)
+<span style="color:#75715e">// 2、
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">n2</span> <span style="color:#f92672">:=</span> copy(<span style="color:#a6e22e">s2</span>, <span style="color:#a6e22e">s3</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;n2=%d, s2=%v, s3=%v\n&#34;</span>, <span style="color:#a6e22e">n2</span>, <span style="color:#a6e22e">s2</span>, <span style="color:#a6e22e">s3</span>)
+<span style="color:#75715e">// 3、
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">n3</span> <span style="color:#f92672">:=</span> copy(<span style="color:#a6e22e">s3</span>, <span style="color:#a6e22e">s4</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;n3=%d, s3=%v, s4=%v\n&#34;</span>, <span style="color:#a6e22e">n3</span>, <span style="color:#a6e22e">s3</span>, <span style="color:#a6e22e">s4</span>)
+</code></pre></div><p><!-- raw HTML omitted -->输出<!-- raw HTML omitted -->：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">n1</span>=<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">s1</span>=[], <span style="color:#a6e22e">s2</span>=[<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span>]
+<span style="color:#a6e22e">s1</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">nil</span> <span style="color:#66d9ef">true</span>
+<span style="color:#a6e22e">n2</span>=<span style="color:#ae81ff">3</span>, <span style="color:#a6e22e">s2</span>=[<span style="color:#ae81ff">4</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">6</span>], <span style="color:#a6e22e">s3</span>=[<span style="color:#ae81ff">4</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">7</span>]
+<span style="color:#a6e22e">n3</span>=<span style="color:#ae81ff">3</span>, <span style="color:#a6e22e">s3</span>=[<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">7</span>], <span style="color:#a6e22e">s4</span>=[<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span>]
+</code></pre></div><p>上面代码生声明了<code>nil</code>切片<code>s1</code>和三个非空切片<code>s2</code>、<code>s3</code>和<code>s4</code>。从第一块代码块可以看到，因为<code>s1</code>是<code>nil</code>切片，执行完<code>copy</code>操作之后，<code>s1</code>依然还是<code>nil</code>。这有别于<code>append()</code>函数：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">s1</span> []<span style="color:#66d9ef">int</span>
+<span style="color:#a6e22e">s2</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>}
+<span style="color:#a6e22e">s1</span> = append(<span style="color:#a6e22e">s1</span>, <span style="color:#a6e22e">s2</span><span style="color:#f92672">...</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s1</span>)   <span style="color:#75715e">// 输出：[1 2 3]
+</span></code></pre></div><p>第二段代码：由于<code>s2</code>的长度是 3，<code>s3</code>的长度是 4，所以执行<code>copy</code>操作只会从<code>s3</code>复制 3 个元素至<code>s2</code>。<code>copy</code>只会复制，不会追加。
 第三段代码也是同样的道理。</p>
-
 <h3 id="函数间传递切片">函数间传递切片</h3>
-
 <p>切片在函数间以值的方式传递。由于切片的尺寸很小（在 64 位架构的机器上，一个切片需要 24 字节的内存：指针字段、长度和容量字段各需要 8 字节），在函数间复制和传递切片成本也很低。切片发生复制时，底层数组不会被复制，数组大小也不会有影响。</p>
-
-<pre><code class="language-go">func main() {
-	s := []int{0, 1, 2, 3, 4, 5}
-	fmt.Printf(&quot;%p\n&quot;, &amp;s)
-	modify(s)
-	fmt.Println(s)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p\n&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>)
+	<span style="color:#a6e22e">modify</span>(<span style="color:#a6e22e">s</span>)
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
 }
 
-func modify(s []int) {
-	fmt.Printf(&quot;%p\n&quot;, &amp;s)
-	s[1] = 10
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">modify</span>(<span style="color:#a6e22e">s</span> []<span style="color:#66d9ef">int</span>) {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;%p\n&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>)
+	<span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">1</span>] = <span style="color:#ae81ff">10</span>
 }
-</code></pre>
-
-<p><a href="https://play.golang.org/p/fLgqxlQyCE6" target="_blank">输出</a>：</p>
-
-<pre><code class="language-go">0xc000086020
-0xc000086040
-[0 10 2 3 4 5]
-</code></pre>
-
-<p>我们可以看到，原切片地址和传递之后的切片的地址是不一样的，说明发生了复制；在函数<code>modify()</code>中修改了切片一个值，原切片的值也随之改变了，说明这两个切片是共享底层数组的。<br>
+</code></pre></div><p><!-- raw HTML omitted -->输出<!-- raw HTML omitted -->：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">0xc000086020</span>
+<span style="color:#ae81ff">0xc000086040</span>
+[<span style="color:#ae81ff">0</span> <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">5</span>]
+</code></pre></div><p>我们可以看到，原切片地址和传递之后的切片的地址是不一样的，说明发生了复制；在函数<code>modify()</code>中修改了切片一个值，原切片的值也随之改变了，说明这两个切片是共享底层数组的。<!-- raw HTML omitted -->
 在函数间传递切片非常高效，而且不需要传递指针和处理复杂的语法，只需要复制切片，按自己的业务修改数据，最后传递回一个新的切片副本即可，这也是为什么函数间使用切片传参，而不是数组传参的原因。</p>
-
 <h3 id="删除切片中的元素">删除切片中的元素</h3>
-
 <p>Go 没有提供删除切片元素的函数，然而，我们可以使用一些“黑科技”达到这样的目的。</p>
-
-<pre><code class="language-go">s := []int{1, 2, 3, 4, 5, 6}
-s = append(s[:2], s[3:]...)    // 删除索引为2的元素
-fmt.Println(s)
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">[1 2 4 5 6]
-</code></pre>
-
-<p>通过这两节详解，相信你已经掌握了<code>Slice</code>，建议大家要多多练习！
-<br><br>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>}
+<span style="color:#a6e22e">s</span> = append(<span style="color:#a6e22e">s</span>[:<span style="color:#ae81ff">2</span>], <span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">3</span>:]<span style="color:#f92672">...</span>)    <span style="color:#75715e">// 删除索引为2的元素
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">[<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">6</span>]
+</code></pre></div><p>通过这两节详解，相信你已经掌握了<code>Slice</code>，建议大家要多多练习！
+<!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -331,6 +287,10 @@ fmt.Println(s)
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -366,10 +326,6 @@ fmt.Println(s)
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -393,11 +349,11 @@ fmt.Println(s)
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -405,7 +361,7 @@ fmt.Println(s)
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -435,21 +391,21 @@ fmt.Println(s)
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

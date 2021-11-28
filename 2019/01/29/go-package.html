@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:1899
+                                字数:1883
                             </span>
                         </div>
                         
@@ -125,109 +125,74 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<h3 id="前言">前言</h3>
-
+                            <h3 id="前言">前言</h3>
 <p>在上一节（<a href="/2019/01/27/go-workspace.html">聊聊 Go 的工作空间</a>），提到了 Go 包，这一节，我们就来仔细讲讲。</p>
-
 <h3 id="什么是go包">什么是Go包</h3>
-
 <p>Go 语言中的包，其实是一种组织代码的方式。Go 的程序都会组织成若干组文件，而每组文件被称为一个包。Go 安装完成之后，在<code>GOROOT/src</code>目录，自带了各种各样的包，例如常用的<code>io</code>包、<code>fmt</code>包、<code>math</code>包等。我们就来分析下<code>io</code>包，看看 Go 内置的包是如何组织代码的。
-<img src="/img/20181122215410916.png" alt="tree io包" />
+<img src="/img/20181122215410916.png" alt="tree io包">
 上图显示的就是<code>io</code>包的目录结构，分别打开<code>io.go</code>、<code>multi.go</code>和<code>pipe.go</code>，你会发现在文件非注释的第一行都声明了<code>package io</code>。没错，这三个源文件都属于同一个 Go 包 &ndash;<code>io</code>包。到这里，其实已经很明白了，所谓的 Go 包就是计算机中的目录，通俗点讲就是文件名。Go 语言就是这样通过它们进行目录结构和文件组织的。在<code>io</code>包目录下，其实还有个<code>ioutil</code>包，感兴趣的同学可以打开<code>ioutil</code>目录下的文件，一探究竟。（以<code>_test.go</code>结尾的测试文件，忽略）</p>
-
 <h3 id="包应该如何命名">包应该如何命名</h3>
-
-<p>使用关键字 &ndash;<code>package</code>。<strong>和go文件所在目录同名</strong>，这是 Go 包命名的最大原则，其次还应该做到<strong>简洁</strong>、<strong>清晰</strong>且<strong>全小写</strong>。这种命名方式有利于开发时书写包名，查找和定位。例如，上面提到的   <code>io</code>包、<code>ioutil</code>包，命名都很简短且清晰。所属<code>io</code>包的三个文件，在文件开头都声明了<code>package io</code>。</p>
-
+<p>使用关键字 &ndash;<code>package</code>。<strong>和go文件所在目录同名</strong>，这是 Go 包命名的最大原则，其次还应该做到<strong>简洁</strong>、<strong>清晰</strong>且<strong>全小写</strong>。这种命名方式有利于开发时书写包名，查找和定位。例如，上面提到的	<code>io</code>包、<code>ioutil</code>包，命名都很简短且清晰。所属<code>io</code>包的三个文件，在文件开头都声明了<code>package io</code>。</p>
 <h3 id="包的导入">包的导入</h3>
-
 <p>使用关键字 &ndash;<code>import</code>。使用一个包，必须先将包导入（不管是 Go 内置包还是自己写的包）。例如：</p>
-
-<pre><code class="language-go">// 导入单个包
-import &quot;fmt&quot;
-</code></pre>
-
-<pre><code class="language-go">// 使用go语言提供的导入快，导入多个包，每个包独占一行
-import (
-	&quot;fmt&quot;
-	&quot;io/ioutil&quot;
-	&quot;github.com/Seekload/stringutil&quot;
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 导入单个包
+</span><span style="color:#75715e"></span><span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;fmt&#34;</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 使用go语言提供的导入快，导入多个包，每个包独占一行
+</span><span style="color:#75715e"></span><span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;io/ioutil&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/Seekload/stringutil&#34;</span>
 )
-</code></pre>
-
-<p><code>import</code>告诉编译器到磁盘的哪里去找想要导入的包。其实，上面导入<code>fmt</code>、<code>io/ioutil</code>和<code>github.com/Seekload/stringutil</code>是一个相对路径，编译器会使用 Go 环境变量（<code>GOROOT</code>和<code>GOPATH</code>）设置的路径，通过引入的相对路径来查找磁盘上的包。例如<code>io/ioutil</code>，编译器最终会在<code>GOROOT/src/io/ioutil</code>路径下查找到<code>ioutil</code>包。类似的，会在<code>GOPATH/src/github.com/Seekload/stringutil</code>路径下查找到<code>stringutil</code>包。<br><strong>提一点</strong>：编译器在查找的时候，会优先在<code>GOROOT</code>路径下查找，其次，在<code>GOPATH</code>下查找，查找无果之后会报编译错误。
+</code></pre></div><p><code>import</code>告诉编译器到磁盘的哪里去找想要导入的包。其实，上面导入<code>fmt</code>、<code>io/ioutil</code>和<code>github.com/Seekload/stringutil</code>是一个相对路径，编译器会使用 Go 环境变量（<code>GOROOT</code>和<code>GOPATH</code>）设置的路径，通过引入的相对路径来查找磁盘上的包。例如<code>io/ioutil</code>，编译器最终会在<code>GOROOT/src/io/ioutil</code>路径下查找到<code>ioutil</code>包。类似的，会在<code>GOPATH/src/github.com/Seekload/stringutil</code>路径下查找到<code>stringutil</code>包。<!-- raw HTML omitted --><strong>提一点</strong>：编译器在查找的时候，会优先在<code>GOROOT</code>路径下查找，其次，在<code>GOPATH</code>下查找，查找无果之后会报编译错误。
 <strong>导入包完成之后，就可以使用包提供的常量、函数等</strong>，例如：</p>
-
-<pre><code class="language-go">fmt.Println();
-ioutil.ReadDir();
-</code></pre>
-
-<h3 id="获取远程包">获取远程包</h3>
-
-<p>某一天，你在浏览<code>github</code>，发现一个函数丰富的包，想在自己的项目上使用，目前，你想到的引用办法可能就是直接将包<code>clone</code>到本地，然后放到<code>GOPATH/src/</code>目录，开始引用。其实，有一种更简便的方式，就是<strong>远程导入</strong>&ndash;使用<code>go get</code>命令。这种导入的前提就是，包托管在一个分布式的版本控制系统上，比如 Github 等，并且是 Public 的权限。<br>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>();
+<span style="color:#a6e22e">ioutil</span>.<span style="color:#a6e22e">ReadDir</span>();
+</code></pre></div><h3 id="获取远程包">获取远程包</h3>
+<p>某一天，你在浏览<code>github</code>，发现一个函数丰富的包，想在自己的项目上使用，目前，你想到的引用办法可能就是直接将包<code>clone</code>到本地，然后放到<code>GOPATH/src/</code>目录，开始引用。其实，有一种更简便的方式，就是<strong>远程导入</strong>&ndash;使用<code>go get</code>命令。这种导入的前提就是，包托管在一个分布式的版本控制系统上，比如 Github 等，并且是 Public 的权限。<!-- raw HTML omitted -->
 我在 GitHub 上就有一个<code>github.com/Seekload/stringutil</code>包（使用自己的域名作为包名一部分是为了避免包名重复，GitHub 上的包太多了~），大家可以跟着我实操一下：
 大家看下，我的工作空间目前是这样的，
-<img src="/img/2018112308011439.png" alt="在这里插入图片描述" />
+<img src="/img/2018112308011439.png" alt="在这里插入图片描述">
 在<code>GOPATH</code>执行<code>go get github.com/Seekload/stringutil</code>导入远程包之后：
-<img src="/img/20181123080920179.png" alt="go get" />
-可以看到<code>stringutil</code>包已经下载到工作空间，并且已经生成静态库文件<code>stringutil.a</code>，说明对包已进行过编译和安装。<strong>注意</strong>：<code>go get</code>工具可以递归获取依赖包，如果<code>github.com/Seekload/stringutil</code>也引用了其他的远程包，也可以一并下载下来。<br>
+<img src="/img/20181123080920179.png" alt="go get">
+可以看到<code>stringutil</code>包已经下载到工作空间，并且已经生成静态库文件<code>stringutil.a</code>，说明对包已进行过编译和安装。<strong>注意</strong>：<code>go get</code>工具可以递归获取依赖包，如果<code>github.com/Seekload/stringutil</code>也引用了其他的远程包，也可以一并下载下来。<!-- raw HTML omitted -->
 好了，现在就可以在<code>hello.go</code>中导入包了</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<pre><code class="language-go">package main
-
-import (
-	&quot;fmt&quot;
-	&quot;github.com/Seekload/stringutil&quot;
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#e6db74">&#34;github.com/Seekload/stringutil&#34;</span>
 )
 
-func main() {
-	fmt.Println(stringutil.Reverse(&quot;!oG ,daolkeeS&quot;))
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">stringutil</span>.<span style="color:#a6e22e">Reverse</span>(<span style="color:#e6db74">&#34;!oG ,daolkeeS&#34;</span>))
 }
-</code></pre>
-
-<p>执行编译安装<code>go install hello/</code>，生成可执行文件<code>hello</code>
-<img src="/img/2018112308215736.png" alt="在这里插入图片描述" /></p>
-
+</code></pre></div><p>执行编译安装<code>go install hello/</code>，生成可执行文件<code>hello</code>
+<img src="/img/2018112308215736.png" alt="在这里插入图片描述"></p>
 <h3 id="命名导入">命名导入</h3>
-
 <p><code>import</code>支持多个包导入，如果导入的包出现重名，该怎么办？别担心，Go 开发团队已经考虑到这个问题了，提供给我们的方法就是，对导入的包重新命名&ndash;即命名导入：在 <code>import</code> 语句给出的包路径的左侧定义一个名字，将导入的包命名为新名字。看代码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<pre><code class="language-go">package main
-
-import (
-	&quot;fmt&quot;
-	myfmt &quot;github.com/Seekload/stringutil/fmt&quot;
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#a6e22e">myfmt</span> <span style="color:#e6db74">&#34;github.com/Seekload/stringutil/fmt&#34;</span>
 )
 
-func main() {
-	fmt.Println()
-	myfmt.Println()
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>()
+	<span style="color:#a6e22e">myfmt</span>.<span style="color:#a6e22e">Println</span>()
 }
-</code></pre>
+</code></pre></div><p>如果，代码里导入了一个没有用到的包，Go 编译器不会告警，而是直接编译失败，并抛出一个错误。Go 开发团队认为，导入的包应该被使用。不然，无用的包过多，会使代码变得臃肿且管理繁琐。不过，有时，我们需要导入一个包，但是又用不到，怎么办？没关系，Go 提供了空白标识符 <code>_</code> 来重命名这个包导入。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<p>如果，代码里导入了一个没有用到的包，Go 编译器不会告警，而是直接编译失败，并抛出一个错误。Go 开发团队认为，导入的包应该被使用。不然，无用的包过多，会使代码变得臃肿且管理繁琐。不过，有时，我们需要导入一个包，但是又用不到，怎么办？没关系，Go 提供了空白标识符 <code>_</code> 来重命名这个包导入。</p>
-
-<pre><code class="language-go">package main
-
-import (
-	&quot;fmt&quot;
-	_ &quot;github.com/Seekload/stringutil/fmt&quot;
+<span style="color:#f92672">import</span> (
+	<span style="color:#e6db74">&#34;fmt&#34;</span>
+	<span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;github.com/Seekload/stringutil/fmt&#34;</span>
 )
-</code></pre>
-
-<p>这里提到了下划线字符<code>_</code>，以后还会接触到。<br></p>
-
+</code></pre></div><p>这里提到了下划线字符<code>_</code>，以后还会接触到。<!-- raw HTML omitted --></p>
 <blockquote>
 <p>下划线字符<code>_</code>称为空白标识符，作用：抛弃不想继续使用的值，如给导入的包赋予一个空名字，或者忽略函数返回的你不感兴趣的值。</p>
 </blockquote>
-
-<p><br>
-(全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<!-- raw HTML omitted -->
 
                         </div>
 
@@ -239,9 +204,9 @@ import (
         
         <li><a href="/2019/01/27/go-workspace.html">聊聊 Go 工作空间</a></li>
         
-        <li><a href="/about/">关于我</a></li>
-        
         <li><a href="/golang100/">Go语言知识站</a></li>
+        
+        <li><a href="/about/">关于我</a></li>
         
     </ul>
 </div>
@@ -309,6 +274,10 @@ import (
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -344,10 +313,6 @@ import (
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -371,11 +336,11 @@ import (
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -383,7 +348,7 @@ import (
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -413,21 +378,21 @@ import (
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

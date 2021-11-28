@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:1399
+                                字数:1419
                             </span>
                         </div>
                         
@@ -125,171 +125,121 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<blockquote>
+                            <blockquote>
 <p><strong>『就要学习 Go 语言』系列 &ndash; 第 25 篇分享好文</strong></p>
 </blockquote>
-
 <p>Go 语言没有对象的概念，但是 struct 类型有着和对象类似的特性。struct 类型可以定义自己的属性和方法。这篇文章我们来总结下 Go 语言中关于 “继承” 和多态的概念。</p>
-
 <h3 id="嵌入类型">嵌入类型</h3>
-
 <p><strong>嵌入类型是指将已有的类型直接声明在新的结构类型里</strong>。不像 Java、C++ 等语言，Go 语言没有继承，但是可以通过<strong>组合</strong>的方式实现代码的复用。</p>
-
-<pre><code class="language-go">type User struct {
-	Name string
-	Email string
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">User</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">Name</span> <span style="color:#66d9ef">string</span>
+	<span style="color:#a6e22e">Email</span> <span style="color:#66d9ef">string</span>
 }
 
-type Admin struct {
-	User
-	Level string
+<span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Admin</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#a6e22e">User</span>
+	<span style="color:#a6e22e">Level</span> <span style="color:#66d9ef">string</span>
 }
 
-func (u *User) Speak()  {
-	fmt.Println(&quot;I am user&quot;,u.Name)
+<span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">u</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>) <span style="color:#a6e22e">Speak</span>()  {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;I am user&#34;</span>,<span style="color:#a6e22e">u</span>.<span style="color:#a6e22e">Name</span>)
 }
-</code></pre>
-
-<p>上面的代码定义了两个结构体 User 和 Admin，Admin 有一个匿名成员 User，因为是匿名，所以类型即名称。将 User 嵌入 Admin，Admin 是被嵌入的类型，也称<strong>外部类型</strong>，User 是<strong>内部类型</strong>。Speak() 是 User 的方法。</p>
-
+</code></pre></div><p>上面的代码定义了两个结构体 User 和 Admin，Admin 有一个匿名成员 User，因为是匿名，所以类型即名称。将 User 嵌入 Admin，Admin 是被嵌入的类型，也称<strong>外部类型</strong>，User 是<strong>内部类型</strong>。Speak() 是 User 的方法。</p>
 <p>通过嵌入，内部类型的属性、方法，可以为外部类型所有，就好像是外部类型自己的一样。此外，外部类型还可以定义自己的属性和方法，甚至可以定义与内部相同的方法，这样内部类型的方法就会被“屏蔽”。</p>
-
-<pre><code class="language-go">admin := Admin{
-		User:User{
-			Name:&quot;Jack&quot;,
-			Email:&quot;Jack@gmail.com&quot;,
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">admin</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Admin</span>{
+		<span style="color:#a6e22e">User</span>:<span style="color:#a6e22e">User</span>{
+			<span style="color:#a6e22e">Name</span>:<span style="color:#e6db74">&#34;Jack&#34;</span>,
+			<span style="color:#a6e22e">Email</span>:<span style="color:#e6db74">&#34;Jack@gmail.com&#34;</span>,
 		},
-		Level:&quot;admin&quot;,
+		<span style="color:#a6e22e">Level</span>:<span style="color:#e6db74">&#34;admin&#34;</span>,
 	}
-	// 内部类型的方法也被提升到外部类型
-	admin.Speak()   // 方式一
-	// 直接访问内部类型的方法
-	admin.User.Speak()  // 方式二
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">I am user Jack
-I am user Jack
-</code></pre>
-
-<p>给 Admin 定义自己的 Speak() 方法：</p>
-
-<pre><code class="language-go">func (a *Admin) Speak()  {
-	fmt.Println(&quot;I am admin&quot;,a.Name)
+	<span style="color:#75715e">// 内部类型的方法也被提升到外部类型
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">Speak</span>()   <span style="color:#75715e">// 方式一
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// 直接访问内部类型的方法
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">User</span>.<span style="color:#a6e22e">Speak</span>()  <span style="color:#75715e">// 方式二
+</span></code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">I</span> <span style="color:#a6e22e">am</span> <span style="color:#a6e22e">user</span> <span style="color:#a6e22e">Jack</span>
+<span style="color:#a6e22e">I</span> <span style="color:#a6e22e">am</span> <span style="color:#a6e22e">user</span> <span style="color:#a6e22e">Jack</span>
+</code></pre></div><p>给 Admin 定义自己的 Speak() 方法：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> (<span style="color:#a6e22e">a</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">Admin</span>) <span style="color:#a6e22e">Speak</span>()  {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;I am admin&#34;</span>,<span style="color:#a6e22e">a</span>.<span style="color:#a6e22e">Name</span>)
 }
 
-func main()  {
-	admin := Admin{
-		User:User{
-			Name:&quot;Jack&quot;,
-			Email:&quot;Jack@gmail.com&quot;,
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>()  {
+	<span style="color:#a6e22e">admin</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Admin</span>{
+		<span style="color:#a6e22e">User</span>:<span style="color:#a6e22e">User</span>{
+			<span style="color:#a6e22e">Name</span>:<span style="color:#e6db74">&#34;Jack&#34;</span>,
+			<span style="color:#a6e22e">Email</span>:<span style="color:#e6db74">&#34;Jack@gmail.com&#34;</span>,
 		},
-		Level:&quot;admin&quot;,
+		<span style="color:#a6e22e">Level</span>:<span style="color:#e6db74">&#34;admin&#34;</span>,
 	}
-	admin.Speak()   // 方式一
-	admin.User.Speak()  // 方式二
-}
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">I am admin Jack
-I am user Jack
-</code></pre>
-
-<p>可以看到，Admin 定义了自己的 Speak() 方法时，会自动调用自己的方法，而屏蔽内部类型的方法。对于属性也是一样的情况。</p>
-
-<p>查看完整<a href="https://play.golang.org/p/gXfUcqyS2fG" target="_blank">代码</a></p>
-
+	<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">Speak</span>()   <span style="color:#75715e">// 方式一
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">admin</span>.<span style="color:#a6e22e">User</span>.<span style="color:#a6e22e">Speak</span>()  <span style="color:#75715e">// 方式二
+</span><span style="color:#75715e"></span>}
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">I</span> <span style="color:#a6e22e">am</span> <span style="color:#a6e22e">admin</span> <span style="color:#a6e22e">Jack</span>
+<span style="color:#a6e22e">I</span> <span style="color:#a6e22e">am</span> <span style="color:#a6e22e">user</span> <span style="color:#a6e22e">Jack</span>
+</code></pre></div><p>可以看到，Admin 定义了自己的 Speak() 方法时，会自动调用自己的方法，而屏蔽内部类型的方法。对于属性也是一样的情况。</p>
+<p>查看完整<!-- raw HTML omitted -->代码<!-- raw HTML omitted --></p>
 <p>另外，更重要的是，<strong>如果内部类型实现接口 A，也可以认为外部类型也实现了接口 A。</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Speaker</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Speak</span>()   <span style="color:#75715e">// 方法
+</span><span style="color:#75715e"></span>}
 
-<pre><code class="language-go">type Speaker interface {
-	Speak()   // 方法
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">gotoSpeak</span>(<span style="color:#a6e22e">s</span> <span style="color:#a6e22e">Speaker</span>) {
+	<span style="color:#a6e22e">s</span>.<span style="color:#a6e22e">Speak</span>()
 }
-
-func gotoSpeak(s Speaker) {
-	s.Speak()
-}
-</code></pre>
-
-<p>定义了 Speaker 接口，任意类型如果实现了接口中定义的全部方法，就认为该类型实现了接口。例如，上面定义的 User 类型，就实现了接口 Speaker。gotoSpeak() 函数是接收 Speaker 接口类型的参数，任何实现了 Speaker 接口的类型都可以调用该函数。</p>
-
-<pre><code class="language-go">admin := Admin{
-		User: User{
-			Name:  &quot;Jack&quot;,
-			Email: &quot;Jack@gmail.com&quot;,
+</code></pre></div><p>定义了 Speaker 接口，任意类型如果实现了接口中定义的全部方法，就认为该类型实现了接口。例如，上面定义的 User 类型，就实现了接口 Speaker。gotoSpeak() 函数是接收 Speaker 接口类型的参数，任何实现了 Speaker 接口的类型都可以调用该函数。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">admin</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Admin</span>{
+		<span style="color:#a6e22e">User</span>: <span style="color:#a6e22e">User</span>{
+			<span style="color:#a6e22e">Name</span>:  <span style="color:#e6db74">&#34;Jack&#34;</span>,
+			<span style="color:#a6e22e">Email</span>: <span style="color:#e6db74">&#34;Jack@gmail.com&#34;</span>,
 		},
-		Level: &quot;admin&quot;,
+		<span style="color:#a6e22e">Level</span>: <span style="color:#e6db74">&#34;admin&#34;</span>,
 	}
-	gotoSpeak(&amp;admin)
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">I am user Jack
-</code></pre>
-
-<p>注意，关键点来了，调用 gotoSpeak() 时传的参数是 admin 的地址，类型是 *Admin，不能传 Admin 类型的值。从上篇文章我们知道，Admin 类型的方法集中不包括 Speak() 方法，也就是说 Admin 类型没有实现 Speaker 接口。</p>
-
+	<span style="color:#a6e22e">gotoSpeak</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">admin</span>)
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">I</span> <span style="color:#a6e22e">am</span> <span style="color:#a6e22e">user</span> <span style="color:#a6e22e">Jack</span>
+</code></pre></div><p>注意，关键点来了，调用 gotoSpeak() 时传的参数是 admin 的地址，类型是 *Admin，不能传 Admin 类型的值。从上篇文章我们知道，Admin 类型的方法集中不包括 Speak() 方法，也就是说 Admin 类型没有实现 Speaker 接口。</p>
 <p>结合上篇关于类型方法集，对于嵌入类型的内部类型方法的提升可以总结下。假设<strong>外部结构体类型是 S，内部类型是 T</strong>，则关于内部类型的方法提升如下规则：</p>
-
 <ol>
 <li>T 嵌入 S，外部类型 S 可以通过值类型或指针类型调用内部类型 T 的值方法；</li>
 <li>T 嵌入 S，外部类型 S 只能通过指针类型调用内部类型 T 的指针方法；</li>
 <li>*T 嵌入 S，外部类型 S 可以通过值类型和指针类型调用内部类型 T 的值方法和指针方法；</li>
 </ol>
-
 <p>上面的三条规则可以总结成一句话：<strong>不管是 T 嵌入 S，还是 *T 嵌入 S，外部类型 S 唯独通过值类型不能调用内部类型 T 的指针方法外，其他情况下内部类型 T 的方法都可以获得提升，即可被外部类型 S 访</strong>问 。</p>
-
 <p>前两点其实很好理解，第三点是通过<strong>指针方式组合</strong>，其实就是在外部类型初始化的时候，取得内部类型的指针。其他规则与非指针方式组合一致。</p>
-
-<pre><code class="language-go">type Admin struct {
-	*User            // 通过指针方式组合
-	Level string
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Admin</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#f92672">*</span><span style="color:#a6e22e">User</span>            <span style="color:#75715e">// 通过指针方式组合
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Level</span> <span style="color:#66d9ef">string</span>
 }
 
-func main() {
-	admin := Admin{
-		User: &amp;User{
-			Name:  &quot;Jack&quot;,
-			Email: &quot;Jack@gmail.com&quot;,
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">admin</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">Admin</span>{
+		<span style="color:#a6e22e">User</span>: <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">User</span>{
+			<span style="color:#a6e22e">Name</span>:  <span style="color:#e6db74">&#34;Jack&#34;</span>,
+			<span style="color:#a6e22e">Email</span>: <span style="color:#e6db74">&#34;Jack@gmail.com&#34;</span>,
 		},
-		Level: &quot;admin&quot;,
+		<span style="color:#a6e22e">Level</span>: <span style="color:#e6db74">&#34;admin&#34;</span>,
 	}
-	gotoSpeak(&amp;admin)
-	gotoSpeak(admin)
+	<span style="color:#a6e22e">gotoSpeak</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">admin</span>)
+	<span style="color:#a6e22e">gotoSpeak</span>(<span style="color:#a6e22e">admin</span>)
 }
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">I am user Jack
-I am user Jack
-</code></pre>
-
-<h3 id="多态">多态</h3>
-
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">I</span> <span style="color:#a6e22e">am</span> <span style="color:#a6e22e">user</span> <span style="color:#a6e22e">Jack</span>
+<span style="color:#a6e22e">I</span> <span style="color:#a6e22e">am</span> <span style="color:#a6e22e">user</span> <span style="color:#a6e22e">Jack</span>
+</code></pre></div><h3 id="多态">多态</h3>
 <p>其实上面的例子已经给出多态的例子了，这个给大家提一下。在 Go 语言中，每种类型都是不同的，但不同的类型可以实现同一接口，将它们绑定在同一接口上，用作函数或者放的输入（输出）参数。例如上面的 User 类型和 Admin 类型就是通过 Speaker 接口建立了关系。</p>
-
 <p>希望这篇文章能够帮助你，Good day!</p>
-
-<p>深入阅读：<br>
-1.<a href="https://seekload.net/2019/06/06/go-study-method.html" target="_blank">教女朋友写方法（续）</a><br></p>
-
-<p>2.<a href="https://golangbot.com/polymorphism/" target="_blank">Polymorphism - OOP in Go</a><br></p>
-
-<p>3.<a href="https://spf13.com/post/is-go-object-oriented/" target="_blank">Is Go An Object Oriented Language?</a><br></p>
-
+<p>深入阅读：<!-- raw HTML omitted -->
+1.<!-- raw HTML omitted -->教女朋友写方法（续）<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p>2.<!-- raw HTML omitted -->Polymorphism - OOP in Go<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
+<p>3.<!-- raw HTML omitted -->Is Go An Object Oriented Language?<!-- raw HTML omitted --><!-- raw HTML omitted --></p>
 <p>4.《Go 语言实战》5.4 5.5 节</p>
-
-<p><br><br>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -373,6 +323,10 @@ I am user Jack
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -408,10 +362,6 @@ I am user Jack
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -435,11 +385,11 @@ I am user Jack
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -447,7 +397,7 @@ I am user Jack
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -477,21 +427,21 @@ I am user Jack
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>context on Seekload&#39;s Blog</title>
@@ -6,10 +6,15 @@
     <description>Recent content in context on Seekload&#39;s Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Wed, 03 Mar 2021 13:37:33 +0800</lastBuildDate>
-    
-	<atom:link href="https://seekload.net/tags/context/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Sun, 28 Nov 2021 13:37:33 +0800</lastBuildDate><atom:link href="https://seekload.net/tags/context/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>图解Go语言Context（附源码分析）</title>
+      <link>https://seekload.net/2021/11/28/go-context.html</link>
+      <pubDate>Sun, 28 Nov 2021 13:37:33 +0800</pubDate>
+      
+      <guid>https://seekload.net/2021/11/28/go-context.html</guid>
+      <description>你好，我是 Seekload。 之前几篇文章介绍过 Go 语言里面的 Context 包的使用方法和使用注意事项，今天我们就一起从源码的角度详细分析下 Context 包。 conte</description>
+    </item>
     
     <item>
       <title>图解Go语言Context</title>
@@ -26,7 +31,7 @@
       <pubDate>Tue, 09 Feb 2021 15:58:25 +0800</pubDate>
       
       <guid>https://seekload.net/2021/02/09/understanding-the-context-package.html</guid>
-      <description>via: https://medium.com/rungo/understanding-the-context-package-b2e407a9cdae 作者：Uday Hiwarale 在数据密集型和网络密集型的 Go 项目里，你可能会使用并发模式，多个协程并发或者并行地处理各种任务。 我们知道，channel 是</description>
+      <description>via:https://medium.com/rungo/understanding-the-context-package-b2e407a9cdae 作者：Uday Hiwarale 在数据密集型和网络密集型的 Go 项目里，你可能会使用并发模式，多个协程并发或者并行地处理各种任务。 我们知道，channel 是不</description>
     </item>
     
     <item>
@@ -35,7 +40,7 @@
       <pubDate>Sat, 06 Feb 2021 22:08:08 +0800</pubDate>
       
       <guid>https://seekload.net/2021/02/06/using-context-cancellation.html</guid>
-      <description>via: https://www.sohamkamani.com/golang/2018-06-17-golang-using-context-cancellation/ 作者：Soham Kamani 使用过 Go 语言的人对 context 包应该都不陌生。context 包经常用于需要执行一些下游操作的地方，比如：执行 HTTP 请求、从数据库获取</description>
+      <description>via:https://www.sohamkamani.com/golang/2018-06-17-golang-using-context-cancellation/ 作者：Soham Kamani 使用过 Go 语言的人对 context 包应该都不陌生。context 包经常用于需要执行一些下游操作的地方，比如：执行 HTTP 请求、从数据库获取数</description>
     </item>
     
   </channel>

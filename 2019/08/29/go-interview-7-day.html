@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -125,63 +125,46 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<p>1.关于字符串连接，下面语法正确的是？</p>
-
+                            <p>1.关于字符串连接，下面语法正确的是？</p>
 <ul>
 <li>A. str := &lsquo;abc&rsquo; + &lsquo;123&rsquo;</li>
 <li>B. str := &ldquo;abc&rdquo; + &ldquo;123&rdquo;</li>
 <li>C. str := &lsquo;123&rsquo; + &ldquo;abc&rdquo;</li>
 <li>S. fmt.Sprintf(&ldquo;abc%d&rdquo;, 123)</li>
 </ul>
-
 <p>参考答案：BD</p>
-
 <p>参考解析：考的知识点是字符串连接。除了以上两种连接方式，还有 strings.Join()、buffer.WriteString()等。</p>
-
 <p>2.下面这段代码能否编译通过？如果可以，输出什么？</p>
-
-<pre><code class="language-go">const (
-	x = iota
-	_
-	y
-	z = &quot;zz&quot;
-	k 
-	p = iota
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">const</span> (
+	<span style="color:#a6e22e">x</span> = <span style="color:#66d9ef">iota</span>
+	<span style="color:#a6e22e">_</span>
+	<span style="color:#a6e22e">y</span>
+	<span style="color:#a6e22e">z</span> = <span style="color:#e6db74">&#34;zz&#34;</span>
+	<span style="color:#a6e22e">k</span> 
+	<span style="color:#a6e22e">p</span> = <span style="color:#66d9ef">iota</span>
 )
 
-func main()  {
-	fmt.Println(x,y,z,k,p)
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>()  {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">x</span>,<span style="color:#a6e22e">y</span>,<span style="color:#a6e22e">z</span>,<span style="color:#a6e22e">k</span>,<span style="color:#a6e22e">p</span>)
 }
-</code></pre>
-
-<p>参考答案：编译通过，输出：0 2 zz zz 5</p>
-
+</code></pre></div><p>参考答案：编译通过，输出：0 2 zz zz 5</p>
 <p>参考解析：知识点 iota。
 参考 <a href="https://www.cnblogs.com/zsy/p/5370052.html">https://www.cnblogs.com/zsy/p/5370052.html</a></p>
-
 <p>3.下面赋值正确的是()</p>
-
 <ul>
 <li>A. var x = nil</li>
 <li>B. var x interface{} = nil</li>
 <li>C. var x string = nil</li>
 <li>D. var x error = nil</li>
 </ul>
-
 <p>参考答案及解析：BD。这道题考的知识点是 nil。nil 只能赋值给指针、chan、func、interface、map 或 slice 类型的变量。强调下 D 选项的 error 类型，它是一种内置接口类型，看它的源码就知道，所以 D 是对的。</p>
-
-<pre><code class="language-go">type error interface {
-	Error() string
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#66d9ef">error</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#a6e22e">Error</span>() <span style="color:#66d9ef">string</span>
 }
-</code></pre>
-
-<p><br><br>
+</code></pre></div><p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -263,6 +246,10 @@ func main()  {
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -298,10 +285,6 @@ func main()  {
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -325,11 +308,11 @@ func main()  {
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -337,7 +320,7 @@ func main()  {
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -367,21 +350,21 @@ func main()  {
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     

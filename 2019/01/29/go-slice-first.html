@@ -27,7 +27,7 @@ var _hmt = _hmt || [];
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.53" />
+    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -116,7 +116,7 @@ var _hmt = _hmt || [];
                         <div class="post-meta">
                             <span >
                                 <span>|</span>
-                                字数:2809
+                                字数:2819
                             </span>
                         </div>
                         
@@ -125,271 +125,181 @@ var _hmt = _hmt || [];
                         </div>
                         
                         <div class="post-content">
-                            
-
-<h3 id="前言">前言</h3>
-
-<p><strong>切片</strong>是一种复合数据类型，与数组类似，存放相同数据类型的元素，但数组的大小是固定的，而切片的大小可变，可以按需自动改变大小。切片是基于底层数组实现的，是对数组的抽象。切片很小，只有三个字段的数据结构：<strong>指向底层数组的指针</strong>、能访问的元素个数（即<strong>切片长度</strong>）和允许增长到的元素个数（即<strong>切片容量</strong>）。<img src="/img/20181208211509634.png" alt="" />
+                            <h3 id="前言">前言</h3>
+<p><strong>切片</strong>是一种复合数据类型，与数组类似，存放相同数据类型的元素，但数组的大小是固定的，而切片的大小可变，可以按需自动改变大小。切片是基于底层数组实现的，是对数组的抽象。切片很小，只有三个字段的数据结构：<strong>指向底层数组的指针</strong>、能访问的元素个数（即<strong>切片长度</strong>）和允许增长到的元素个数（即<strong>切片容量</strong>）。<img src="/img/20181208211509634.png" alt="">
 如上图所示，一个长度为 3、容量为 5 的整型切片的底层结构。</p>
-
 <h3 id="声明与初始化">声明与初始化</h3>
-
-<h4 id="make-创建">make()创建</h4>
-
+<h4 id="make创建">make()创建</h4>
 <p>使用内置函数创建空切片，形如：</p>
-
-<pre><code class="language-go">s := make([]type, len, cap)  // len 长度，cap 容量
-</code></pre>
-
-<p>也可以只指定<code>len</code>，那么切片的容量和长度是一样的。Go 语言提供了内置函数<code>len()</code>、<code>cap()</code>分别返回切片的长度和容量。</p>
-
-<pre><code class="language-go">// 声明一个长度为 3、容量为 5 的整型切片
-s1 := make([]int,3,5)
-fmt.Println(len(s1),cap(s1))   // 输出：3 5
-
-// 声明一个长度和容量都是5的字符串切片
-s2 := make([]string,5)
-fmt.Println(len(s2),cap(s2))   // 输出：5 5
-</code></pre>
-
-<p>切片创建完成，如果不指定字面量的话，默认值就是数组的元素的零值。<br>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">type</span>, <span style="color:#a6e22e">len</span>, <span style="color:#a6e22e">cap</span>)  <span style="color:#75715e">// len 长度，cap 容量
+</span></code></pre></div><p>也可以只指定<code>len</code>，那么切片的容量和长度是一样的。Go 语言提供了内置函数<code>len()</code>、<code>cap()</code>分别返回切片的长度和容量。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 声明一个长度为 3、容量为 5 的整型切片
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">int</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">5</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(len(<span style="color:#a6e22e">s1</span>),cap(<span style="color:#a6e22e">s1</span>))   <span style="color:#75715e">// 输出：3 5
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// 声明一个长度和容量都是5的字符串切片
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">s2</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">string</span>,<span style="color:#ae81ff">5</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(len(<span style="color:#a6e22e">s2</span>),cap(<span style="color:#a6e22e">s2</span>))   <span style="color:#75715e">// 输出：5 5
+</span></code></pre></div><p>切片创建完成，如果不指定字面量的话，默认值就是数组的元素的零值。<!-- raw HTML omitted -->
 切片的容量就是切片底层数组的大小，我们只能访问切片长度范围内的元素，如第一节的图所示，长度为 3 的整型切片存入 3 个值后的结构，我们只能访问到第 3 个元素，剩余的 2 个元素需要切片扩充以后才可以访问。所以，很明显的：<strong>容量&gt;=长度</strong>，我们不能创建长度大于容量的切片。</p>
-
-<pre><code class="language-go">s1 := make([]int,5,3)
-// 报错：len larger than cap in make([]int)
-</code></pre>
-
-<h4 id="使用字面量创建切片">使用字面量创建切片</h4>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> make([]<span style="color:#66d9ef">int</span>,<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">3</span>)
+<span style="color:#75715e">// 报错：len larger than cap in make([]int)
+</span></code></pre></div><h4 id="使用字面量创建切片">使用字面量创建切片</h4>
 <p>使用字面量创建，就是指定了初始化的值</p>
-
-<pre><code class="language-go">s := []int{1,2,3,4,5}     // 长度和容量都是5的整型切片
-</code></pre>
-
-<p>有没有发现，这种创建方式与创建数组类似，只不过不用指定<code>[]</code>的值，这时候切片的长度和容量是相等的，并且会根据指定的字面量推导出来。<br>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">5</span>}     <span style="color:#75715e">// 长度和容量都是5的整型切片
+</span></code></pre></div><p>有没有发现，这种创建方式与创建数组类似，只不过不用指定<code>[]</code>的值，这时候切片的长度和容量是相等的，并且会根据指定的字面量推导出来。<!-- raw HTML omitted -->
 区别：</p>
-
-<pre><code class="language-go">// 创建大小为10的数组
-s := [10]int{1,2,3,4,5}
-// 创建切片
-s := []int{1,2,3,4,5}
-</code></pre>
-
-<p>我们也可以只初始化某一个<strong>索引</strong>的值：</p>
-
-<pre><code class="language-go">s := []int{4:1}
-fmt.Println(len(s),cap(s))  // 输出：5 5
-fmt.Println(s)		// 输出：[0 0 0 0 1]
-</code></pre>
-
-<p>指定了第 5 个元素为<code>1</code>，其他元素初始化为 0。</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 创建大小为10的数组
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> [<span style="color:#ae81ff">10</span>]<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">5</span>}
+<span style="color:#75715e">// 创建切片
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">5</span>}
+</code></pre></div><p>我们也可以只初始化某一个<strong>索引</strong>的值：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">4</span>:<span style="color:#ae81ff">1</span>}
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(len(<span style="color:#a6e22e">s</span>),cap(<span style="color:#a6e22e">s</span>))  <span style="color:#75715e">// 输出：5 5
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)		<span style="color:#75715e">// 输出：[0 0 0 0 1]
+</span></code></pre></div><p>指定了第 5 个元素为<code>1</code>，其他元素初始化为 0。</p>
 <h4 id="基于已有的数组或者切片创建切片">基于已有的数组或者切片创建切片</h4>
-
 <p>使用操作符<code>[start:end]</code>，简写成<code>[i:j]</code>，表示从索引<code>i</code>，到索引<code>j</code>结束，截取已有数组或者切片的任意部分，返回一个新的切片，新切片的值包含原切片的<code>i</code>索引的值，但是不包含<code>j</code>索引的值。<code>i</code>、<code>j</code>都是可选的，<code>i</code>如果省略，默认是 0，<code>j</code>如果省略，默认是原切片或数组的长度。<code>i</code>、<code>j</code>都不能超过这个长度值。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>}
 
-<pre><code class="language-go">s := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-
-fmt.Println(&quot;s[:]&quot;, s[:])
-fmt.Println(&quot;s[2:]&quot;, s[2:])
-fmt.Println(&quot;s[:4]&quot;, s[:4])
-fmt.Println(&quot;s[2:4]&quot;, s[2:4])
-</code></pre>
-
-<p><a href="https://play.golang.org/p/lNhNx5KGVrR" target="_blank">输出</a></p>
-
-<p>你可能会有个疑问：截取获得的新切片的长度和容量怎么计算呢？我们当然可以使用内置函数<code>len()</code>、<code>cap()</code>直接获得，如果明白了怎么计算的，我们处理问题就可以更得心应手。<br>
-<strong>对底层数组大小为<code>k</code>的切片执行<code>[i,j]</code>操作之后获得的新切片的长度和容量是：<br>
-长度：<code>j-i</code><br>
-容量：<code>k-i</code></strong><br>
-就拿上一个例子的<code>s[2:4]</code>来说，原切片底层数组大小是 10，所以新切片的长度是<code>4-2=2</code>，容量是<code>10-2=8</code>。<br>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;s[:]&#34;</span>, <span style="color:#a6e22e">s</span>[:])
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;s[2:]&#34;</span>, <span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>:])
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;s[:4]&#34;</span>, <span style="color:#a6e22e">s</span>[:<span style="color:#ae81ff">4</span>])
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;s[2:4]&#34;</span>, <span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>])
+</code></pre></div><p><!-- raw HTML omitted -->输出<!-- raw HTML omitted --></p>
+<p>你可能会有个疑问：截取获得的新切片的长度和容量怎么计算呢？我们当然可以使用内置函数<code>len()</code>、<code>cap()</code>直接获得，如果明白了怎么计算的，我们处理问题就可以更得心应手。<!-- raw HTML omitted -->
+<strong>对底层数组大小为<code>k</code>的切片执行<code>[i,j]</code>操作之后获得的新切片的长度和容量是：<!-- raw HTML omitted -->
+长度：<code>j-i</code><!-- raw HTML omitted -->
+容量：<code>k-i</code></strong><!-- raw HTML omitted -->
+就拿上一个例子的<code>s[2:4]</code>来说，原切片底层数组大小是 10，所以新切片的长度是<code>4-2=2</code>，容量是<code>10-2=8</code>。<!-- raw HTML omitted -->
 可以使用内置函数验证下：</p>
-
-<pre><code class="language-go">s1 := s[2:4]
-fmt.Println(len(s1),cap(s1)) // 输出：2 8
-</code></pre>
-
-<p>上面是使用 2 个索引的方法创建切片，还可以使用 3 个索引的方法，第 3 个用来限定新切片的容量，用法为<code>slice[i:j:k]</code>。</p>
-
-<pre><code class="language-go">s2 := s[2:4:8]
-fmt.Println(s2)  // 输出：[2 3]
-</code></pre>
-
-<p>长度和容量如何计算：长度<code>j-i</code>，容量<code>k-i</code>。所以切片<code>s2</code>的长度和容量分别是<code>2</code>、<code>6</code>。<strong>注意</strong>：<code>k</code>不能超过原切片（数组）的长度，否则报错<code>panic: runtime error: slice bounds out of range</code>。例如上面的例子中，第三个索引值不能超过 10。<br>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>]
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(len(<span style="color:#a6e22e">s1</span>),cap(<span style="color:#a6e22e">s1</span>)) <span style="color:#75715e">// 输出：2 8
+</span></code></pre></div><p>上面是使用 2 个索引的方法创建切片，还可以使用 3 个索引的方法，第 3 个用来限定新切片的容量，用法为<code>slice[i:j:k]</code>。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s2</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>:<span style="color:#ae81ff">8</span>]
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s2</span>)  <span style="color:#75715e">// 输出：[2 3]
+</span></code></pre></div><p>长度和容量如何计算：长度<code>j-i</code>，容量<code>k-i</code>。所以切片<code>s2</code>的长度和容量分别是<code>2</code>、<code>6</code>。<strong>注意</strong>：<code>k</code>不能超过原切片（数组）的长度，否则报错<code>panic: runtime error: slice bounds out of range</code>。例如上面的例子中，第三个索引值不能超过 10。<!-- raw HTML omitted -->
 我们来看个例子：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>}
 
-<pre><code class="language-go">s := []int{0, 1, 2, 3, 4, 5}
-
-fmt.Println(&quot;before,s:&quot;,s)
-s1 := s[1:4]
-fmt.Println(&quot;before,s1:&quot;,s1)
-s1[1] = 10
-fmt.Println(&quot;after,s1:&quot;,s1)
-fmt.Println(&quot;after,s:&quot;,s)
-</code></pre>
-
-<p><a href="https://play.golang.org/p/C-XZJXPhhGk" target="_blank">输出</a></p>
-
-<pre><code class="language-go">before,s: [0 1 2 3 4 5]
-before,s1: [1 2 3]
-after,s1: [1 10 3]
-after,s: [0 1 10 3 4 5]
-</code></pre>
-
-<p>这个例子说明，原切片和新切片是基于同一个底层数组的，所以当修改的时候，底层数组的值就会被改变，原切片的值也随之改变了。对于基于数组的切片也一样的。
-<img src="/img/20181211204814413.png" alt="在这里插入图片描述" />
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;before,s:&#34;</span>,<span style="color:#a6e22e">s</span>)
+<span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">1</span>:<span style="color:#ae81ff">4</span>]
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;before,s1:&#34;</span>,<span style="color:#a6e22e">s1</span>)
+<span style="color:#a6e22e">s1</span>[<span style="color:#ae81ff">1</span>] = <span style="color:#ae81ff">10</span>
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;after,s1:&#34;</span>,<span style="color:#a6e22e">s1</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;after,s:&#34;</span>,<span style="color:#a6e22e">s</span>)
+</code></pre></div><p><!-- raw HTML omitted -->输出<!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">before</span>,<span style="color:#a6e22e">s</span>: [<span style="color:#ae81ff">0</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">5</span>]
+<span style="color:#a6e22e">before</span>,<span style="color:#a6e22e">s1</span>: [<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span>]
+<span style="color:#a6e22e">after</span>,<span style="color:#a6e22e">s1</span>: [<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">3</span>]
+<span style="color:#a6e22e">after</span>,<span style="color:#a6e22e">s</span>: [<span style="color:#ae81ff">0</span> <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">10</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">5</span>]
+</code></pre></div><p>这个例子说明，原切片和新切片是基于同一个底层数组的，所以当修改的时候，底层数组的值就会被改变，原切片的值也随之改变了。对于基于数组的切片也一样的。
+<img src="/img/20181211204814413.png" alt="在这里插入图片描述">
 我们可以看到，执行完切片动作之后，获得一个新切片，与原切片共享同一段底层数组，但通过不同的切片会看到底层数组的不同部分。切片<code>s</code>能够看到底层数组全部6个元素，而切片<code>s1</code>只能看到索引<code>1</code>及之后的全部元素，对于<code>s1</code>来说，索引<code>1</code>之前的部分是不存在。</p>
-
 <h3 id="使用切片">使用切片</h3>
-
 <p>切片的使用方法与数组的使用方法类似，直接通过索引就可以获取、修改元素的值。</p>
-
-<pre><code class="language-go">s := []int{1, 2, 3, 4, 5}
-fmt.Println(s[1])   // 获取值   输出：2
-s[1] = 10	  	// 修改值
-fmt.Println(s)   //输出：[1 10 3 4 5]
-</code></pre>
-
-<p>只能访问切片长度范围内的元素，否则报错</p>
-
-<pre><code class="language-go">s := []int{1, 2, 3, 4, 5}
-s1 := s[2:3]			
-fmt.Println(s1[1]) 
-</code></pre>
-
-<p>上面这个例子中，<code>s1</code>的容量为 3，长度为 1，所以只能访问<code>s1</code>第一个元素<code>s1[0]</code>，访问<code>s1[1]</code>就会报错：<code>panic: runtime error: index out of range</code></p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>}
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">1</span>])   <span style="color:#75715e">// 获取值   输出：2
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">1</span>] = <span style="color:#ae81ff">10</span>	  	<span style="color:#75715e">// 修改值
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>)   <span style="color:#75715e">//输出：[1 10 3 4 5]
+</span></code></pre></div><p>只能访问切片长度范围内的元素，否则报错</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>}
+<span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">3</span>]			
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s1</span>[<span style="color:#ae81ff">1</span>]) 
+</code></pre></div><p>上面这个例子中，<code>s1</code>的容量为 3，长度为 1，所以只能访问<code>s1</code>第一个元素<code>s1[0]</code>，访问<code>s1[1]</code>就会报错：<code>panic: runtime error: index out of range</code></p>
 <blockquote>
 <p>与切片的容量相关联的元素只能用于增长切片，在使用这部分元素前，必须将其合并到切片的长度里。</p>
 </blockquote>
-
 <p>相较于数组，使用切片的好处在于，可以按需增长，类似于动态数组。Go 提供了内置<code>append()</code>函数，能够帮我们处理切片增长的一些列细节，我们只管使用就可以了。
 函数原型：</p>
-
-<pre><code class="language-go">func append(slice []Type, elems ...Type) []Type
-</code></pre>
-
-<p>使用<code>append()</code>函数，需要一个被操作的切片和一个（多个）追加值，返回一个相同数据类型的新切片。</p>
-
-<pre><code class="language-go">s := []int{1, 2, 3, 4, 5}
-newS := s[2:4]
-newS = append(newS, 50)
-fmt.Println(s, newS)
-fmt.Println(&amp;s[2] == &amp;newS[0])
-</code></pre>
-
-<p><a href="https://play.golang.org/p/JbBH81kTCmK" target="_blank">输出</a></p>
-
-<pre><code class="language-go">[1 2 3 4 50] [3 4 50]
-true
-</code></pre>
-
-<p>上面的例子中，截取获得一个长度为 2，容量为 3（可用容量为 1）的新切片<code>newS</code>，通过<code>append()</code>函数向切片<code>newS</code>追加一个元素 50。
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> append(<span style="color:#a6e22e">slice</span> []<span style="color:#a6e22e">Type</span>, <span style="color:#a6e22e">elems</span> <span style="color:#f92672">...</span><span style="color:#a6e22e">Type</span>) []<span style="color:#a6e22e">Type</span>
+</code></pre></div><p>使用<code>append()</code>函数，需要一个被操作的切片和一个（多个）追加值，返回一个相同数据类型的新切片。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>}
+<span style="color:#a6e22e">newS</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>]
+<span style="color:#a6e22e">newS</span> = append(<span style="color:#a6e22e">newS</span>, <span style="color:#ae81ff">50</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>, <span style="color:#a6e22e">newS</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">newS</span>[<span style="color:#ae81ff">0</span>])
+</code></pre></div><p><!-- raw HTML omitted -->输出<!-- raw HTML omitted --></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">[<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">50</span>] [<span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">50</span>]
+<span style="color:#66d9ef">true</span>
+</code></pre></div><p>上面的例子中，截取获得一个长度为 2，容量为 3（可用容量为 1）的新切片<code>newS</code>，通过<code>append()</code>函数向切片<code>newS</code>追加一个元素 50。
 追加元素 50 之前：
-<img src="/img/20181209144902755.png" alt="追加元素10之前" />
+<img src="/img/20181209144902755.png" alt="追加元素10之前">
 追加元素 50 之后：
-<img src="/img/20181209144948399.png" alt="追加元素10之后" />
-通过输出结果可以得出，新切片<code>newS</code>与原切片<code>s</code>是共享底层数组的，当切片可用容量能够存下追加元素时，不会创建新的切片。<br>
+<img src="/img/20181209144948399.png" alt="追加元素10之后">
+通过输出结果可以得出，新切片<code>newS</code>与原切片<code>s</code>是共享底层数组的，当切片可用容量能够存下追加元素时，不会创建新的切片。<!-- raw HTML omitted -->
 <strong>当切片可用容量存不下需要追加的元素时会发生呢？</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>, <span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>}
+<span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>:<span style="color:#ae81ff">4</span>]
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;before -&gt; s=%v\n&#34;</span>, <span style="color:#a6e22e">s</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;before -&gt; s1=%v\n&#34;</span>, <span style="color:#a6e22e">s1</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;before -&gt; len=%d, cap=%d\n&#34;</span>, len(<span style="color:#a6e22e">s1</span>), cap(<span style="color:#a6e22e">s1</span>))
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&amp;s[2] == &amp;s1[0] is&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s1</span>[<span style="color:#ae81ff">0</span>])
 
-<pre><code class="language-go">s := []int{1, 2, 3, 4, 5, 6, 7, 8}
-s1 := s[2:4]
-fmt.Printf(&quot;before -&gt; s=%v\n&quot;, s)
-fmt.Printf(&quot;before -&gt; s1=%v\n&quot;, s1)
-fmt.Printf(&quot;before -&gt; len=%d, cap=%d\n&quot;, len(s1), cap(s1))
-fmt.Println(&quot;&amp;s[2] == &amp;s1[0] is&quot;, &amp;s[2] == &amp;s1[0])
-
-s1 = append(s1, 60, 70, 80, 90, 100, 110)
-fmt.Printf(&quot;after -&gt; s=%v\n&quot;, s)
-fmt.Printf(&quot;after -&gt; s1=%v\n&quot;, s1)
-fmt.Printf(&quot;after -&gt; len=%d, cap=%d\n&quot;, len(s1), cap(s1))
-fmt.Println(&quot;&amp;s[2] == &amp;s1[0] is&quot;, &amp;s[2] == &amp;s1[0])
-</code></pre>
-
-<p><a href="https://play.golang.org/p/XUKIBy2sVoz" target="_blank">输出</a>：</p>
-
-<pre><code class="language-go">before -&gt; s=[1 2 3 4 5 6 7 8]
-before -&gt; s1=[3 4]
-before -&gt; len=2, cap=6
-&amp;s[2] == &amp;s1[0] is true
-after -&gt; s=[1 2 3 4 5 6 7 8]
-after -&gt; s1=[3 4 60 70 80 90 100 110]
-after -&gt; len=8, cap=12
-&amp;s[2] == &amp;s1[0] is false
-</code></pre>
-
-<p>追加元素 60、70、80、90、100 和 110 之前：
-<img src="/img/20181209153415981.png" alt="在这里插入图片描述" />
+<span style="color:#a6e22e">s1</span> = append(<span style="color:#a6e22e">s1</span>, <span style="color:#ae81ff">60</span>, <span style="color:#ae81ff">70</span>, <span style="color:#ae81ff">80</span>, <span style="color:#ae81ff">90</span>, <span style="color:#ae81ff">100</span>, <span style="color:#ae81ff">110</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;after -&gt; s=%v\n&#34;</span>, <span style="color:#a6e22e">s</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;after -&gt; s1=%v\n&#34;</span>, <span style="color:#a6e22e">s1</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;after -&gt; len=%d, cap=%d\n&#34;</span>, len(<span style="color:#a6e22e">s1</span>), cap(<span style="color:#a6e22e">s1</span>))
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;&amp;s[2] == &amp;s1[0] is&#34;</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s1</span>[<span style="color:#ae81ff">0</span>])
+</code></pre></div><p><!-- raw HTML omitted -->输出<!-- raw HTML omitted -->：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">before</span> <span style="color:#f92672">-</span>&gt; <span style="color:#a6e22e">s</span>=[<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">7</span> <span style="color:#ae81ff">8</span>]
+<span style="color:#a6e22e">before</span> <span style="color:#f92672">-</span>&gt; <span style="color:#a6e22e">s1</span>=[<span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span>]
+<span style="color:#a6e22e">before</span> <span style="color:#f92672">-</span>&gt; <span style="color:#a6e22e">len</span>=<span style="color:#ae81ff">2</span>, <span style="color:#a6e22e">cap</span>=<span style="color:#ae81ff">6</span>
+<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s1</span>[<span style="color:#ae81ff">0</span>] <span style="color:#a6e22e">is</span> <span style="color:#66d9ef">true</span>
+<span style="color:#a6e22e">after</span> <span style="color:#f92672">-</span>&gt; <span style="color:#a6e22e">s</span>=[<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">7</span> <span style="color:#ae81ff">8</span>]
+<span style="color:#a6e22e">after</span> <span style="color:#f92672">-</span>&gt; <span style="color:#a6e22e">s1</span>=[<span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">60</span> <span style="color:#ae81ff">70</span> <span style="color:#ae81ff">80</span> <span style="color:#ae81ff">90</span> <span style="color:#ae81ff">100</span> <span style="color:#ae81ff">110</span>]
+<span style="color:#a6e22e">after</span> <span style="color:#f92672">-</span>&gt; <span style="color:#a6e22e">len</span>=<span style="color:#ae81ff">8</span>, <span style="color:#a6e22e">cap</span>=<span style="color:#ae81ff">12</span>
+<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">==</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s1</span>[<span style="color:#ae81ff">0</span>] <span style="color:#a6e22e">is</span> <span style="color:#66d9ef">false</span>
+</code></pre></div><p>追加元素 60、70、80、90、100 和 110 之前：
+<img src="/img/20181209153415981.png" alt="在这里插入图片描述">
 追加之后：
-<img src="/img/20181209154008563.png" alt="" />
+<img src="/img/20181209154008563.png" alt="">
 从结果可以看出，切片的底层数组没有足够的可用容量， <code>append()</code>函数会创建一个新的底层数组，将原数组的值复制到新数组里，再追加新的值，就不会影响原来的底层数组。</p>
-
 <blockquote>
 <p>一般我们在创建新切片的时候，最好要让新切片的长度和容量一样，这样我们在追加操作的时候就会生成新的底层数组，和原有数组分离，就不会因为共用底层数组而引起奇怪问题，因为共用数组的时候修改内容，会影响多个切片。</p>
 </blockquote>
-
-<p><code>append()</code>函数会智能地增加底层数组的容量，目前的算法是：当数组容量<code>&lt;=1024</code>时，会成倍地增加；当超过<code>1024</code>，增长因子变为 1.25，也就是说每次会增加 25% 的容量。<br>
+<p><code>append()</code>函数会智能地增加底层数组的容量，目前的算法是：当数组容量<code>&lt;=1024</code>时，会成倍地增加；当超过<code>1024</code>，增长因子变为 1.25，也就是说每次会增加 25% 的容量。<!-- raw HTML omitted -->
 Go 提供了<code>...</code>操作符，允许将一个切片追加到另一个切片上：</p>
-
-<pre><code class="language-go">s := []int{1, 2,3,4,5}
-s1 := []int{6,7,8}
-s = append(s,s1...)
-fmt.Println(s,s1)
-</code></pre>
-
-<p>输出：</p>
-
-<pre><code class="language-go">[1 2 3 4 5 6 7 8] [6 7 8]
-</code></pre>
-
-<h3 id="迭代切片">迭代切片</h3>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>,<span style="color:#ae81ff">4</span>,<span style="color:#ae81ff">5</span>}
+<span style="color:#a6e22e">s1</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">6</span>,<span style="color:#ae81ff">7</span>,<span style="color:#ae81ff">8</span>}
+<span style="color:#a6e22e">s</span> = append(<span style="color:#a6e22e">s</span>,<span style="color:#a6e22e">s1</span><span style="color:#f92672">...</span>)
+<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">s</span>,<span style="color:#a6e22e">s1</span>)
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">[<span style="color:#ae81ff">1</span> <span style="color:#ae81ff">2</span> <span style="color:#ae81ff">3</span> <span style="color:#ae81ff">4</span> <span style="color:#ae81ff">5</span> <span style="color:#ae81ff">6</span> <span style="color:#ae81ff">7</span> <span style="color:#ae81ff">8</span>] [<span style="color:#ae81ff">6</span> <span style="color:#ae81ff">7</span> <span style="color:#ae81ff">8</span>]
+</code></pre></div><h3 id="迭代切片">迭代切片</h3>
 <p>使用<code>for</code>循环迭代切片，配合<code>len()</code>函数使用：</p>
-
-<pre><code class="language-go">s := []int{1, 2, 3, 4, 5}
-for i:=0;i&lt;len(s) ;i++  {
-	fmt.Printf(&quot;Index:%d,Value:%d\n&quot;,i,s[i])
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>}
+<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">:=</span><span style="color:#ae81ff">0</span>;<span style="color:#a6e22e">i</span>&lt;len(<span style="color:#a6e22e">s</span>) ;<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>  {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Index:%d,Value:%d\n&#34;</span>,<span style="color:#a6e22e">i</span>,<span style="color:#a6e22e">s</span>[<span style="color:#a6e22e">i</span>])
 }
-</code></pre>
-
-<p>使用<code>for range</code>迭代切片：</p>
-
-<pre><code class="language-go">s := []int{1, 2, 3, 4, 5}
-for i,v := range s {
-	fmt.Printf(&quot;Index:%d,Value:%d\n&quot;,i,v)
+</code></pre></div><p>使用<code>for range</code>迭代切片：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>}
+<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span>,<span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">s</span> {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Index:%d,Value:%d\n&#34;</span>,<span style="color:#a6e22e">i</span>,<span style="color:#a6e22e">v</span>)
 }
 
-// 使用‘_’可以忽略返回值
-s := []int{1, 2, 3, 4, 5}
-for _,v := range s {
-	fmt.Printf(&quot;Value:%d\n&quot;,v)
+<span style="color:#75715e">// 使用‘_’可以忽略返回值
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>}
+<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>,<span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">s</span> {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Value:%d\n&#34;</span>,<span style="color:#a6e22e">v</span>)
 }
-</code></pre>
-
-<p>需要注意的是，<code>range</code>返回的是切片元素的复制，而不是元素的引用。如果使用该值变量的地址作为指向每个元素的指针，就会造成错误。</p>
-
-<pre><code class="language-go">s := []int{1, 2, 3, 4, 5}
-for i,v := range s {
-	fmt.Printf(&quot;v:%d,v_addr:%p,elem_addr:%p\n&quot;,v,&amp;v,&amp;s[i])
+</code></pre></div><p>需要注意的是，<code>range</code>返回的是切片元素的复制，而不是元素的引用。如果使用该值变量的地址作为指向每个元素的指针，就会造成错误。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">s</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>}
+<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span>,<span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">s</span> {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;v:%d,v_addr:%p,elem_addr:%p\n&#34;</span>,<span style="color:#a6e22e">v</span>,<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">v</span>,<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">s</span>[<span style="color:#a6e22e">i</span>])
 }
-</code></pre>
-
-<p><a href="https://play.golang.org/p/gPA8NwVNRDx" target="_blank">输出</a>：</p>
-
-<pre><code class="language-go">v:1,v_addr:0xc000018058,elem_addr:0xc000016120
-v:2,v_addr:0xc000018058,elem_addr:0xc000016128
-v:3,v_addr:0xc000018058,elem_addr:0xc000016130
-v:4,v_addr:0xc000018058,elem_addr:0xc000016138
-v:5,v_addr:0xc000018058,elem_addr:0xc000016140
-</code></pre>
-
-<p>可以看到，<code>v</code>的地址总是相同的，因为迭代返回的变量在迭代过程中根据切片依次赋值的新变量。
+</code></pre></div><p><!-- raw HTML omitted -->输出<!-- raw HTML omitted -->：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">v</span>:<span style="color:#ae81ff">1</span>,<span style="color:#a6e22e">v_addr</span>:<span style="color:#ae81ff">0xc000018058</span>,<span style="color:#a6e22e">elem_addr</span>:<span style="color:#ae81ff">0xc000016120</span>
+<span style="color:#a6e22e">v</span>:<span style="color:#ae81ff">2</span>,<span style="color:#a6e22e">v_addr</span>:<span style="color:#ae81ff">0xc000018058</span>,<span style="color:#a6e22e">elem_addr</span>:<span style="color:#ae81ff">0xc000016128</span>
+<span style="color:#a6e22e">v</span>:<span style="color:#ae81ff">3</span>,<span style="color:#a6e22e">v_addr</span>:<span style="color:#ae81ff">0xc000018058</span>,<span style="color:#a6e22e">elem_addr</span>:<span style="color:#ae81ff">0xc000016130</span>
+<span style="color:#a6e22e">v</span>:<span style="color:#ae81ff">4</span>,<span style="color:#a6e22e">v_addr</span>:<span style="color:#ae81ff">0xc000018058</span>,<span style="color:#a6e22e">elem_addr</span>:<span style="color:#ae81ff">0xc000016138</span>
+<span style="color:#a6e22e">v</span>:<span style="color:#ae81ff">5</span>,<span style="color:#a6e22e">v_addr</span>:<span style="color:#ae81ff">0xc000018058</span>,<span style="color:#a6e22e">elem_addr</span>:<span style="color:#ae81ff">0xc000016140</span>
+</code></pre></div><p>可以看到，<code>v</code>的地址总是相同的，因为迭代返回的变量在迭代过程中根据切片依次赋值的新变量。
 好了，今天先讲到这里，下一节，我们再来讨论关于<code>Slice</code>更多的用法！
-<br><br>
+<!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt="" /></p>
-
-<h4 id="center-扫码关注领取学习资料-center"><center>扫码关注领取学习资料！</center></h4>
+<img src="/me/weixingzh.jpg" alt=""></p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
                         </div>
 
@@ -471,6 +381,10 @@ v:5,v_addr:0xc000018058,elem_addr:0xc000016140
 <ul class="widget-list">
     
     <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
         <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
     </li>
     
@@ -506,10 +420,6 @@ v:5,v_addr:0xc000018058,elem_addr:0xc000016140
         <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/27/go-interview-5-day.html" title="Go面试每天一篇（第 5 天）">Go面试每天一篇（第 5 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -533,11 +443,11 @@ v:5,v_addr:0xc000018058,elem_addr:0xc000016140
 <ul class="widget-list">
     
     <li>
-        <a href="https://seekload.net/categories/golang/">Golang(39)</a>
+        <a href="https://seekload.net/categories/golang/">golang(40)</a>
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇(9)</a>
+        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
     </li>
     
     <li>
@@ -545,7 +455,7 @@ v:5,v_addr:0xc000018058,elem_addr:0xc000016140
     </li>
     
     <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言(27)</a>
+        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
     </li>
     
     <li>
@@ -575,21 +485,21 @@ v:5,v_addr:0xc000018058,elem_addr:0xc000016140
         <h3 class="widget-title">标签</h3>
 <div class="tagcloud">
     
-    <a href="https://seekload.net/tags/go/">Go</a>
-    
-    <a href="https://seekload.net/tags/golang/">Golang</a>
-    
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
-    
-    <a href="https://seekload.net/tags/map/">Map</a>
-    
-    <a href="https://seekload.net/tags/oop/">OOP</a>
-    
     <a href="https://seekload.net/tags/channel/">channel</a>
     
     <a href="https://seekload.net/tags/context/">context</a>
     
     <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">go</a>
+    
+    <a href="https://seekload.net/tags/golang/">golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    
+    <a href="https://seekload.net/tags/map/">map</a>
+    
+    <a href="https://seekload.net/tags/oop/">oop</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     
