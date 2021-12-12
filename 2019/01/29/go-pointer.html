@@ -1,68 +1,47 @@
 <!doctype html>
 <html lang="zh-CN">
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?4b79e198f0e43ade55032d4bf11860a4";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-<script>
-(function(){
-    var bp = document.createElement('script');
-    var curProtocol = window.location.protocol.split(':')[0];
-    if (curProtocol === 'https') {
-        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-    }
-    else {
-        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-    }
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(bp, s);
-})();
-</script>
-
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
 
     <title>彻底学会Go指针 | Seekload&#39;s Blog</title>
     <meta property="og:title" content="彻底学会Go指针 - Seekload&#39;s Blog">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2019-01-29T07:14:25&#43;08:00">
+    <meta property="article:published_time" content='2019-01-29T07:14:25&#43;08:00'>
         
         
-    <meta property="article:modified_time" content="2019-01-29T07:14:25&#43;08:00">
+    <meta property="article:modified_time" content='2019-01-29T07:14:25&#43;08:00'>
         
     <meta name="Keywords" content="">
     <meta name="description" content="彻底学会Go指针">
         
     <meta name="author" content="Seekload">
     <meta property="og:url" content="https://seekload.net/2019/01/29/go-pointer.html">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
-
-
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
     
     
 </head>
 
+
 <body>
-<header id="header" class="clearfix">
+    <header id="header" class="clearfix">
     <div class="container">
         <div class="col-group">
             <div class="site-name ">
@@ -75,7 +54,7 @@ var _hmt = _hmt || [];
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://seekload.net">首页</a>
+                    <a class="current" href="https://seekload.net">首页</a>
                     
                     <a  href="https://seekload.net/archives/" title="归档">归档</a>
                     
@@ -89,136 +68,275 @@ var _hmt = _hmt || [];
     </div>
 </header>
 
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
 
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">彻底学会Go指针</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2019年1月29日
-                        </date>
-                        
-                        <div class="post-meta">
-                            <span>|</span>
-                            
-                                <span class="meta-category"><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80">就要学习 Go 语言</a></span>
-                            
-                                <span class="meta-category"><a href="https://seekload.net/categories/golang">Golang</a></span>
-                            
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span >
-                                <span>|</span>
-                                字数:1258
-                            </span>
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span> 阅读</span></span>
-                        </div>
-                        
-                        <div class="post-content">
-                            <h3 id="什么是指针">什么是指针</h3>
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">彻底学会Go指针</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年1月29日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80'>就要学习 Go 语言</a></span>
+            
+            <span class="meta-category"><a href='/categories/golang'>Golang</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h3 id="什么是指针">什么是指针</h3>
 <p>写代码的时候，我们通过变量就可以操作存储在内存中的值，进行赋值、加减运算等。大家有没有想过，变量代表什么呢？其实，一个变量对应一段内存空间，这段空间就存储了该变量相对应类型的值。指针的值就对应变量的地址，只通过指针，就可以更新或者读取变量的值，而不需要用到变量名。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">10</span>      <span style="color:#75715e">//声明变量i，并初始化为10
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ptr</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">i</span> 
-<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ptr</span>,<span style="color:#f92672">*</span><span style="color:#a6e22e">ptr</span>)
-<span style="color:#75715e">// 0xc000018060 10  指针变量ptr存储的是i地址，*ptr对应指针指向的变量的值
-</span><span style="color:#75715e"></span><span style="color:#f92672">*</span><span style="color:#a6e22e">ptr</span> = <span style="color:#ae81ff">12</span>  				<span style="color:#75715e">// i=12  更新指针指向的变量的值
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">ptr</span>,<span style="color:#a6e22e">i</span>)		<span style="color:#75715e">// 12 12
-</span></code></pre></div><p>上面这段代码，声明了<code> *int</code> 类型的指针变量 <code>ptr</code> ，通过取址运算符<code>&amp;</code>获得指向整型变量 <code>i</code> 的地址。可以说，指针<code>ptr</code>指向变量<code>i</code>，或者说<code>ptr</code>指针保存了变量<code>i</code>的地址。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">var</span> i <span style="color:#458;font-weight:bold">int</span> = <span style="color:#099">10</span>      <span style="color:#998;font-style:italic">//声明变量i，并初始化为10
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">var</span> ptr <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span> = <span style="font-weight:bold">&amp;</span>i 
+fmt.<span style="color:#900;font-weight:bold">Println</span>(ptr,<span style="font-weight:bold">*</span>ptr)
+<span style="color:#998;font-style:italic">// 0xc000018060 10  指针变量ptr存储的是i地址，*ptr对应指针指向的变量的值
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">*</span>ptr = <span style="color:#099">12</span>  				<span style="color:#998;font-style:italic">// i=12  更新指针指向的变量的值
+</span><span style="color:#998;font-style:italic"></span>fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="font-weight:bold">*</span>ptr,i)		<span style="color:#998;font-style:italic">// 12 12
+</span></code></pre></td></tr></table>
+</div>
+</div><p>上面这段代码，声明了<code> *int</code> 类型的指针变量 <code>ptr</code> ，通过取址运算符<code>&amp;</code>获得指向整型变量 <code>i</code> 的地址。可以说，指针<code>ptr</code>指向变量<code>i</code>，或者说<code>ptr</code>指针保存了变量<code>i</code>的地址。</p>
 <h3 id="指针声明">指针声明</h3>
 <p>通过上面一段话的解释，相信大家对指针有了比较清晰的认识：指针指向一个变量的内存地址。要想使用指针，必须先声明，格式如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">var_name</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">var_type</span>
-<span style="color:#75715e">// var_name 指针名称，var_type 指针所指向的变量的类型
-</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">10</span>
-<span style="color:#a6e22e">str</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;go&#34;</span>
-<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ip</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>         <span style="color:#75715e">// *int类型的指针
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">pstr</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">string</span>    <span style="color:#75715e">// *string类型的指针
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">ip</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">i</span>
-<span style="color:#a6e22e">pstr</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">str</span>
-<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">ip</span>,<span style="color:#f92672">*</span><span style="color:#a6e22e">pstr</span>)     <span style="color:#75715e">// 10 go
-</span></code></pre></div><p><strong>注意</strong>：<code>*int</code>类型的指针，说明该指针指向的一定是<code>int</code>类型的变量，<code>*string</code>类型也类似。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">str</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;go&#34;</span>
-<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ip</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
-<span style="color:#a6e22e">ip</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">str</span>  <span style="color:#75715e">// 编译不会通过
-</span></code></pre></div><p><code>*int</code> 类型的指针，指向的变量若是<code>string</code>类型的，编译器编译的时候就会报错：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">cannot</span> <span style="color:#a6e22e">use</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">str</span> (<span style="color:#66d9ef">type</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">string</span>) <span style="color:#a6e22e">as</span> <span style="color:#66d9ef">type</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span> <span style="color:#a6e22e">in</span> <span style="color:#a6e22e">assignment</span>
-</code></pre></div><h3 id="如何使用指针">如何使用指针</h3>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">var</span> var_name <span style="font-weight:bold">*</span>var_type
+<span style="color:#998;font-style:italic">// var_name 指针名称，var_type 指针所指向的变量的类型
+</span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">var</span> i <span style="color:#458;font-weight:bold">int</span> = <span style="color:#099">10</span>
+str <span style="font-weight:bold">:=</span> <span style="color:#b84">&#34;go&#34;</span>
+<span style="font-weight:bold">var</span> ip <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span>         <span style="color:#998;font-style:italic">// *int类型的指针
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">var</span> pstr <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">string</span>    <span style="color:#998;font-style:italic">// *string类型的指针
+</span><span style="color:#998;font-style:italic"></span>ip = <span style="font-weight:bold">&amp;</span>i
+pstr = <span style="font-weight:bold">&amp;</span>str
+fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="font-weight:bold">*</span>ip,<span style="font-weight:bold">*</span>pstr)     <span style="color:#998;font-style:italic">// 10 go
+</span></code></pre></td></tr></table>
+</div>
+</div><p><strong>注意</strong>：<code>*int</code>类型的指针，说明该指针指向的一定是<code>int</code>类型的变量，<code>*string</code>类型也类似。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">str <span style="font-weight:bold">:=</span> <span style="color:#b84">&#34;go&#34;</span>
+<span style="font-weight:bold">var</span> ip <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span>
+ip = <span style="font-weight:bold">&amp;</span>str  <span style="color:#998;font-style:italic">// 编译不会通过
+</span></code></pre></td></tr></table>
+</div>
+</div><p><code>*int</code> 类型的指针，指向的变量若是<code>string</code>类型的，编译器编译的时候就会报错：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">cannot use <span style="font-weight:bold">&amp;</span><span style="color:#900;font-weight:bold">str</span> (<span style="font-weight:bold">type</span> <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">string</span>) as <span style="font-weight:bold">type</span> <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span> in assignment
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="如何使用指针">如何使用指针</h3>
 <p>文章写到这里，关于如何使用指针，其实上文已经列出来了，主要经过三个步骤：<strong>声明</strong>、<strong>赋值</strong>和<strong>访问</strong>指针指向的变量的值。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">x</span>,<span style="color:#a6e22e">y</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>,<span style="color:#e6db74">&#34;go&#34;</span>
-<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">px</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x</span>    	<span style="color:#75715e">// 1、声明并初始化
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">py</span> = <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">y</span>				<span style="color:#75715e">// 2、省略指针类型，编译器自动判断
-</span><span style="color:#75715e">//px,py := &amp;x,&amp;y		// 3、使用 :=
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">px</span>,<span style="color:#f92672">*</span><span style="color:#a6e22e">py</span>) 	<span style="color:#75715e">// 1 go   访问
-</span></code></pre></div><h3 id="关于空指针">关于空指针</h3>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">x,y <span style="font-weight:bold">:=</span> <span style="color:#099">1</span>,<span style="color:#b84">&#34;go&#34;</span>
+<span style="font-weight:bold">var</span> px <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span> = <span style="font-weight:bold">&amp;</span>x    	<span style="color:#998;font-style:italic">// 1、声明并初始化
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">var</span> py = <span style="font-weight:bold">&amp;</span>y				<span style="color:#998;font-style:italic">// 2、省略指针类型，编译器自动判断
+</span><span style="color:#998;font-style:italic">//px,py := &amp;x,&amp;y		// 3、使用 :=
+</span><span style="color:#998;font-style:italic"></span>fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="font-weight:bold">*</span>px,<span style="font-weight:bold">*</span>py) 	<span style="color:#998;font-style:italic">// 1 go   访问
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="关于空指针">关于空指针</h3>
 <p>一个指针已声明而没有赋值时，称为空指针，为 <code>nil</code> 。任何类型的指针的零值都是 <code>nil</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ip</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
-<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ip</span>)							<span style="color:#75715e">// nil
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;ip 的值为:%x&#34;</span>, <span style="color:#a6e22e">ip</span>)			<span style="color:#75715e">// ip 的值为:0
-</span></code></pre></div><p>如果<code>ip != nil</code> 为真，那么p是指向某个有效变量。指针之间也是可以进行相等测试的，只有当它们指向同一个变量或全部是<code>nil</code>时才相等。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">1</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">指向同一个变量</span> <span style="color:#66d9ef">true</span>
-<span style="color:#a6e22e">x</span>,<span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>
-<span style="color:#a6e22e">px</span>,<span style="color:#a6e22e">py</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x</span>,<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x</span>
-<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">px</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">py</span>) 
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">var</span> ip <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span>
+fmt.<span style="color:#900;font-weight:bold">Println</span>(ip)							<span style="color:#998;font-style:italic">// nil
+</span><span style="color:#998;font-style:italic"></span>fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#b84">&#34;ip 的值为:%x&#34;</span>, ip)			<span style="color:#998;font-style:italic">// ip 的值为:0
+</span></code></pre></td></tr></table>
+</div>
+</div><p>如果<code>ip != nil</code> 为真，那么p是指向某个有效变量。指针之间也是可以进行相等测试的，只有当它们指向同一个变量或全部是<code>nil</code>时才相等。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">1</span><span style="color:#a61717;background-color:#e3d2d2">、</span>指向同一个变量 <span style="font-weight:bold">true</span>
+x,_ <span style="font-weight:bold">:=</span> <span style="color:#099">1</span>,<span style="color:#099">1</span>
+px,py <span style="font-weight:bold">:=</span> <span style="font-weight:bold">&amp;</span>x,<span style="font-weight:bold">&amp;</span>x
+fmt.<span style="color:#900;font-weight:bold">Println</span>(px <span style="font-weight:bold">==</span> py) 
  
-<span style="color:#ae81ff">2</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">指向不同变量</span> <span style="color:#66d9ef">false</span>
-<span style="color:#a6e22e">x</span>,<span style="color:#a6e22e">y</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>
-<span style="color:#a6e22e">px</span>,<span style="color:#a6e22e">py</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">x</span>,<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">y</span>
-<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">px</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">py</span>)
+<span style="color:#099">2</span><span style="color:#a61717;background-color:#e3d2d2">、</span>指向不同变量 <span style="font-weight:bold">false</span>
+x,y <span style="font-weight:bold">:=</span> <span style="color:#099">1</span>,<span style="color:#099">1</span>
+px,py <span style="font-weight:bold">:=</span> <span style="font-weight:bold">&amp;</span>x,<span style="font-weight:bold">&amp;</span>y
+fmt.<span style="color:#900;font-weight:bold">Println</span>(px <span style="font-weight:bold">==</span> py)
 
-<span style="color:#ae81ff">3</span><span style="color:#960050;background-color:#1e0010">、</span><span style="color:#a6e22e">两个nil指针</span> <span style="color:#66d9ef">true</span>
-<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">px</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
-<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">py</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>
-<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">px</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">py</span>)
-</code></pre></div><h3 id="指针作为函数参数使用">指针作为函数参数使用</h3>
+<span style="color:#099">3</span><span style="color:#a61717;background-color:#e3d2d2">、</span>两个nil指针 <span style="font-weight:bold">true</span>
+<span style="font-weight:bold">var</span> px <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span>
+<span style="font-weight:bold">var</span> py <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span>
+fmt.<span style="color:#900;font-weight:bold">Println</span>(px <span style="font-weight:bold">==</span> py)
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="指针作为函数参数使用">指针作为函数参数使用</h3>
 <p>指针包含的是一个变量的地址，如果将一个指针作为参数传递给函数，就可以通过指针来更新变量的值。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">a</span>(<span style="color:#a6e22e">p</span> <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span>){
-	<span style="color:#f92672">*</span><span style="color:#a6e22e">p</span><span style="color:#f92672">++</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">a</span>(p <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span>){
+	<span style="font-weight:bold">*</span>p<span style="font-weight:bold">++</span>
 }
 
-<span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">10</span>
-<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)      <span style="color:#75715e">// 10
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">a</span>(<span style="color:#f92672">&amp;</span><span style="color:#a6e22e">i</span>);
-<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)		<span style="color:#75715e">// 11
-</span></code></pre></div><h3 id="不常用的new函数">不常用的new函数</h3>
+i <span style="font-weight:bold">:=</span> <span style="color:#099">10</span>
+fmt.<span style="color:#900;font-weight:bold">Println</span>(i)      <span style="color:#998;font-style:italic">// 10
+</span><span style="color:#998;font-style:italic"></span><span style="color:#900;font-weight:bold">a</span>(<span style="font-weight:bold">&amp;</span>i);
+fmt.<span style="color:#900;font-weight:bold">Println</span>(i)		<span style="color:#998;font-style:italic">// 11
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="不常用的new函数">不常用的new函数</h3>
 <p>给大家介绍下<code>new</code>函数，内建的<code>new</code>函数也是一种创建变量的方法，<code>new(type)</code>表示创建一个<code>type</code>类型的匿名变量，并初始化为<code>type</code>类型的零值，返回变量的地址，指针类型为<code>*type</code>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> new(<span style="color:#66d9ef">int</span>)   	<span style="color:#75715e">// p, *int 类型, 指向匿名的 int 变量
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">p</span>) 	<span style="color:#75715e">// 0
-</span><span style="color:#75715e"></span><span style="color:#f92672">*</span><span style="color:#a6e22e">p</span> = <span style="color:#ae81ff">2</span>          	<span style="color:#75715e">// 设置 int 匿名变量的值为 2
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#f92672">*</span><span style="color:#a6e22e">p</span>) 	<span style="color:#75715e">// 2
-</span></code></pre></div><p>用<code>new</code>函数创建变量和普通变量声明语句方式创建变量没有什么区别，除了不需要声明一个临时变量的名字外。
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">p <span style="font-weight:bold">:=</span> <span style="color:#999">new</span>(<span style="color:#458;font-weight:bold">int</span>)   	<span style="color:#998;font-style:italic">// p, *int 类型, 指向匿名的 int 变量
+</span><span style="color:#998;font-style:italic"></span>fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="font-weight:bold">*</span>p) 	<span style="color:#998;font-style:italic">// 0
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">*</span>p = <span style="color:#099">2</span>          	<span style="color:#998;font-style:italic">// 设置 int 匿名变量的值为 2
+</span><span style="color:#998;font-style:italic"></span>fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="font-weight:bold">*</span>p) 	<span style="color:#998;font-style:italic">// 2
+</span></code></pre></td></tr></table>
+</div>
+</div><p>用<code>new</code>函数创建变量和普通变量声明语句方式创建变量没有什么区别，除了不需要声明一个临时变量的名字外。
 下面的两个函数有着相同的行为：<strong>创建变量，并返回变量地址</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">newA</span>() <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span> {
-    <span style="color:#66d9ef">return</span> new(<span style="color:#66d9ef">int</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">newA</span>() <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span> {
+    <span style="font-weight:bold">return</span> <span style="color:#999">new</span>(<span style="color:#458;font-weight:bold">int</span>)
 }
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">newB</span>() <span style="color:#f92672">*</span><span style="color:#66d9ef">int</span> {
-    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>
-    <span style="color:#66d9ef">return</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">i</span>
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">newB</span>() <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span> {
+    <span style="font-weight:bold">var</span> i <span style="color:#458;font-weight:bold">int</span>
+    <span style="font-weight:bold">return</span> <span style="font-weight:bold">&amp;</span>i
 }
-</code></pre></div><p>每次调用<code>new</code>函数都会返回新的变量的地址：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">p</span> <span style="color:#f92672">:=</span> new(<span style="color:#66d9ef">int</span>)
-<span style="color:#a6e22e">q</span> <span style="color:#f92672">:=</span> new(<span style="color:#66d9ef">int</span>)
-<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">p</span>,<span style="color:#a6e22e">q</span>)   <span style="color:#75715e">// 0xc000018060 0xc000018068
-</span></code></pre></div><p><code>new</code>函数使用的比较少，不过觉得挺有意思的，就在这给大家分享下！实际编程，多的还是使用具体类型创建变量，毕竟更方便，是吧！
+</code></pre></td></tr></table>
+</div>
+</div><p>每次调用<code>new</code>函数都会返回新的变量的地址：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">p <span style="font-weight:bold">:=</span> <span style="color:#999">new</span>(<span style="color:#458;font-weight:bold">int</span>)
+q <span style="font-weight:bold">:=</span> <span style="color:#999">new</span>(<span style="color:#458;font-weight:bold">int</span>)
+fmt.<span style="color:#900;font-weight:bold">Println</span>(p,q)   <span style="color:#998;font-style:italic">// 0xc000018060 0xc000018068
+</span></code></pre></td></tr></table>
+</div>
+</div><p><code>new</code>函数使用的比较少，不过觉得挺有意思的，就在这给大家分享下！实际编程，多的还是使用具体类型创建变量，毕竟更方便，是吧！
 <!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt=""></p>
+
+        <a data-fancybox="gallery" href="/me/weixingzh.jpg">
+            <img class="mx-auto" alt="" src="/me/weixingzh.jpg" />
+        </a>
+    </p>
 <h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
-                        </div>
+        </div>
 
-                        
+        
+
+
+        
 
 <div class="post-archive">
-    <h3>推荐阅读</h3>
+    <h2>See Also</h2>
     <ul class="listing">
         
         <li><a href="/2019/01/29/go-operator.html">运算符</a></li>
@@ -227,23 +345,27 @@ var _hmt = _hmt || [];
         
         <li><a href="/2019/01/29/go-condition-loop.html">条件语句和循环语句</a></li>
         
+        <li><a href="/2019/01/29/go-constant-variable.html">变量和常量</a></li>
+        
+        <li><a href="/2019/01/29/go-package.html">Go 包-代码组织者</a></li>
+        
     </ul>
 </div>
 
 
-                        <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://seekload.net/tags/go">Go</a></li>
-                                
-                                <li><a href="https://seekload.net/tags/%E6%8C%87%E9%92%88">指针</a></li>
-                                
-                            </ul>
-                            
-                        </div>
-                    </article>
-                    
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/go'>Go</a></li>
+                
+                <li><a href='/tags/%E6%8C%87%E9%92%88'>指针</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
     
 
     
@@ -258,12 +380,60 @@ var _hmt = _hmt || [];
       </script>
     </div>
     
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>
+        
+    </div>
+    <br />
+    <div>
+        
+       
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
                 </div>
-            </div>
-            <div id="secondary">
+
+                <div id="secondary">
 
     <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
       <input type="hidden" name="sitesearch" value="https://seekload.net">
@@ -291,6 +461,14 @@ var _hmt = _hmt || [];
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/sync-mutex.html" title="Go并发原语-mutex源码解析">Go并发原语-mutex源码解析</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/go-interface.html" title="通过 dlv 和汇编窥探 interface 底层实现(多图)">通过 dlv 和汇编窥探 interface 底层实现(多图)</a>
+    </li>
     
     <li>
         <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
@@ -324,14 +502,6 @@ var _hmt = _hmt || [];
         <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/29/go-interview-7-day.html" title="Go面试每天一篇（第 7 天）">Go面试每天一篇（第 7 天）</a>
-    </li>
-    
-    <li>
-        <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -351,50 +521,32 @@ var _hmt = _hmt || [];
     
 
     <section class="widget">
-        <h3 class="widget-title">分类</h3>
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
-    <li>
-        <a href="https://seekload.net/categories/golang/">golang(40)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/golang/">Golang (42)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇 (9)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言 (30)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题 (1)</a></li>
     
 </ul>
     </section>
 
     <section class="widget">
-        <h3 class="widget-title">标签</h3>
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 <div class="tagcloud">
     
     <a href="https://seekload.net/tags/channel/">channel</a>
@@ -403,15 +555,19 @@ var _hmt = _hmt || [];
     
     <a href="https://seekload.net/tags/function/">function</a>
     
-    <a href="https://seekload.net/tags/go/">go</a>
+    <a href="https://seekload.net/tags/go/">Go</a>
     
-    <a href="https://seekload.net/tags/golang/">golang</a>
+    <a href="https://seekload.net/tags/golang/">Golang</a>
     
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
     
-    <a href="https://seekload.net/tags/map/">map</a>
+    <a href="https://seekload.net/tags/interface/">interface</a>
     
-    <a href="https://seekload.net/tags/oop/">oop</a>
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/mutex/">mutex</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     
@@ -487,56 +643,9 @@ var _hmt = _hmt || [];
         </ul>
     </section>
 </div>
+            </div>
         </div>
     </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        
-        &copy; 2021 <a href="https://seekload.net"> 公众号：Golang来啦 </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        
-        
-    </div>
-</footer>
-
-
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
-    window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
-    };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-133344385-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
-
-
-
-
 </body>
+
 </html>

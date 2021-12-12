@@ -1,68 +1,47 @@
 <!doctype html>
 <html lang="zh-CN">
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?4b79e198f0e43ade55032d4bf11860a4";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-<script>
-(function(){
-    var bp = document.createElement('script');
-    var curProtocol = window.location.protocol.split(':')[0];
-    if (curProtocol === 'https') {
-        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-    }
-    else {
-        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-    }
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(bp, s);
-})();
-</script>
-
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
 
     <title>变量和常量 | Seekload&#39;s Blog</title>
     <meta property="og:title" content="变量和常量 - Seekload&#39;s Blog">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2019-01-29T05:50:03&#43;08:00">
+    <meta property="article:published_time" content='2019-01-29T05:50:03&#43;08:00'>
         
         
-    <meta property="article:modified_time" content="2019-01-29T05:50:03&#43;08:00">
+    <meta property="article:modified_time" content='2019-01-29T05:50:03&#43;08:00'>
         
     <meta name="Keywords" content="">
     <meta name="description" content="变量和常量">
         
     <meta name="author" content="Seekload">
     <meta property="og:url" content="https://seekload.net/2019/01/29/go-constant-variable.html">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
-
-
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
     
     
 </head>
 
+
 <body>
-<header id="header" class="clearfix">
+    <header id="header" class="clearfix">
     <div class="container">
         <div class="col-group">
             <div class="site-name ">
@@ -75,7 +54,7 @@ var _hmt = _hmt || [];
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://seekload.net">首页</a>
+                    <a class="current" href="https://seekload.net">首页</a>
                     
                     <a  href="https://seekload.net/archives/" title="归档">归档</a>
                     
@@ -89,43 +68,40 @@ var _hmt = _hmt || [];
     </div>
 </header>
 
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
 
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">变量和常量</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2019年1月29日
-                        </date>
-                        
-                        <div class="post-meta">
-                            <span>|</span>
-                            
-                                <span class="meta-category"><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80">就要学习 Go 语言</a></span>
-                            
-                                <span class="meta-category"><a href="https://seekload.net/categories/golang">Golang</a></span>
-                            
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span >
-                                <span>|</span>
-                                字数:676
-                            </span>
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span> 阅读</span></span>
-                        </div>
-                        
-                        <div class="post-content">
-                            <h3 id="前言">前言</h3>
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">变量和常量</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年1月29日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80'>就要学习 Go 语言</a></span>
+            
+            <span class="meta-category"><a href='/categories/golang'>Golang</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h3 id="前言">前言</h3>
 <p>学完之前的几篇文章，大家对 Go 语言有了些基本的认识，比如包的概念、导入包<code>fmt</code>打印字符串等。这还不够，本文开始，将推出系列文章&ndash;就要学习 Golang 系列。抓紧上车，Go!</p>
 <h3 id="变量命名原则">变量命名原则</h3>
 <p>Go 语言的变量由字母、数字和下划线组成，但不能以数字开头。（<strong>注意</strong>：关键字和保留字不能当做变量使用）<!-- raw HTML omitted -->
@@ -133,67 +109,147 @@ var _hmt = _hmt || [];
 无效的变量：360abc（数字开头）、case（关键字）、a+b+c（含有运算符）</p>
 <h3 id="声明与初始化">声明与初始化</h3>
 <p>变量的声明有点像 javascript，使用 var 关键字</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// 变量声明格式
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">identifier</span> <span style="color:#66d9ef">type</span>
-</code></pre></div><p>注意：<strong>Go 语言变量类型放在变量名之后</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#998;font-style:italic">// 变量声明格式
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">var</span> identifier <span style="font-weight:bold">type</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>注意：<strong>Go 语言变量类型放在变量名之后</strong></p>
 <p>声明的几种方式</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//只声明不赋值，使用默认值
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#998;font-style:italic">//只声明不赋值，使用默认值
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">var</span> x <span style="color:#458;font-weight:bold">int</span>
 
-<span style="color:#75715e">//先声明再初始化
-</span><span style="color:#75715e"></span> <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">str</span> <span style="color:#66d9ef">string</span>
- <span style="color:#a6e22e">str</span> = <span style="color:#e6db74">&#34;Hello World&#34;</span>
+<span style="color:#998;font-style:italic">//先声明再初始化
+</span><span style="color:#998;font-style:italic"></span> <span style="font-weight:bold">var</span> str <span style="color:#458;font-weight:bold">string</span>
+ str = <span style="color:#b84">&#34;Hello World&#34;</span>
 
-<span style="color:#75715e">//声明初始化一个变量
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">x</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">100</span>
-<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">str</span> <span style="color:#66d9ef">string</span> = <span style="color:#e6db74">&#34;Hello World&#34;</span>
+<span style="color:#998;font-style:italic">//声明初始化一个变量
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">var</span> x <span style="color:#458;font-weight:bold">int</span> = <span style="color:#099">100</span>
+<span style="font-weight:bold">var</span> str <span style="color:#458;font-weight:bold">string</span> = <span style="color:#b84">&#34;Hello World&#34;</span>
 
-<span style="color:#75715e">//不用指明类型，编译器自动通过初始值来推导
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> = <span style="color:#66d9ef">true</span>   <span style="color:#75715e">//bool型
-</span><span style="color:#75715e"></span>
-<span style="color:#75715e">//还有一种省略var关键字的简便方法
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">x</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">100</span>    
-<span style="color:#75715e">//等同于 var x int 100
-</span></code></pre></div><p>注意：<strong>:=左侧的变量不应该是已经声明过的，否则会导致编译错误</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">10</span>
-<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">b</span> = <span style="color:#ae81ff">4</span>	
-<span style="color:#a6e22e">b</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">10</span>
-<span style="color:#a6e22e">编译结果</span><span style="color:#960050;background-color:#1e0010">：</span><span style="color:#a6e22e">no</span> <span style="color:#a6e22e">new</span> <span style="color:#a6e22e">variables</span> <span style="color:#a6e22e">on</span> <span style="color:#a6e22e">left</span> <span style="color:#a6e22e">side</span> <span style="color:#a6e22e">of</span> <span style="color:#f92672">:=</span>
-</code></pre></div><h3 id="多变量的声明和初始化">多变量的声明和初始化</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">//非全局变量
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>,<span style="color:#a6e22e">c</span> <span style="color:#66d9ef">int</span>
-<span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>,<span style="color:#a6e22e">c</span> = <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>
+<span style="color:#998;font-style:italic">//不用指明类型，编译器自动通过初始值来推导
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">var</span> c = <span style="font-weight:bold">true</span>   <span style="color:#998;font-style:italic">//bool型
+</span><span style="color:#998;font-style:italic"></span>
+<span style="color:#998;font-style:italic">//还有一种省略var关键字的简便方法
+</span><span style="color:#998;font-style:italic"></span>x <span style="font-weight:bold">:=</span> <span style="color:#099">100</span>    
+<span style="color:#998;font-style:italic">//等同于 var x int 100
+</span></code></pre></td></tr></table>
+</div>
+</div><p>注意：<strong>:=左侧的变量不应该是已经声明过的，否则会导致编译错误</strong></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">var</span> a <span style="color:#458;font-weight:bold">int</span> = <span style="color:#099">10</span>
+<span style="font-weight:bold">var</span> b = <span style="color:#099">4</span>	
+b <span style="font-weight:bold">:=</span> <span style="color:#099">10</span>
+编译结果<span style="color:#a61717;background-color:#e3d2d2">：</span>no new variables on left side of <span style="font-weight:bold">:=</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="多变量的声明和初始化">多变量的声明和初始化</h3>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#998;font-style:italic">//非全局变量
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">var</span> a,b,c <span style="color:#458;font-weight:bold">int</span>
+a,b,c = <span style="color:#099">1</span>,<span style="color:#099">2</span>,<span style="color:#099">3</span>
 
-<span style="color:#75715e">//全局或者局部
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>,<span style="color:#a6e22e">c</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>
-<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>,<span style="color:#a6e22e">c</span> = <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#e6db74">&#34;str&#34;</span>
+<span style="color:#998;font-style:italic">//全局或者局部
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">var</span> a,b,c <span style="color:#458;font-weight:bold">int</span> = <span style="color:#099">1</span>,<span style="color:#099">2</span>,<span style="color:#099">3</span>
+<span style="font-weight:bold">var</span> a,b,c = <span style="color:#099">1</span>,<span style="color:#099">2</span>,<span style="color:#b84">&#34;str&#34;</span>
 
-<span style="color:#75715e">//局部
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">a</span>,<span style="color:#a6e22e">b</span>,<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#e6db74">&#34;str&#34;</span>
+<span style="color:#998;font-style:italic">//局部
+</span><span style="color:#998;font-style:italic"></span>a,b,c <span style="font-weight:bold">:=</span> <span style="color:#099">1</span>,<span style="color:#099">2</span>,<span style="color:#b84">&#34;str&#34;</span>
 
-<span style="color:#75715e">//因式分解声明方式，这种方式一般用于全局变量的声明（局部声明也不会报错）
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> (
-	<span style="color:#a6e22e">a</span> = <span style="color:#ae81ff">1</span>
-	<span style="color:#a6e22e">b</span> <span style="color:#66d9ef">string</span> = <span style="color:#e6db74">&#34;go&#34;</span>
+<span style="color:#998;font-style:italic">//因式分解声明方式，这种方式一般用于全局变量的声明（局部声明也不会报错）
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">var</span> (
+	a = <span style="color:#099">1</span>
+	b <span style="color:#458;font-weight:bold">string</span> = <span style="color:#b84">&#34;go&#34;</span>
 )
-</code></pre></div><h3 id="常量">常量</h3>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="常量">常量</h3>
 <p>常量很简单，使用 const 关键字：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">a</span> <span style="color:#66d9ef">int</span> = <span style="color:#ae81ff">10</span>       <span style="color:#75715e">//显示定义
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">str</span> = <span style="color:#e6db74">&#34;Hello,Go&#34;</span>	<span style="color:#75715e">//隐式定义，编译器根据实际值自动推导变量类型
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">lenth</span> = len(<span style="color:#a6e22e">str</span>)
-<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">a</span>, <span style="color:#a6e22e">b</span>, <span style="color:#a6e22e">c</span> = <span style="color:#ae81ff">1</span>, <span style="color:#66d9ef">false</span>, <span style="color:#e6db74">&#34;str&#34;</span> <span style="color:#75715e">//多重赋值
-</span></code></pre></div><p>好了，讲到这，看完之后，大家可以实践一下，验证下变量的各种声明方式，实践的真知！
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">const</span> a <span style="color:#458;font-weight:bold">int</span> = <span style="color:#099">10</span>       <span style="color:#998;font-style:italic">//显示定义
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">const</span> str = <span style="color:#b84">&#34;Hello,Go&#34;</span>	<span style="color:#998;font-style:italic">//隐式定义，编译器根据实际值自动推导变量类型
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">const</span> lenth = <span style="color:#999">len</span>(str)
+<span style="font-weight:bold">const</span> a, b, c = <span style="color:#099">1</span>, <span style="font-weight:bold">false</span>, <span style="color:#b84">&#34;str&#34;</span> <span style="color:#998;font-style:italic">//多重赋值
+</span></code></pre></td></tr></table>
+</div>
+</div><p>好了，讲到这，看完之后，大家可以实践一下，验证下变量的各种声明方式，实践的真知！
 <!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt=""></p>
+
+        <a data-fancybox="gallery" href="/me/weixingzh.jpg">
+            <img class="mx-auto" alt="" src="/me/weixingzh.jpg" />
+        </a>
+    </p>
 <h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
-                        </div>
+        </div>
 
-                        
+        
+
+
+        
 
 <div class="post-archive">
-    <h3>推荐阅读</h3>
+    <h2>See Also</h2>
     <ul class="listing">
         
         <li><a href="/2019/01/29/go-package.html">Go 包-代码组织者</a></li>
@@ -202,23 +258,27 @@ var _hmt = _hmt || [];
         
         <li><a href="/golang100/">Go语言知识站</a></li>
         
+        <li><a href="/about/">关于我</a></li>
+        
+        <li><a href="/archives/">文章归档</a></li>
+        
     </ul>
 </div>
 
 
-                        <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://seekload.net/tags/go">Go</a></li>
-                                
-                                <li><a href="https://seekload.net/tags/%E5%8F%98%E9%87%8F">变量</a></li>
-                                
-                            </ul>
-                            
-                        </div>
-                    </article>
-                    
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/go'>Go</a></li>
+                
+                <li><a href='/tags/%E5%8F%98%E9%87%8F'>变量</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
     
 
     
@@ -233,12 +293,60 @@ var _hmt = _hmt || [];
       </script>
     </div>
     
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>
+        
+    </div>
+    <br />
+    <div>
+        
+       
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
                 </div>
-            </div>
-            <div id="secondary">
+
+                <div id="secondary">
 
     <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
       <input type="hidden" name="sitesearch" value="https://seekload.net">
@@ -266,6 +374,14 @@ var _hmt = _hmt || [];
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/sync-mutex.html" title="Go并发原语-mutex源码解析">Go并发原语-mutex源码解析</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/go-interface.html" title="通过 dlv 和汇编窥探 interface 底层实现(多图)">通过 dlv 和汇编窥探 interface 底层实现(多图)</a>
+    </li>
     
     <li>
         <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
@@ -299,14 +415,6 @@ var _hmt = _hmt || [];
         <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/29/go-interview-7-day.html" title="Go面试每天一篇（第 7 天）">Go面试每天一篇（第 7 天）</a>
-    </li>
-    
-    <li>
-        <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -326,50 +434,32 @@ var _hmt = _hmt || [];
     
 
     <section class="widget">
-        <h3 class="widget-title">分类</h3>
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
-    <li>
-        <a href="https://seekload.net/categories/golang/">golang(40)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/golang/">Golang (42)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇 (9)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言 (30)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题 (1)</a></li>
     
 </ul>
     </section>
 
     <section class="widget">
-        <h3 class="widget-title">标签</h3>
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 <div class="tagcloud">
     
     <a href="https://seekload.net/tags/channel/">channel</a>
@@ -378,15 +468,19 @@ var _hmt = _hmt || [];
     
     <a href="https://seekload.net/tags/function/">function</a>
     
-    <a href="https://seekload.net/tags/go/">go</a>
+    <a href="https://seekload.net/tags/go/">Go</a>
     
-    <a href="https://seekload.net/tags/golang/">golang</a>
+    <a href="https://seekload.net/tags/golang/">Golang</a>
     
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
     
-    <a href="https://seekload.net/tags/map/">map</a>
+    <a href="https://seekload.net/tags/interface/">interface</a>
     
-    <a href="https://seekload.net/tags/oop/">oop</a>
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/mutex/">mutex</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     
@@ -462,56 +556,9 @@ var _hmt = _hmt || [];
         </ul>
     </section>
 </div>
+            </div>
         </div>
     </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        
-        &copy; 2021 <a href="https://seekload.net"> 公众号：Golang来啦 </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        
-        
-    </div>
-</footer>
-
-
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
-    window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
-    };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-133344385-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
-
-
-
-
 </body>
+
 </html>

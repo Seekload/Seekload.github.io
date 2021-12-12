@@ -13,7 +13,7 @@
       <pubDate>Thu, 31 Jan 2019 12:41:07 +0800</pubDate>
       
       <guid>https://seekload.net/2019/01/31/go-function.html</guid>
-      <description>函数 函数是一段能够完成特定功能的代码段，可以接收输入参数或者能够返回想要的值。 函数声明 Go 语言采用如下语法声明一个函数： func funcName(parameterName type) returntype { //函数体 }</description>
+      <description>函数 函数是一段能够完成特定功能的代码段，可以接收输入参数或者能够返回想要的值。 函数声明 Go 语言采用如下语法声明一个函数： 1 2 3 func funcName(parameterName type) returntype { //函</description>
     </item>
     
   </channel>

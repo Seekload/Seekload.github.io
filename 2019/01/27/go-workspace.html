@@ -1,68 +1,47 @@
 <!doctype html>
 <html lang="zh-CN">
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?4b79e198f0e43ade55032d4bf11860a4";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-<script>
-(function(){
-    var bp = document.createElement('script');
-    var curProtocol = window.location.protocol.split(':')[0];
-    if (curProtocol === 'https') {
-        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-    }
-    else {
-        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-    }
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(bp, s);
-})();
-</script>
-
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
 
     <title>聊聊 Go 工作空间 | Seekload&#39;s Blog</title>
     <meta property="og:title" content="聊聊 Go 工作空间 - Seekload&#39;s Blog">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2019-01-27T15:41:56&#43;08:00">
+    <meta property="article:published_time" content='2019-01-27T15:41:56&#43;08:00'>
         
         
-    <meta property="article:modified_time" content="2019-01-27T15:41:56&#43;08:00">
+    <meta property="article:modified_time" content='2019-01-27T15:41:56&#43;08:00'>
         
     <meta name="Keywords" content="">
     <meta name="description" content="聊聊 Go 工作空间">
         
     <meta name="author" content="Seekload">
     <meta property="og:url" content="https://seekload.net/2019/01/27/go-workspace.html">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
-
-
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
     
     
 </head>
 
+
 <body>
-<header id="header" class="clearfix">
+    <header id="header" class="clearfix">
     <div class="container">
         <div class="col-group">
             <div class="site-name ">
@@ -75,7 +54,7 @@ var _hmt = _hmt || [];
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://seekload.net">首页</a>
+                    <a class="current" href="https://seekload.net">首页</a>
                     
                     <a  href="https://seekload.net/archives/" title="归档">归档</a>
                     
@@ -89,58 +68,73 @@ var _hmt = _hmt || [];
     </div>
 </header>
 
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
 
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">聊聊 Go 工作空间</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2019年1月27日
-                        </date>
-                        
-                        <div class="post-meta">
-                            <span>|</span>
-                            
-                                <span class="meta-category"><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80">就要学习 Go 语言</a></span>
-                            
-                                <span class="meta-category"><a href="https://seekload.net/categories/golang">Golang</a></span>
-                            
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span >
-                                <span>|</span>
-                                字数:1439
-                            </span>
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span> 阅读</span></span>
-                        </div>
-                        
-                        <div class="post-content">
-                            <h3 id="前言">前言</h3>
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">聊聊 Go 工作空间</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年1月27日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80'>就要学习 Go 语言</a></span>
+            
+            <span class="meta-category"><a href='/categories/golang'>Golang</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <h3 id="前言">前言</h3>
 <p>对于刚开始学 Go 的同学，可能会对几个概念比较迷糊：GOROOT 和 GOPATH，今天就来聊聊它们。
 执行<code>go env</code>，给大家看下我开发环境的相关参数配置（部分）：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">GOARCH</span>=<span style="color:#e6db74">&#34;amd64&#34;</span>
-<span style="color:#a6e22e">GOBIN</span>=<span style="color:#e6db74">&#34;/Users/chengguilu/goProjects/bin&#34;</span>
-<span style="color:#a6e22e">GOCACHE</span>=<span style="color:#e6db74">&#34;/Users/chengguilu/Library/Caches/go-build&#34;</span>
-<span style="color:#a6e22e">GOHOSTARCH</span>=<span style="color:#e6db74">&#34;amd64&#34;</span>
-<span style="color:#a6e22e">GOHOSTOS</span>=<span style="color:#e6db74">&#34;darwin&#34;</span>
-<span style="color:#a6e22e">GOOS</span>=<span style="color:#e6db74">&#34;darwin&#34;</span>
-<span style="color:#a6e22e">GOPATH</span>=<span style="color:#e6db74">&#34;/Users/chengguilu/goProjects&#34;</span>
-<span style="color:#a6e22e">GOROOT</span>=<span style="color:#e6db74">&#34;/usr/local/go&#34;</span>
-<span style="color:#a6e22e">GOTOOLDIR</span>=<span style="color:#e6db74">&#34;/usr/local/go/pkg/tool/darwin_amd64&#34;</span>
-<span style="color:#a6e22e">GCCGO</span>=<span style="color:#e6db74">&#34;gccgo&#34;</span>
-<span style="color:#a6e22e">CC</span>=<span style="color:#e6db74">&#34;clang&#34;</span>
-<span style="color:#a6e22e">CXX</span>=<span style="color:#e6db74">&#34;clang++&#34;</span>
-</code></pre></div><h3 id="goroot">GOROOT</h3>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">GOARCH=<span style="color:#b84">&#34;amd64&#34;</span>
+GOBIN=<span style="color:#b84">&#34;/Users/chengguilu/goProjects/bin&#34;</span>
+GOCACHE=<span style="color:#b84">&#34;/Users/chengguilu/Library/Caches/go-build&#34;</span>
+GOHOSTARCH=<span style="color:#b84">&#34;amd64&#34;</span>
+GOHOSTOS=<span style="color:#b84">&#34;darwin&#34;</span>
+GOOS=<span style="color:#b84">&#34;darwin&#34;</span>
+GOPATH=<span style="color:#b84">&#34;/Users/chengguilu/goProjects&#34;</span>
+GOROOT=<span style="color:#b84">&#34;/usr/local/go&#34;</span>
+GOTOOLDIR=<span style="color:#b84">&#34;/usr/local/go/pkg/tool/darwin_amd64&#34;</span>
+GCCGO=<span style="color:#b84">&#34;gccgo&#34;</span>
+CC=<span style="color:#b84">&#34;clang&#34;</span>
+CXX=<span style="color:#b84">&#34;clang++&#34;</span>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="goroot">GOROOT</h3>
 <p>这个比较好理解，GOROOT 表示的是 Go 语言编译、工具、标准库等的安装路径（比如：<code>/usr/local/go</code>），简而言之，就是安装路径，GO 安装好之后就有了。</p>
 <h3 id="gopath">GOPATH</h3>
 <p><strong>（画重点）</strong> 可自定义路径的工作空间 - workspace，Go1.7 之前必须设置这个变量，且不能够与 Go 的安装目录相同。1.8 之后，GOPATH 有默认值&ndash;<code>$HOME/go</code>。可以执行<code>go env GOPATH</code>查看，从上面可以看到，我的 GOPATH 是<code>/Users/chengguilu/goProjects</code>。其实，说白了，GOPATH 对应计算机的一个目录。   <!-- raw HTML omitted --><!-- raw HTML omitted -->
@@ -153,65 +147,149 @@ Go 代码必须放在工作空间内，workspace 目录包含三个子目录</p>
 </ul>
 <p>我们可以通过 go 工具构建源码包，并将其生成的二进制文件安装到 pkg 和 bin 目录中。<!-- raw HTML omitted -->
 我们实际操练下，上一节的<code>Hello World</code>入门程序就按照这种方式存放。在 workspace 创建相关目录 src、pkg 和 bin，将写好的<code>hello.go</code>保存在<code>GOPATH/src/hello</code>目录。</p>
-<p><img src="/img/20181118232904611.png" alt="创建目录">
+<p>
+        <a data-fancybox="gallery" href="/img/20181118232904611.png">
+            <img class="mx-auto" alt="创建目录" src="/img/20181118232904611.png" />
+        </a>
+    
 现在，我们就可以 go 工具构建并安装<code>hello.go</code></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">go</span> <span style="color:#a6e22e">install</span> <span style="color:#a6e22e">hello</span><span style="color:#f92672">/</span>
-</code></pre></div><p>我们可以在系统的任一目录中执行此命令，go 工具会根据指定的 GOPATH，在 <code>hello/</code> 包内查找源码（下一节给大家讲包的概念，现在大家了解概念就可以，不必深究）。若在包路径下执行<code>go install</code>，可以省略包路径。<!-- raw HTML omitted -->
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">go</span> install hello<span style="font-weight:bold">/</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>我们可以在系统的任一目录中执行此命令，go 工具会根据指定的 GOPATH，在 <code>hello/</code> 包内查找源码（下一节给大家讲包的概念，现在大家了解概念就可以，不必深究）。若在包路径下执行<code>go install</code>，可以省略包路径。<!-- raw HTML omitted -->
 <code>go install</code>命令产生可执行的二进制文件，接着它会将该二进制文件安装到工作空间的 bin 目录中，例子中为 <code>$GOPATH/bin/hello</code>。
-<img src="/img/20181119000459133.png" alt="go install">
+
+        <a data-fancybox="gallery" href="/img/20181119000459133.png">
+            <img class="mx-auto" alt="go install" src="/img/20181119000459133.png" />
+        </a>
+    
 通过命令行<code>$GOPATH/bin/hello</code>来运行（<code>$GOPATH</code>请自行替换）
-<img src="/img/20181119000833200.png" alt="">
+
+        <a data-fancybox="gallery" href="/img/20181119000833200.png">
+            <img class="mx-auto" alt="" src="/img/20181119000833200.png" />
+        </a>
+    
 还有一种更简便的方法，直接执行可执行文件，不过这需要将<code>$GOPATH/bin</code> 添加到 PATH 中。
-<img src="/img/20181119001259547.png" alt="">
+
+        <a data-fancybox="gallery" href="/img/20181119001259547.png">
+            <img class="mx-auto" alt="" src="/img/20181119001259547.png" />
+        </a>
+    
 <!-- raw HTML omitted --></p>
 <h3 id="你的第一个库">你的第一个库</h3>
 <p>编写一个库，并让 hello 程序来调用它。
 在<code>$GOPATH/src</code>下创建包目录<code>github.com/Seekload/stringutil</code>
-<img src="/img/20181119003021590.png" alt="">
-之后，在该目录中创建的文件<code>reverse.go </code>并保存（文件看不懂没关系，随着学习深入，相关知识点都会讲到，这里只做演示使用）：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">stringutil</span>
-<span style="color:#75715e">// Reverse 将其实参字符串以符文为单位左右反转。
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Reverse</span>(<span style="color:#a6e22e">s</span> <span style="color:#66d9ef">string</span>) <span style="color:#66d9ef">string</span> {
-	<span style="color:#a6e22e">r</span> <span style="color:#f92672">:=</span> []rune(<span style="color:#a6e22e">s</span>)
-	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>, len(<span style="color:#a6e22e">r</span>)<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span> &lt; len(<span style="color:#a6e22e">r</span>)<span style="color:#f92672">/</span><span style="color:#ae81ff">2</span>; <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">j</span> = <span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">j</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span> {
-		<span style="color:#a6e22e">r</span>[<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">r</span>[<span style="color:#a6e22e">j</span>] = <span style="color:#a6e22e">r</span>[<span style="color:#a6e22e">j</span>], <span style="color:#a6e22e">r</span>[<span style="color:#a6e22e">i</span>]
-	}
-	<span style="color:#66d9ef">return</span> string(<span style="color:#a6e22e">r</span>)
-}
-</code></pre></div><p>目录如图：
-<img src="/img/20181119003835969.png" alt="">
-用 <code>go build </code> 命令来测试该包的编译：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">go</span> <span style="color:#a6e22e">build</span> <span style="color:#a6e22e">github</span>.<span style="color:#a6e22e">com</span><span style="color:#f92672">/</span><span style="color:#a6e22e">Seekload</span><span style="color:#f92672">/</span><span style="color:#a6e22e">stringutil</span>
-</code></pre></div><p>也可以在包目录下直接执行<code>go build</code>。
-这个命令不会产生输出文件。想要输出的话，必须使用 <code>go install</code> 命令，它会将编译之后的静态文件放到工作空间的 pkg 目录中。
-<img src="/img/20181119004630957.png" alt="">
-确认 <code>stringutil</code>包构建完毕后，修改原来的 hello.go 文件并使用它：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
 
-<span style="color:#f92672">import</span> (
-	<span style="color:#e6db74">&#34;fmt&#34;</span>
-	<span style="color:#e6db74">&#34;github.com/Seekload/stringutil&#34;</span>
+        <a data-fancybox="gallery" href="/img/20181119003021590.png">
+            <img class="mx-auto" alt="" src="/img/20181119003021590.png" />
+        </a>
+    
+之后，在该目录中创建的文件<code>reverse.go </code>并保存（文件看不懂没关系，随着学习深入，相关知识点都会讲到，这里只做演示使用）：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">package</span> stringutil
+<span style="color:#998;font-style:italic">// Reverse 将其实参字符串以符文为单位左右反转。
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">Reverse</span>(s <span style="color:#458;font-weight:bold">string</span>) <span style="color:#458;font-weight:bold">string</span> {
+	r <span style="font-weight:bold">:=</span> []<span style="color:#999">rune</span>(s)
+	<span style="font-weight:bold">for</span> i, j <span style="font-weight:bold">:=</span> <span style="color:#099">0</span>, <span style="color:#999">len</span>(r)<span style="font-weight:bold">-</span><span style="color:#099">1</span>; i &lt; <span style="color:#999">len</span>(r)<span style="font-weight:bold">/</span><span style="color:#099">2</span>; i, j = i<span style="font-weight:bold">+</span><span style="color:#099">1</span>, j<span style="font-weight:bold">-</span><span style="color:#099">1</span> {
+		r[i], r[j] = r[j], r[i]
+	}
+	<span style="font-weight:bold">return</span> <span style="color:#999">string</span>(r)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>目录如图：
+
+        <a data-fancybox="gallery" href="/img/20181119003835969.png">
+            <img class="mx-auto" alt="" src="/img/20181119003835969.png" />
+        </a>
+    
+用 <code>go build </code> 命令来测试该包的编译：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">go</span> build github.com<span style="font-weight:bold">/</span>Seekload<span style="font-weight:bold">/</span>stringutil
+</code></pre></td></tr></table>
+</div>
+</div><p>也可以在包目录下直接执行<code>go build</code>。
+这个命令不会产生输出文件。想要输出的话，必须使用 <code>go install</code> 命令，它会将编译之后的静态文件放到工作空间的 pkg 目录中。
+
+        <a data-fancybox="gallery" href="/img/20181119004630957.png">
+            <img class="mx-auto" alt="" src="/img/20181119004630957.png" />
+        </a>
+    
+确认 <code>stringutil</code>包构建完毕后，修改原来的 hello.go 文件并使用它：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">package</span> main
+
+<span style="font-weight:bold">import</span> (
+	<span style="color:#b84">&#34;fmt&#34;</span>
+	<span style="color:#b84">&#34;github.com/Seekload/stringutil&#34;</span>
 )
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">stringutil</span>.<span style="color:#a6e22e">Reverse</span>(<span style="color:#e6db74">&#34;!oG ,daolkeeS&#34;</span>))
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(stringutil.<span style="color:#900;font-weight:bold">Reverse</span>(<span style="color:#b84">&#34;!oG ,daolkeeS&#34;</span>))
 }
-</code></pre></div><p>执行<code>go install hello/</code>，重新编译<code>hello.go</code>，生成可执行文件<code>hello</code>并执行：
-<img src="https://img-blog.csdnimg.cn/20181119005425411.png" alt="">
+</code></pre></td></tr></table>
+</div>
+</div><p>执行<code>go install hello/</code>，重新编译<code>hello.go</code>，生成可执行文件<code>hello</code>并执行：
+
+        <a data-fancybox="gallery" href="https://img-blog.csdnimg.cn/20181119005425411.png">
+            <img class="mx-auto" alt="" src="https://img-blog.csdnimg.cn/20181119005425411.png" />
+        </a>
+    
 在<code>hello.go</code>中，我们引入了<code>github.com/Seekload/stringutil</code> 包，所以重新执行<code>go intall hello/</code>时，<code>stringutil</code> 包会被自动安装。<!-- raw HTML omitted --><!-- raw HTML omitted -->
 <strong>注意：</strong><code>go install github.com/Seekload/stringutil</code> 是将 <code>stringutil.a</code> 放到 <code>pkg/darwin_amd64</code> 目录中，反映出其源码目录。  <code>darwin_amd64</code> 这部分能帮助跨平台编译，并反映出你的操作系统和架构。</p>
 <p>这一节涉及了包的概念，有些同学可能还不太清楚。别急，将在下节给大家讲解 Go 语言中的包。
 <!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt=""></p>
+
+        <a data-fancybox="gallery" href="/me/weixingzh.jpg">
+            <img class="mx-auto" alt="" src="/me/weixingzh.jpg" />
+        </a>
+    </p>
 <h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
-                        </div>
+        </div>
 
-                        
+        
+
+
+        
 
 <div class="post-archive">
-    <h3>推荐阅读</h3>
+    <h2>See Also</h2>
     <ul class="listing">
         
         <li><a href="/golang100/">Go语言知识站</a></li>
@@ -224,21 +302,21 @@ Go 代码必须放在工作空间内，workspace 目录包含三个子目录</p>
 </div>
 
 
-                        <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://seekload.net/tags/go">Go</a></li>
-                                
-                                <li><a href="https://seekload.net/tags/%E5%8C%85">包</a></li>
-                                
-                                <li><a href="https://seekload.net/tags/%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4">工作空间</a></li>
-                                
-                            </ul>
-                            
-                        </div>
-                    </article>
-                    
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/go'>Go</a></li>
+                
+                <li><a href='/tags/%E5%8C%85'>包</a></li>
+                
+                <li><a href='/tags/%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4'>工作空间</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
     
 
     
@@ -253,12 +331,60 @@ Go 代码必须放在工作空间内，workspace 目录包含三个子目录</p>
       </script>
     </div>
     
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>
+        
+    </div>
+    <br />
+    <div>
+        
+       
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
                 </div>
-            </div>
-            <div id="secondary">
+
+                <div id="secondary">
 
     <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
       <input type="hidden" name="sitesearch" value="https://seekload.net">
@@ -286,6 +412,14 @@ Go 代码必须放在工作空间内，workspace 目录包含三个子目录</p>
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/sync-mutex.html" title="Go并发原语-mutex源码解析">Go并发原语-mutex源码解析</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/go-interface.html" title="通过 dlv 和汇编窥探 interface 底层实现(多图)">通过 dlv 和汇编窥探 interface 底层实现(多图)</a>
+    </li>
     
     <li>
         <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
@@ -319,14 +453,6 @@ Go 代码必须放在工作空间内，workspace 目录包含三个子目录</p>
         <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/29/go-interview-7-day.html" title="Go面试每天一篇（第 7 天）">Go面试每天一篇（第 7 天）</a>
-    </li>
-    
-    <li>
-        <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -346,50 +472,32 @@ Go 代码必须放在工作空间内，workspace 目录包含三个子目录</p>
     
 
     <section class="widget">
-        <h3 class="widget-title">分类</h3>
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
-    <li>
-        <a href="https://seekload.net/categories/golang/">golang(40)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/golang/">Golang (42)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇 (9)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言 (30)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题 (1)</a></li>
     
 </ul>
     </section>
 
     <section class="widget">
-        <h3 class="widget-title">标签</h3>
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 <div class="tagcloud">
     
     <a href="https://seekload.net/tags/channel/">channel</a>
@@ -398,15 +506,19 @@ Go 代码必须放在工作空间内，workspace 目录包含三个子目录</p>
     
     <a href="https://seekload.net/tags/function/">function</a>
     
-    <a href="https://seekload.net/tags/go/">go</a>
+    <a href="https://seekload.net/tags/go/">Go</a>
     
-    <a href="https://seekload.net/tags/golang/">golang</a>
+    <a href="https://seekload.net/tags/golang/">Golang</a>
     
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
     
-    <a href="https://seekload.net/tags/map/">map</a>
+    <a href="https://seekload.net/tags/interface/">interface</a>
     
-    <a href="https://seekload.net/tags/oop/">oop</a>
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/mutex/">mutex</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     
@@ -482,56 +594,9 @@ Go 代码必须放在工作空间内，workspace 目录包含三个子目录</p>
         </ul>
     </section>
 </div>
+            </div>
         </div>
     </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        
-        &copy; 2021 <a href="https://seekload.net"> 公众号：Golang来啦 </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        
-        
-    </div>
-</footer>
-
-
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
-    window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
-    };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-133344385-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
-
-
-
-
 </body>
+
 </html>

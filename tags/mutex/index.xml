@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>mutex on Seekload&#39;s Blog</title>
+    <link>https://seekload.net/tags/mutex/</link>
+    <description>Recent content in mutex on Seekload&#39;s Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-CN</language>
+    <lastBuildDate>Sun, 12 Dec 2021 10:47:05 +0800</lastBuildDate><atom:link href="https://seekload.net/tags/mutex/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Go并发原语-mutex源码解析</title>
+      <link>https://seekload.net/2021/12/12/sync-mutex.html</link>
+      <pubDate>Sun, 12 Dec 2021 10:47:05 +0800</pubDate>
+      
+      <guid>https://seekload.net/2021/12/12/sync-mutex.html</guid>
+      <description>源码版本 Go1.13.15 Go 语言的 sync 包提供了用于同步的基本原语，sync.Mutex 就是其中用的最多的一个。 sync.Mutex 是 Go 语言里面的一个排他锁，当某一个 G 拥有了锁的</description>
+    </item>
+    
+  </channel>
+</rss>

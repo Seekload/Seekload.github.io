@@ -1,68 +1,47 @@
 <!doctype html>
 <html lang="zh-CN">
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?4b79e198f0e43ade55032d4bf11860a4";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-<script>
-(function(){
-    var bp = document.createElement('script');
-    var curProtocol = window.location.protocol.split(':')[0];
-    if (curProtocol === 'https') {
-        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-    }
-    else {
-        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-    }
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(bp, s);
-})();
-</script>
-
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
 
     <title>图解Go语言Context | Seekload&#39;s Blog</title>
     <meta property="og:title" content="图解Go语言Context - Seekload&#39;s Blog">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2021-03-03T13:37:33&#43;08:00">
+    <meta property="article:published_time" content='2021-03-03T13:37:33&#43;08:00'>
         
         
-    <meta property="article:modified_time" content="2021-03-03T13:37:33&#43;08:00">
+    <meta property="article:modified_time" content='2021-03-03T13:37:33&#43;08:00'>
         
     <meta name="Keywords" content="">
     <meta name="description" content="图解Go语言Context">
         
     <meta name="author" content="Seekload">
     <meta property="og:url" content="https://seekload.net/2021/03/03/go-context.html">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
-
-
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
     
     
 </head>
 
+
 <body>
-<header id="header" class="clearfix">
+    <header id="header" class="clearfix">
     <div class="container">
         <div class="col-group">
             <div class="site-name ">
@@ -75,7 +54,7 @@ var _hmt = _hmt || [];
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://seekload.net">首页</a>
+                    <a class="current" href="https://seekload.net">首页</a>
                     
                     <a  href="https://seekload.net/archives/" title="归档">归档</a>
                     
@@ -89,43 +68,40 @@ var _hmt = _hmt || [];
     </div>
 </header>
 
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
 
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">图解Go语言Context</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2021年3月3日
-                        </date>
-                        
-                        <div class="post-meta">
-                            <span>|</span>
-                            
-                                <span class="meta-category"><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80">就要学习 Go 语言</a></span>
-                            
-                                <span class="meta-category"><a href="https://seekload.net/categories/golang">Golang</a></span>
-                            
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span >
-                                <span>|</span>
-                                字数:2896
-                            </span>
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span> 阅读</span></span>
-                        </div>
-                        
-                        <div class="post-content">
-                            <p>你好，我是 Seekload。</p>
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">图解Go语言Context</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2021年3月3日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80'>就要学习 Go 语言</a></span>
+            
+            <span class="meta-category"><a href='/categories/golang'>Golang</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <p>你好，我是 Seekload。</p>
 <p>今天与你分享下 Go 语言里面 context 包的相关知识。</p>
 <p>一般新技术的出现都是为了解决现有技术存在的问题或者可以提供更优雅方便的实现方式，那我们就要想想 contex 包能解决什么问题？</p>
 <p>关于 context 能解决什么问题，推荐你看看这两篇文章：</p>
@@ -142,61 +118,127 @@ var _hmt = _hmt || [];
 <p>好了，带着这些问题，我们接着往下看。</p>
 <h3 id="context-接口">context 接口</h3>
 <p>理解 context 包，核心是需要理解 Context 接口：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Context</span> <span style="color:#66d9ef">interface</span> {
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">type</span> Context <span style="font-weight:bold">interface</span> {
 
-    <span style="color:#a6e22e">Done</span>() <span style="color:#f92672">&lt;-</span><span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">struct</span>{}
+    <span style="color:#900;font-weight:bold">Done</span>() <span style="font-weight:bold">&lt;-</span><span style="font-weight:bold">chan</span> <span style="font-weight:bold">struct</span>{}
 
-    <span style="color:#a6e22e">Err</span>() <span style="color:#66d9ef">error</span>
+    <span style="color:#900;font-weight:bold">Err</span>() <span style="color:#458;font-weight:bold">error</span>
 
-    <span style="color:#a6e22e">Deadline</span>() (<span style="color:#a6e22e">deadline</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>, <span style="color:#a6e22e">ok</span> <span style="color:#66d9ef">bool</span>)
+    <span style="color:#900;font-weight:bold">Deadline</span>() (deadline time.Time, ok <span style="color:#458;font-weight:bold">bool</span>)
 
-    <span style="color:#a6e22e">Value</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">interface</span>{}) <span style="color:#66d9ef">interface</span>{}
+    <span style="color:#900;font-weight:bold">Value</span>(key <span style="font-weight:bold">interface</span>{}) <span style="font-weight:bold">interface</span>{}
 }
-</code></pre></div><p>这个接口有四个方法：</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>这个接口有四个方法：</p>
 <p>Done() 返回只读的 channel，在 goroutine 中，如果该 channel 可读，则意味着父 context 发起了取消操作或者是时间到期，<strong>理解这一点非常重要。</strong></p>
 <p>Err() 返回错误，表示 channel 被关闭的原因，被取消还是超时。</p>
 <p>Deadline() 获取设置的截止时间，第一个是截止时间，表示到了这个点，context 会自动发起取消操作；第二个表示是否设置了截止时间。</p>
 <p>Value() 方法获取 context 上绑定的值，是一个键值对，这个值一般是线程安全的。</p>
 <!-- raw HTML omitted -->
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Stream</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">out</span> <span style="color:#66d9ef">chan</span><span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">Value</span>) <span style="color:#66d9ef">error</span> {
-  	<span style="color:#66d9ef">for</span> {
-  		<span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">DoSomething</span>(<span style="color:#a6e22e">ctx</span>)
-  		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
-  			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">err</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">Stream</span>(ctx context.Context, out <span style="font-weight:bold">chan</span><span style="font-weight:bold">&lt;-</span> Value) <span style="color:#458;font-weight:bold">error</span> {
+  	<span style="font-weight:bold">for</span> {
+  		v, err <span style="font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">DoSomething</span>(ctx)
+  		<span style="font-weight:bold">if</span> err <span style="font-weight:bold">!=</span> <span style="font-weight:bold">nil</span> {
+  			<span style="font-weight:bold">return</span> err
   		}
-  		<span style="color:#66d9ef">select</span> {
-  		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>():
-  			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Err</span>()
-  		<span style="color:#66d9ef">case</span> <span style="color:#a6e22e">out</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">v</span>:
+  		<span style="font-weight:bold">select</span> {
+  		<span style="font-weight:bold">case</span> <span style="font-weight:bold">&lt;-</span>ctx.<span style="color:#900;font-weight:bold">Done</span>():
+  			<span style="font-weight:bold">return</span> ctx.<span style="color:#900;font-weight:bold">Err</span>()
+  		<span style="font-weight:bold">case</span> out <span style="font-weight:bold">&lt;-</span> v:
   		}
   	}
   }
-</code></pre></div><h3 id="衍生-context">衍生 context</h3>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="衍生-context">衍生 context</h3>
 <p>我们不需要自己实现 Context 接口，源码包已经为我们提供了两个实现接口的方法，分别是 Background() 和 TODO()；</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> (
-	<span style="color:#a6e22e">background</span> = new(<span style="color:#a6e22e">emptyCtx</span>)
-	<span style="color:#a6e22e">todo</span>       = new(<span style="color:#a6e22e">emptyCtx</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">var</span> (
+	background = <span style="color:#999">new</span>(emptyCtx)
+	todo       = <span style="color:#999">new</span>(emptyCtx)
 )
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">Background</span>() <span style="color:#a6e22e">Context</span> {
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">background</span>
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">Background</span>() Context {
+	<span style="font-weight:bold">return</span> background
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">TODO</span>() <span style="color:#a6e22e">Context</span> {
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">todo</span>
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">TODO</span>() Context {
+	<span style="font-weight:bold">return</span> todo
 }
-</code></pre></div><p>context.Background() 返回空的 context，通常用在 main 函数里，作为根 context 衍生出子 context。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>context.Background() 返回空的 context，通常用在 main 函数里，作为根 context 衍生出子 context。</p>
 <p>context.TODO() 也是返回空 context。主要用在还不清楚使用什么类型的 context 的时候，便于后期重构，先用它占个位。</p>
 <p>它们两本质上是 emptyCtx 类型，不能被取消，没有值，也没有超时时间。</p>
 <!-- raw HTML omitted -->
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WithCancel</span>(<span style="color:#a6e22e">parent</span> <span style="color:#a6e22e">Context</span>) (<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#a6e22e">CancelFunc</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">WithCancel</span>(parent Context) (ctx Context, cancel CancelFunc)
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WithDeadline</span>(<span style="color:#a6e22e">parent</span> <span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">deadline</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>) (<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">CancelFunc</span>)
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">WithDeadline</span>(parent Context, deadline time.Time) (Context, CancelFunc)
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WithTimeout</span>(<span style="color:#a6e22e">parent</span> <span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) (<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">CancelFunc</span>)
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">WithTimeout</span>(parent Context, timeout time.Duration) (Context, CancelFunc)
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WithValue</span>(<span style="color:#a6e22e">parent</span> <span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">val</span> <span style="color:#66d9ef">interface</span>{}) <span style="color:#a6e22e">Context</span>
-</code></pre></div><p>这四个函数的第一个参数都是父 context，可以理解为基于父 context 生成子 context，即衍生子 context。</p>
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">WithValue</span>(parent Context, key, val <span style="font-weight:bold">interface</span>{}) Context
+</code></pre></td></tr></table>
+</div>
+</div><p>这四个函数的第一个参数都是父 context，可以理解为基于父 context 生成子 context，即衍生子 context。</p>
 <ul>
 <li>
 <p>WithCancel() 基于父 context，返回子 context 和取消函数；</p>
@@ -217,20 +259,47 @@ var _hmt = _hmt || [];
 <h3 id="context-树">context 树</h3>
 <p>我们一起来看下基于两个根 context 可以创建的 context 树是什么样。</p>
 <h4 id="两层树">两层树</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">rootCtx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
-<span style="color:#a6e22e">childCtx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithValue</span>(<span style="color:#a6e22e">rootCtx</span>, <span style="color:#e6db74">&#34;request_Id&#34;</span>, <span style="color:#e6db74">&#34;seekload&#34;</span>)
-</code></pre></div><p>上面的代码基于根 context 创建了两层 context 树，rootCtx 衍生出 childCtx，并携带键值对 {&ldquo;request_Id&rdquo; : &ldquo;seekload&rdquo;}。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">rootCtx <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">Background</span>()
+childCtx <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithValue</span>(rootCtx, <span style="color:#b84">&#34;request_Id&#34;</span>, <span style="color:#b84">&#34;seekload&#34;</span>)
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的代码基于根 context 创建了两层 context 树，rootCtx 衍生出 childCtx，并携带键值对 {&ldquo;request_Id&rdquo; : &ldquo;seekload&rdquo;}。</p>
 <h4 id="三层树">三层树</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">rootCtx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
-<span style="color:#a6e22e">childCtx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithValue</span>(<span style="color:#a6e22e">rootCtx</span>, <span style="color:#e6db74">&#34;request_Id&#34;</span>, <span style="color:#e6db74">&#34;seekload&#34;</span>)
-<span style="color:#a6e22e">childOfChildCtx</span>, <span style="color:#a6e22e">cancelFunc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithCancel</span>(<span style="color:#a6e22e">childCtx</span>)
-</code></pre></div><p>基于两层树，childCtx 衍生出 childOfChildCtx，含有键值对并且具有取消功能。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">rootCtx <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">Background</span>()
+childCtx <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithValue</span>(rootCtx, <span style="color:#b84">&#34;request_Id&#34;</span>, <span style="color:#b84">&#34;seekload&#34;</span>)
+childOfChildCtx, cancelFunc <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithCancel</span>(childCtx)
+</code></pre></td></tr></table>
+</div>
+</div><p>基于两层树，childCtx 衍生出 childOfChildCtx，含有键值对并且具有取消功能。</p>
 <h4 id="多层树">多层树</h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">rootCtx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
-<span style="color:#a6e22e">childCtx1</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithValue</span>(<span style="color:#a6e22e">rootCtx</span>, <span style="color:#e6db74">&#34;request_Id&#34;</span>, <span style="color:#e6db74">&#34;seekload&#34;</span>)
-<span style="color:#a6e22e">childCtx2</span>, <span style="color:#a6e22e">cancelFunc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithCancel</span>(<span style="color:#a6e22e">childCtx1</span>)
-<span style="color:#a6e22e">childCtx3</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithValue</span>(<span style="color:#a6e22e">rootCtx</span>, <span style="color:#e6db74">&#34;user_Id&#34;</span>, <span style="color:#e6db74">&#34;user_100&#34;</span>)
-</code></pre></div><p>上面的代码：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">rootCtx <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">Background</span>()
+childCtx1 <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithValue</span>(rootCtx, <span style="color:#b84">&#34;request_Id&#34;</span>, <span style="color:#b84">&#34;seekload&#34;</span>)
+childCtx2, cancelFunc <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithCancel</span>(childCtx1)
+childCtx3 <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithValue</span>(rootCtx, <span style="color:#b84">&#34;user_Id&#34;</span>, <span style="color:#b84">&#34;user_100&#34;</span>)
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的代码：</p>
 <ul>
 <li>rootCtx 是根 context；</li>
 <li>rootCtx 衍生出 childCtx1，并携带键值对 {&ldquo;request_Id&rdquo; : &ldquo;seekload&rdquo;}；</li>
@@ -238,167 +307,375 @@ var _hmt = _hmt || [];
 <li>rootCtx 衍生出 childCtx3，携带键值对 {&ldquo;user_Id&rdquo; : &ldquo;user_100&rdquo;}；</li>
 </ul>
 <p>层级关系就像下面这样：</p>
-<p><img src="/img/go-context-1.png" alt="图1"></p>
+<p>
+        <a data-fancybox="gallery" href="/img/go-context-1.png">
+            <img class="mx-auto" alt="图1" src="/img/go-context-1.png" />
+        </a>
+    </p>
 <p>我们可以在任一结点 context 上创建子 context，比如从 childCtx1 衍生 childCtx4：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">childCtx4</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithValue</span>(<span style="color:#a6e22e">childCtx1</span>, <span style="color:#e6db74">&#34;token&#34;</span>, <span style="color:#e6db74">&#34;token_some&#34;</span>)
-</code></pre></div><p>层级关系就变成这样了：</p>
-<p><img src="/img/go-context-2.png" alt="图1"></p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">childCtx4 <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithValue</span>(childCtx1, <span style="color:#b84">&#34;token&#34;</span>, <span style="color:#b84">&#34;token_some&#34;</span>)
+</code></pre></td></tr></table>
+</div>
+</div><p>层级关系就变成这样了：</p>
+<p>
+        <a data-fancybox="gallery" href="/img/go-context-2.png">
+            <img class="mx-auto" alt="图1" src="/img/go-context-2.png" />
+        </a>
+    </p>
 <p>Talk is cheap. Show me the code.</p>
 <p>看到这里，可能你还是不知道怎么去用 context 包，接下来我们结合着示例展示下 withXXX 函数的使用方法。</p>
 <h3 id="如何使用">如何使用</h3>
 <h4 id="contextwithcancel">context.WithCancel()</h4>
 <p>context.WithCancel() 用于取消信号，直接来看例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">ctx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
-	<span style="color:#a6e22e">cancelCtx</span>, <span style="color:#a6e22e">cancelFunc</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithCancel</span>(<span style="color:#a6e22e">ctx</span>)
-	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">task</span>(<span style="color:#a6e22e">cancelCtx</span>)
-	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">3</span>)
-	<span style="color:#a6e22e">cancelFunc</span>()                        <span style="color:#75715e">// 取消 context
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1</span>)         <span style="color:#75715e">// 延时等待协程退出
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;number of goroutine: &#34;</span>,<span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">NumGoroutine</span>()) <span style="color:#75715e">// 协程数量
-</span><span style="color:#75715e"></span>}
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	ctx <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">Background</span>()
+	cancelCtx, cancelFunc <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithCancel</span>(ctx)
+	<span style="font-weight:bold">go</span> <span style="color:#900;font-weight:bold">task</span>(cancelCtx)
+	time.<span style="color:#900;font-weight:bold">Sleep</span>(time.Second <span style="font-weight:bold">*</span> <span style="color:#099">3</span>)
+	<span style="color:#900;font-weight:bold">cancelFunc</span>()                        <span style="color:#998;font-style:italic">// 取消 context
+</span><span style="color:#998;font-style:italic"></span>	time.<span style="color:#900;font-weight:bold">Sleep</span>(time.Second <span style="font-weight:bold">*</span> <span style="color:#099">1</span>)         <span style="color:#998;font-style:italic">// 延时等待协程退出
+</span><span style="color:#998;font-style:italic"></span>	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;number of goroutine: &#34;</span>,runtime.<span style="color:#900;font-weight:bold">NumGoroutine</span>()) <span style="color:#998;font-style:italic">// 协程数量
+</span><span style="color:#998;font-style:italic"></span>}
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">task</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>) {
-	<span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>
-	<span style="color:#66d9ef">for</span> {
-		<span style="color:#66d9ef">select</span> {
-		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>(): <span style="color:#75715e">// 接收取消信号
-</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Gracefully exit&#34;</span>)
-			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Err</span>()) <span style="color:#75715e">// 取消原因
-</span><span style="color:#75715e"></span>			<span style="color:#66d9ef">return</span>
-		<span style="color:#66d9ef">default</span>:
-			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)
-			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1</span>)
-			<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">task</span>(ctx context.Context) {
+	i <span style="font-weight:bold">:=</span> <span style="color:#099">1</span>
+	<span style="font-weight:bold">for</span> {
+		<span style="font-weight:bold">select</span> {
+		<span style="font-weight:bold">case</span> <span style="font-weight:bold">&lt;-</span>ctx.<span style="color:#900;font-weight:bold">Done</span>(): <span style="color:#998;font-style:italic">// 接收取消信号
+</span><span style="color:#998;font-style:italic"></span>			fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;Gracefully exit&#34;</span>)
+			fmt.<span style="color:#900;font-weight:bold">Println</span>(ctx.<span style="color:#900;font-weight:bold">Err</span>()) <span style="color:#998;font-style:italic">// 取消原因
+</span><span style="color:#998;font-style:italic"></span>			<span style="font-weight:bold">return</span>
+		<span style="font-weight:bold">default</span>:
+			fmt.<span style="color:#900;font-weight:bold">Println</span>(i)
+			time.<span style="color:#900;font-weight:bold">Sleep</span>(time.Second <span style="font-weight:bold">*</span> <span style="color:#099">1</span>)
+			i<span style="font-weight:bold">++</span>
 		}
 	}
 } 
-</code></pre></div><p>输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">1</span>
-<span style="color:#ae81ff">2</span>
-<span style="color:#ae81ff">3</span>
-<span style="color:#a6e22e">Gracefully</span> <span style="color:#a6e22e">exit</span>
-<span style="color:#a6e22e">context</span> <span style="color:#a6e22e">canceled</span>
-<span style="color:#a6e22e">number</span> <span style="color:#a6e22e">of</span> <span style="color:#a6e22e">goroutine</span>:  <span style="color:#ae81ff">1</span>
-</code></pre></div><p>当调用 cancelFunc()，Done() 返回的 channel 变成可读，Err() 返回取消原因 “context canceled”，task() 函数执行 return 优雅地退出。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+Gracefully exit
+context canceled
+number of goroutine:  <span style="color:#099">1</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>当调用 cancelFunc()，Done() 返回的 channel 变成可读，Err() 返回取消原因 “context canceled”，task() 函数执行 return 优雅地退出。</p>
 <h4 id="contextwithvalue">context.WithValue()</h4>
 <p>通过 context.WithValue() 可以在 goroutine 之间传递一些数据。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">helloWorldHandler</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandlerFunc</span>(<span style="color:#a6e22e">HelloWorld</span>)
-	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handle</span>(<span style="color:#e6db74">&#34;/hello&#34;</span>, <span style="color:#a6e22e">inejctRequestId</span>(<span style="color:#a6e22e">helloWorldHandler</span>))
-	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8080&#34;</span>, <span style="color:#66d9ef">nil</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	helloWorldHandler <span style="font-weight:bold">:=</span> http.<span style="color:#900;font-weight:bold">HandlerFunc</span>(HelloWorld)
+	http.<span style="color:#900;font-weight:bold">Handle</span>(<span style="color:#b84">&#34;/hello&#34;</span>, <span style="color:#900;font-weight:bold">inejctRequestId</span>(helloWorldHandler))
+	http.<span style="color:#900;font-weight:bold">ListenAndServe</span>(<span style="color:#b84">&#34;:8080&#34;</span>, <span style="font-weight:bold">nil</span>)
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">HelloWorld</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
-	<span style="color:#a6e22e">requestId</span> <span style="color:#f92672">:=</span> <span style="color:#e6db74">&#34;&#34;</span>
-	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">m</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Context</span>().<span style="color:#a6e22e">Value</span>(<span style="color:#e6db74">&#34;requestId&#34;</span>); <span style="color:#a6e22e">m</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
-		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">value</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">m</span>.(<span style="color:#66d9ef">string</span>); <span style="color:#a6e22e">ok</span> {
-			<span style="color:#a6e22e">requestId</span> = <span style="color:#a6e22e">value</span>
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">HelloWorld</span>(w http.ResponseWriter, r <span style="font-weight:bold">*</span>http.Request) {
+	requestId <span style="font-weight:bold">:=</span> <span style="color:#b84">&#34;&#34;</span>
+	<span style="font-weight:bold">if</span> m <span style="font-weight:bold">:=</span> r.<span style="color:#900;font-weight:bold">Context</span>().<span style="color:#900;font-weight:bold">Value</span>(<span style="color:#b84">&#34;requestId&#34;</span>); m <span style="font-weight:bold">!=</span> <span style="font-weight:bold">nil</span> {
+		<span style="font-weight:bold">if</span> value, ok <span style="font-weight:bold">:=</span> m.(<span style="color:#458;font-weight:bold">string</span>); ok {
+			requestId = value
 		}
 	}
-	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Header</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#e6db74">&#34;requestId&#34;</span>, <span style="color:#a6e22e">requestId</span>)
-	<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;Hello, world&#34;</span>))
+	w.<span style="color:#900;font-weight:bold">Header</span>().<span style="color:#900;font-weight:bold">Add</span>(<span style="color:#b84">&#34;requestId&#34;</span>, requestId)
+	w.<span style="color:#900;font-weight:bold">Write</span>([]<span style="color:#999">byte</span>(<span style="color:#b84">&#34;Hello, world&#34;</span>))
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">inejctRequestId</span>(<span style="color:#a6e22e">next</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handler</span>) <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Handler</span> {
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandlerFunc</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
-		<span style="color:#a6e22e">requestId</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">uuid</span>.<span style="color:#a6e22e">New</span>().<span style="color:#a6e22e">String</span>()
-		<span style="color:#a6e22e">ctx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithValue</span>(<span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Context</span>(), <span style="color:#e6db74">&#34;requestId&#34;</span>, <span style="color:#a6e22e">requestId</span>)
-		<span style="color:#a6e22e">req</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">WithContext</span>(<span style="color:#a6e22e">ctx</span>)
-		<span style="color:#a6e22e">next</span>.<span style="color:#a6e22e">ServeHTTP</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">req</span>)
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">inejctRequestId</span>(next http.Handler) http.Handler {
+	<span style="font-weight:bold">return</span> http.<span style="color:#900;font-weight:bold">HandlerFunc</span>(<span style="font-weight:bold">func</span>(w http.ResponseWriter, r <span style="font-weight:bold">*</span>http.Request) {
+		requestId <span style="font-weight:bold">:=</span> uuid.<span style="color:#900;font-weight:bold">New</span>().<span style="color:#900;font-weight:bold">String</span>()
+		ctx <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithValue</span>(r.<span style="color:#900;font-weight:bold">Context</span>(), <span style="color:#b84">&#34;requestId&#34;</span>, requestId)
+		req <span style="font-weight:bold">:=</span> r.<span style="color:#900;font-weight:bold">WithContext</span>(ctx)
+		next.<span style="color:#900;font-weight:bold">ServeHTTP</span>(w, req)
 	})
 }
-</code></pre></div><p>上面的代码，inejctRequestId() 是请求中间函数，通过 context.WithValue() 注入了键值对；HelloWorld() 是请求处理函数，从 context 获取到刚才绑定的 k-v。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的代码，inejctRequestId() 是请求中间函数，通过 context.WithValue() 注入了键值对；HelloWorld() 是请求处理函数，从 context 获取到刚才绑定的 k-v。</p>
 <p>go run 上面示例，然后执行：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">curl</span> <span style="color:#f92672">-</span><span style="color:#a6e22e">v</span> <span style="color:#a6e22e">localhost</span>:<span style="color:#ae81ff">8080</span><span style="color:#f92672">/</span><span style="color:#a6e22e">hello</span>
-</code></pre></div><p>会输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">*</span>   <span style="color:#a6e22e">Trying</span> ::<span style="color:#ae81ff">1.</span>..
-<span style="color:#f92672">*</span> <span style="color:#a6e22e">TCP_NODELAY</span> <span style="color:#a6e22e">set</span>
-<span style="color:#f92672">*</span> <span style="color:#a6e22e">Connected</span> <span style="color:#a6e22e">to</span> <span style="color:#a6e22e">localhost</span> (::<span style="color:#ae81ff">1</span>) <span style="color:#a6e22e">port</span> <span style="color:#ae81ff">8080</span> (<span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">0</span>)
-&gt; <span style="color:#a6e22e">GET</span> <span style="color:#f92672">/</span><span style="color:#a6e22e">hello</span> <span style="color:#a6e22e">HTTP</span><span style="color:#f92672">/</span><span style="color:#ae81ff">1.1</span>
-&gt; <span style="color:#a6e22e">Host</span>: <span style="color:#a6e22e">localhost</span>:<span style="color:#ae81ff">8080</span>
-&gt; <span style="color:#a6e22e">User</span><span style="color:#f92672">-</span><span style="color:#a6e22e">Agent</span>: <span style="color:#a6e22e">curl</span><span style="color:#f92672">/</span><span style="color:#ae81ff">7.54.0</span>
-&gt; <span style="color:#a6e22e">Accept</span>: <span style="color:#f92672">*/*</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">curl <span style="font-weight:bold">-</span>v localhost:<span style="color:#099">8080</span><span style="font-weight:bold">/</span>hello
+</code></pre></td></tr></table>
+</div>
+</div><p>会输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">*</span>   Trying ::<span style="color:#099">1.</span>..
+<span style="font-weight:bold">*</span> TCP_NODELAY set
+<span style="font-weight:bold">*</span> Connected to <span style="color:#900;font-weight:bold">localhost</span> (::<span style="color:#099">1</span>) port <span style="color:#099">8080</span> (<span style="color:#a61717;background-color:#e3d2d2">#</span><span style="color:#099">0</span>)
+&gt; GET <span style="font-weight:bold">/</span>hello HTTP<span style="font-weight:bold">/</span><span style="color:#099">1.1</span>
+&gt; Host: localhost:<span style="color:#099">8080</span>
+&gt; User<span style="font-weight:bold">-</span>Agent: curl<span style="font-weight:bold">/</span><span style="color:#099">7.54.0</span>
+&gt; Accept: <span style="font-weight:bold">*/*</span>
 &gt;
-&lt; <span style="color:#a6e22e">HTTP</span><span style="color:#f92672">/</span><span style="color:#ae81ff">1.1</span> <span style="color:#ae81ff">200</span> <span style="color:#a6e22e">OK</span>
-&lt; <span style="color:#a6e22e">Requestid</span>: <span style="color:#a6e22e">e0b0544d</span><span style="color:#f92672">-</span><span style="color:#ae81ff">7993</span><span style="color:#f92672">-</span><span style="color:#ae81ff">4</span><span style="color:#a6e22e">ff5</span><span style="color:#f92672">-</span><span style="color:#a6e22e">a2de</span><span style="color:#f92672">-</span><span style="color:#a6e22e">b29eacd3645a</span>
-&lt; <span style="color:#a6e22e">Date</span>: <span style="color:#a6e22e">Mon</span>, <span style="color:#ae81ff">08</span> <span style="color:#a6e22e">Feb</span> <span style="color:#ae81ff">2021</span> <span style="color:#ae81ff">13</span>:<span style="color:#ae81ff">13</span>:<span style="color:#ae81ff">06</span> <span style="color:#a6e22e">GMT</span>
-&lt; <span style="color:#a6e22e">Content</span><span style="color:#f92672">-</span><span style="color:#a6e22e">Length</span>: <span style="color:#ae81ff">12</span>
-&lt; <span style="color:#a6e22e">Content</span><span style="color:#f92672">-</span><span style="color:#a6e22e">Type</span>: <span style="color:#a6e22e">text</span><span style="color:#f92672">/</span><span style="color:#a6e22e">plain</span>; <span style="color:#a6e22e">charset</span>=<span style="color:#a6e22e">utf</span><span style="color:#f92672">-</span><span style="color:#ae81ff">8</span>
+&lt; HTTP<span style="font-weight:bold">/</span><span style="color:#099">1.1</span> <span style="color:#099">200</span> OK
+&lt; Requestid: e0b0544d<span style="font-weight:bold">-</span><span style="color:#099">7993</span><span style="font-weight:bold">-</span><span style="color:#099">4</span>ff5<span style="font-weight:bold">-</span>a2de<span style="font-weight:bold">-</span>b29eacd3645a
+&lt; Date: Mon, <span style="color:#099">08</span> Feb <span style="color:#099">2021</span> <span style="color:#099">13</span>:<span style="color:#099">13</span>:<span style="color:#099">06</span> GMT
+&lt; Content<span style="font-weight:bold">-</span>Length: <span style="color:#099">12</span>
+&lt; Content<span style="font-weight:bold">-</span>Type: text<span style="font-weight:bold">/</span>plain; charset=utf<span style="font-weight:bold">-</span><span style="color:#099">8</span>
 &lt;
-<span style="color:#f92672">*</span> <span style="color:#a6e22e">Connection</span> <span style="color:#960050;background-color:#1e0010">#</span><span style="color:#ae81ff">0</span> <span style="color:#a6e22e">to</span> <span style="color:#a6e22e">host</span> <span style="color:#a6e22e">localhost</span> <span style="color:#a6e22e">left</span> <span style="color:#a6e22e">intact</span>
-<span style="color:#a6e22e">Hello</span>, <span style="color:#a6e22e">world</span>
-</code></pre></div><p>从输出可以看到，返回里有 Requestid 信息。</p>
+<span style="font-weight:bold">*</span> Connection <span style="color:#a61717;background-color:#e3d2d2">#</span><span style="color:#099">0</span> to host localhost left intact
+Hello, world
+</code></pre></td></tr></table>
+</div>
+</div><p>从输出可以看到，返回里有 Requestid 信息。</p>
 <h4 id="contextwithtimeout">context.WithTimeout()</h4>
 <p>context.WithTimeout() 可以设置一个超时时间，过期之后 channel done 会自动关闭，context 会被取消；超时之前可以调用取消函数手动取消 context。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">ctx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
-	<span style="color:#a6e22e">cancelCtx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithTimeout</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span><span style="color:#f92672">*</span><span style="color:#ae81ff">3</span>)
-	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">cancel</span>()
-	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">task</span>(<span style="color:#a6e22e">cancelCtx</span>)
-	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">4</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	ctx <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">Background</span>()
+	cancelCtx, cancel <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithTimeout</span>(ctx, time.Second<span style="font-weight:bold">*</span><span style="color:#099">3</span>)
+	<span style="font-weight:bold">defer</span> <span style="color:#900;font-weight:bold">cancel</span>()
+	<span style="font-weight:bold">go</span> <span style="color:#900;font-weight:bold">task</span>(cancelCtx)
+	time.<span style="color:#900;font-weight:bold">Sleep</span>(time.Second <span style="font-weight:bold">*</span> <span style="color:#099">4</span>)
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">task</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>) {
-	<span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>
-	<span style="color:#66d9ef">for</span> {
-		<span style="color:#66d9ef">select</span> {
-		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>():
-			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Gracefully exit&#34;</span>)
-			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Err</span>())
-			<span style="color:#66d9ef">return</span>
-		<span style="color:#66d9ef">default</span>:
-			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)
-			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1</span>)
-			<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">task</span>(ctx context.Context) {
+	i <span style="font-weight:bold">:=</span> <span style="color:#099">1</span>
+	<span style="font-weight:bold">for</span> {
+		<span style="font-weight:bold">select</span> {
+		<span style="font-weight:bold">case</span> <span style="font-weight:bold">&lt;-</span>ctx.<span style="color:#900;font-weight:bold">Done</span>():
+			fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;Gracefully exit&#34;</span>)
+			fmt.<span style="color:#900;font-weight:bold">Println</span>(ctx.<span style="color:#900;font-weight:bold">Err</span>())
+			<span style="font-weight:bold">return</span>
+		<span style="font-weight:bold">default</span>:
+			fmt.<span style="color:#900;font-weight:bold">Println</span>(i)
+			time.<span style="color:#900;font-weight:bold">Sleep</span>(time.Second <span style="font-weight:bold">*</span> <span style="color:#099">1</span>)
+			i<span style="font-weight:bold">++</span>
 		}
 	}
 }
-</code></pre></div><p>输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">1</span>
-<span style="color:#ae81ff">2</span>
-<span style="color:#ae81ff">3</span>
-<span style="color:#a6e22e">Gracefully</span> <span style="color:#a6e22e">exit</span>
-<span style="color:#a6e22e">context</span> <span style="color:#a6e22e">deadline</span> <span style="color:#a6e22e">exceeded</span>
-</code></pre></div><p>上面的代码，context.WithTimeout() 设置了 3s 的超时时间，时间到了之后，context 自动取消，done channel 变成可读，Err() 返回取消原因，执行 return，task() 优雅地退出。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+Gracefully exit
+context deadline exceeded
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的代码，context.WithTimeout() 设置了 3s 的超时时间，时间到了之后，context 自动取消，done channel 变成可读，Err() 返回取消原因，执行 return，task() 优雅地退出。</p>
 <h4 id="contextwithdeadline">context.WithDeadline()</h4>
 <p>context.WithDeadline() 设置一个将来的时间点作为截止时间，时间到了之后，channel done 会自动关闭，context 会被取消；还未到截止时间可以调用取消函数手动取消 context。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">ctx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
-	<span style="color:#a6e22e">cancelCtx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithDeadline</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span><span style="color:#f92672">*</span><span style="color:#ae81ff">3</span>))
-	<span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">cancel</span>()
-	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">task</span>(<span style="color:#a6e22e">cancelCtx</span>)
-	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">4</span>)   <span style="color:#75715e">// 延时，等待 task() 正常退出
-</span><span style="color:#75715e"></span>}
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	ctx <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">Background</span>()
+	cancelCtx, cancel <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithDeadline</span>(ctx, time.<span style="color:#900;font-weight:bold">Now</span>().<span style="color:#900;font-weight:bold">Add</span>(time.Second<span style="font-weight:bold">*</span><span style="color:#099">3</span>))
+	<span style="font-weight:bold">defer</span> <span style="color:#900;font-weight:bold">cancel</span>()
+	<span style="font-weight:bold">go</span> <span style="color:#900;font-weight:bold">task</span>(cancelCtx)
+	time.<span style="color:#900;font-weight:bold">Sleep</span>(time.Second <span style="font-weight:bold">*</span> <span style="color:#099">4</span>)   <span style="color:#998;font-style:italic">// 延时，等待 task() 正常退出
+</span><span style="color:#998;font-style:italic"></span>}
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">task</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>) {
-	<span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>
-	<span style="color:#66d9ef">for</span> {
-		<span style="color:#66d9ef">select</span> {
-		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>():
-			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Gracefully exit&#34;</span>)
-			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Err</span>())
-			<span style="color:#66d9ef">return</span>
-		<span style="color:#66d9ef">default</span>:
-			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">i</span>)
-			<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span> <span style="color:#f92672">*</span> <span style="color:#ae81ff">1</span>)
-			<span style="color:#a6e22e">i</span><span style="color:#f92672">++</span>
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">task</span>(ctx context.Context) {
+	i <span style="font-weight:bold">:=</span> <span style="color:#099">1</span>
+	<span style="font-weight:bold">for</span> {
+		<span style="font-weight:bold">select</span> {
+		<span style="font-weight:bold">case</span> <span style="font-weight:bold">&lt;-</span>ctx.<span style="color:#900;font-weight:bold">Done</span>():
+			fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;Gracefully exit&#34;</span>)
+			fmt.<span style="color:#900;font-weight:bold">Println</span>(ctx.<span style="color:#900;font-weight:bold">Err</span>())
+			<span style="font-weight:bold">return</span>
+		<span style="font-weight:bold">default</span>:
+			fmt.<span style="color:#900;font-weight:bold">Println</span>(i)
+			time.<span style="color:#900;font-weight:bold">Sleep</span>(time.Second <span style="font-weight:bold">*</span> <span style="color:#099">1</span>)
+			i<span style="font-weight:bold">++</span>
 		}
 	}
 }
-</code></pre></div><p>上面的代码设置的截止时间是 3s 钟之后的时间点，时间到了之后，context 自动取消，done channel 变成可读，Err() 返回取消原因，执行 return，task() 优雅地退出。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的代码设置的截止时间是 3s 钟之后的时间点，时间到了之后，context 自动取消，done channel 变成可读，Err() 返回取消原因，执行 return，task() 优雅地退出。</p>
 <p>输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">1</span>
-<span style="color:#ae81ff">2</span>
-<span style="color:#ae81ff">3</span>
-<span style="color:#a6e22e">Gracefully</span> <span style="color:#a6e22e">exit</span>
-<span style="color:#a6e22e">context</span> <span style="color:#a6e22e">deadline</span> <span style="color:#a6e22e">exceeded</span>
-</code></pre></div><p>相信你也能猜想到，其实 context.WithTimeout() 底层是通过 context.WithDeadline() 实现的，源码如下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">WithTimeout</span>(<span style="color:#a6e22e">parent</span> <span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">timeout</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Duration</span>) (<span style="color:#a6e22e">Context</span>, <span style="color:#a6e22e">CancelFunc</span>) {
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">WithDeadline</span>(<span style="color:#a6e22e">parent</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Now</span>().<span style="color:#a6e22e">Add</span>(<span style="color:#a6e22e">timeout</span>))
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+Gracefully exit
+context deadline exceeded
+</code></pre></td></tr></table>
+</div>
+</div><p>相信你也能猜想到，其实 context.WithTimeout() 底层是通过 context.WithDeadline() 实现的，源码如下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">WithTimeout</span>(parent Context, timeout time.Duration) (Context, CancelFunc) {
+	<span style="font-weight:bold">return</span> <span style="color:#900;font-weight:bold">WithDeadline</span>(parent, time.<span style="color:#900;font-weight:bold">Now</span>().<span style="color:#900;font-weight:bold">Add</span>(timeout))
 }
-</code></pre></div><p>ps: 看完示例之后，建议你回头看看上面几节，相信对上面的内容理解会更加深刻。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>ps: 看完示例之后，建议你回头看看上面几节，相信对上面的内容理解会更加深刻。</p>
 <h3 id="总结">总结</h3>
 <p>全文已经很好地回答了文章开始的四个问题，作为 Go 语言的核心功能之一，context 包已经得到广泛的应用，比如上面例子里提到的 http 包。在使用时有几个需要注意的地方：</p>
 <ol>
@@ -416,15 +693,22 @@ var _hmt = _hmt || [];
 </ol>
 <p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt=""></p>
+
+        <a data-fancybox="gallery" href="/me/weixingzh.jpg">
+            <img class="mx-auto" alt="" src="/me/weixingzh.jpg" />
+        </a>
+    </p>
 <h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
-                        </div>
+        </div>
 
-                        
+        
+
+
+        
 
 <div class="post-archive">
-    <h3>推荐阅读</h3>
+    <h2>See Also</h2>
     <ul class="listing">
         
         <li><a href="/2021/02/09/understanding-the-context-package.html">掌握 Context 包</a></li>
@@ -433,25 +717,29 @@ var _hmt = _hmt || [];
         
         <li><a href="/2021/02/28/interview-question.html">Golang语言面试题（精编263道题），包含解析！！！</a></li>
         
+        <li><a href="/2019/08/31/go-interview-9-day.html">Go面试每天一篇（第 9 天）</a></li>
+        
+        <li><a href="/2019/08/31/go-pointers-vs-references.html">指针与引用（译）</a></li>
+        
     </ul>
 </div>
 
 
-                        <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://seekload.net/tags/go">Go</a></li>
-                                
-                                <li><a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80">Golang语言</a></li>
-                                
-                                <li><a href="https://seekload.net/tags/context">context</a></li>
-                                
-                            </ul>
-                            
-                        </div>
-                    </article>
-                    
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/go'>Go</a></li>
+                
+                <li><a href='/tags/golang%E8%AF%AD%E8%A8%80'>Golang语言</a></li>
+                
+                <li><a href='/tags/context'>context</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
     
 
     
@@ -466,12 +754,60 @@ var _hmt = _hmt || [];
       </script>
     </div>
     
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>
+        
+    </div>
+    <br />
+    <div>
+        
+       
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
                 </div>
-            </div>
-            <div id="secondary">
+
+                <div id="secondary">
 
     <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
       <input type="hidden" name="sitesearch" value="https://seekload.net">
@@ -499,6 +835,14 @@ var _hmt = _hmt || [];
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/sync-mutex.html" title="Go并发原语-mutex源码解析">Go并发原语-mutex源码解析</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/go-interface.html" title="通过 dlv 和汇编窥探 interface 底层实现(多图)">通过 dlv 和汇编窥探 interface 底层实现(多图)</a>
+    </li>
     
     <li>
         <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
@@ -532,14 +876,6 @@ var _hmt = _hmt || [];
         <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/29/go-interview-7-day.html" title="Go面试每天一篇（第 7 天）">Go面试每天一篇（第 7 天）</a>
-    </li>
-    
-    <li>
-        <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -559,50 +895,32 @@ var _hmt = _hmt || [];
     
 
     <section class="widget">
-        <h3 class="widget-title">分类</h3>
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
-    <li>
-        <a href="https://seekload.net/categories/golang/">golang(40)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/golang/">Golang (42)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇 (9)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言 (30)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题 (1)</a></li>
     
 </ul>
     </section>
 
     <section class="widget">
-        <h3 class="widget-title">标签</h3>
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 <div class="tagcloud">
     
     <a href="https://seekload.net/tags/channel/">channel</a>
@@ -611,15 +929,19 @@ var _hmt = _hmt || [];
     
     <a href="https://seekload.net/tags/function/">function</a>
     
-    <a href="https://seekload.net/tags/go/">go</a>
+    <a href="https://seekload.net/tags/go/">Go</a>
     
-    <a href="https://seekload.net/tags/golang/">golang</a>
+    <a href="https://seekload.net/tags/golang/">Golang</a>
     
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
     
-    <a href="https://seekload.net/tags/map/">map</a>
+    <a href="https://seekload.net/tags/interface/">interface</a>
     
-    <a href="https://seekload.net/tags/oop/">oop</a>
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/mutex/">mutex</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     
@@ -695,56 +1017,9 @@ var _hmt = _hmt || [];
         </ul>
     </section>
 </div>
+            </div>
         </div>
     </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        
-        &copy; 2021 <a href="https://seekload.net"> 公众号：Golang来啦 </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        
-        
-    </div>
-</footer>
-
-
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
-    window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
-    };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-133344385-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
-
-
-
-
 </body>
+
 </html>

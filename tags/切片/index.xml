@@ -13,7 +13,7 @@
       <pubDate>Wed, 30 Jan 2019 06:55:58 +0800</pubDate>
       
       <guid>https://seekload.net/2019/01/30/go-strings-bytes-runes.html</guid>
-      <description>Go 中的字符串值得特别关注，与其他语言相比，Go 中的字符串实现方式有所不同。 字符串 在 Go 中，使用双引号 &amp;quot;&amp;quot; 声明字符串： s := &amp;#34;Hello world&amp;#34; fmt.Println(&amp;#34;len(s):&amp;#34;,len(s)) fmt.Println(s); 输出： len(s): 11 Hello world 上</description>
+      <description>Go 中的字符串值得特别关注，与其他语言相比，Go 中的字符串实现方式有所不同。 字符串 在 Go 中，使用双引号 &amp;quot;&amp;quot; 声明字符串： 1 2 3 s := &amp;#34;Hello world&amp;#34; fmt.Println(&amp;#34;len(s):&amp;#34;,len(s)) fmt.Println(s); 输出： 1 2</description>
     </item>
     
     <item>
@@ -22,7 +22,7 @@
       <pubDate>Wed, 30 Jan 2019 06:30:45 +0800</pubDate>
       
       <guid>https://seekload.net/2019/01/30/go-slice-second.html</guid>
-      <description>这一节，我们来讨论更多关于Slice的用法。 nil切片与空切片 nil切片 var s []int fmt.Println(s == nil) // 输出 true fmt.Println(len(s),cap(s)) // 输出：0 0 上面这段代码声明了一个nil切片s</description>
+      <description>这一节，我们来讨论更多关于Slice的用法。 nil切片与空切片 nil切片 1 2 3 var s []int fmt.Println(s == nil) // 输出 true fmt.Println(len(s),cap(s)) // 输出：0 0 上面这段代码声明了一个nil</description>
     </item>
     
     <item>

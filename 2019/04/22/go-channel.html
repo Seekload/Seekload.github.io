@@ -1,68 +1,47 @@
 <!doctype html>
 <html lang="zh-CN">
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?4b79e198f0e43ade55032d4bf11860a4";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-<script>
-(function(){
-    var bp = document.createElement('script');
-    var curProtocol = window.location.protocol.split(':')[0];
-    if (curProtocol === 'https') {
-        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-    }
-    else {
-        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-    }
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(bp, s);
-})();
-</script>
-
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
 
     <title>Go 信道 | Seekload&#39;s Blog</title>
     <meta property="og:title" content="Go 信道 - Seekload&#39;s Blog">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2019-04-22T07:27:07&#43;08:00">
+    <meta property="article:published_time" content='2019-04-22T07:27:07&#43;08:00'>
         
         
-    <meta property="article:modified_time" content="2019-04-22T07:27:07&#43;08:00">
+    <meta property="article:modified_time" content='2019-04-22T07:27:07&#43;08:00'>
         
     <meta name="Keywords" content="">
     <meta name="description" content="Go 信道">
         
     <meta name="author" content="Seekload">
     <meta property="og:url" content="https://seekload.net/2019/04/22/go-channel.html">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
-
-
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
     
     
 </head>
 
+
 <body>
-<header id="header" class="clearfix">
+    <header id="header" class="clearfix">
     <div class="container">
         <div class="col-group">
             <div class="site-name ">
@@ -75,7 +54,7 @@ var _hmt = _hmt || [];
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://seekload.net">首页</a>
+                    <a class="current" href="https://seekload.net">首页</a>
                     
                     <a  href="https://seekload.net/archives/" title="归档">归档</a>
                     
@@ -89,298 +68,643 @@ var _hmt = _hmt || [];
     </div>
 </header>
 
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
 
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">Go 信道</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2019年4月22日
-                        </date>
-                        
-                        <div class="post-meta">
-                            <span>|</span>
-                            
-                                <span class="meta-category"><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80">就要学习 Go 语言</a></span>
-                            
-                                <span class="meta-category"><a href="https://seekload.net/categories/golang">Golang</a></span>
-                            
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span >
-                                <span>|</span>
-                                字数:2346
-                            </span>
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span> 阅读</span></span>
-                        </div>
-                        
-                        <div class="post-content">
-                            <blockquote>
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">Go 信道</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2019年4月22日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80'>就要学习 Go 语言</a></span>
+            
+            <span class="meta-category"><a href='/categories/golang'>Golang</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <blockquote>
 <p><strong>这是『就要学习 Go 语言』系列的第 22 篇分享文章</strong></p>
 </blockquote>
 <p>上篇文章讲了关于协程的一些用法，比如如何创建协程、匿名协程等。这篇文章我们来讲讲信道。
 <strong>信道是协程之间通信的管道，从一端发送数据，另一端接收数据。</strong></p>
 <h3 id="信道声明">信道声明</h3>
 <p>使用信道之前需要声明，有两种方式：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">c</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>  		<span style="color:#75715e">// 方式一
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>)		<span style="color:#75715e">// 方式二
-</span></code></pre></div><p>使用关键字 chan 创建信道，声明时有类型，表明信道只允许该类型的数据传输。信道的零值为 nil。方式一就声明了 nil 信道。nil 信道没什么作用，既不能发送数据也不能接受数据。方式二使用 make 函数创建了可用的信道 c。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>)
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;c Type is %T\n&#34;</span>,<span style="color:#a6e22e">c</span>)
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;c Value is %v\n&#34;</span>,<span style="color:#a6e22e">c</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">var</span> c <span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>  		<span style="color:#998;font-style:italic">// 方式一
+</span><span style="color:#998;font-style:italic"></span>c <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>)		<span style="color:#998;font-style:italic">// 方式二
+</span></code></pre></td></tr></table>
+</div>
+</div><p>使用关键字 chan 创建信道，声明时有类型，表明信道只允许该类型的数据传输。信道的零值为 nil。方式一就声明了 nil 信道。nil 信道没什么作用，既不能发送数据也不能接受数据。方式二使用 make 函数创建了可用的信道 c。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	c <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>)
+	fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#b84">&#34;c Type is %T\n&#34;</span>,c)
+	fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#b84">&#34;c Value is %v\n&#34;</span>,c)
 }
-</code></pre></div><p>输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Type</span> <span style="color:#a6e22e">is</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>
-<span style="color:#a6e22e">c</span> <span style="color:#a6e22e">Value</span> <span style="color:#a6e22e">is</span> <span style="color:#ae81ff">0xc000060060</span>
-</code></pre></div><p>上面的代码创建了信道 c，而且只允许 int 型数据传输。一般将信道作为参数传递给函数或者方法实现两个协程之间通信，有没有注意到信道 c 的值是一个地址，传参的时候直接使用 c 的值就可以，而不用取址。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">c Type is <span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>
+c Value is <span style="color:#099">0xc000060060</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的代码创建了信道 c，而且只允许 int 型数据传输。一般将信道作为参数传递给函数或者方法实现两个协程之间通信，有没有注意到信道 c 的值是一个地址，传参的时候直接使用 c 的值就可以，而不用取址。</p>
 <h3 id="信道的使用">信道的使用</h3>
 <h4 id="读写数据">读写数据</h4>
 <p>Go 提供了语法方便我们操作信道：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>)
-<span style="color:#75715e">// 写数据
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">c</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">data</span>   
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">c <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>)
+<span style="color:#998;font-style:italic">// 写数据
+</span><span style="color:#998;font-style:italic"></span>c <span style="font-weight:bold">&lt;-</span> data   
 
-<span style="color:#75715e">// 读数据
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">variable</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>  <span style="color:#75715e">// 方式一
-</span><span style="color:#75715e"></span><span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>  			<span style="color:#75715e">// 方式二
-</span></code></pre></div><p>读写数据注意信道的位置，<strong>信道在箭头的左边是写数据，在右边是从信道读数据</strong>。上面的方式二读数据是合理的，读出来的数据丢弃不使用。
+<span style="color:#998;font-style:italic">// 读数据
+</span><span style="color:#998;font-style:italic"></span>variable <span style="font-weight:bold">&lt;-</span> c  <span style="color:#998;font-style:italic">// 方式一
+</span><span style="color:#998;font-style:italic"></span><span style="font-weight:bold">&lt;-</span> c  			<span style="color:#998;font-style:italic">// 方式二
+</span></code></pre></td></tr></table>
+</div>
+</div><p>读写数据注意信道的位置，<strong>信道在箭头的左边是写数据，在右边是从信道读数据</strong>。上面的方式二读数据是合理的，读出来的数据丢弃不使用。
 注意：<strong>信道操作默认是阻塞的，往信道里写数据之后当前协程便阻塞，直到其他协程将数据读出。一个协程被信道操作阻塞后，Go 调度器会去调用其他可用的协程，这样程序就不会一直阻塞</strong>。信道的这种特性非常有用，接下来我们就可以看到。
 我们来温习下上篇文章的一个例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printHello</span>() {
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;hello world goroutine&#34;</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">printHello</span>() {
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;hello world goroutine&#34;</span>)
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">printHello</span>()
-	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">1</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;main goroutine&#34;</span>)
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	<span style="font-weight:bold">go</span> <span style="color:#900;font-weight:bold">printHello</span>()
+	time.<span style="color:#900;font-weight:bold">Sleep</span>(<span style="color:#099">1</span><span style="font-weight:bold">*</span>time.Second)
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;main goroutine&#34;</span>)
 }
-</code></pre></div><p>这个例子 main() 协程使用了 time.Sleep() 函数休眠了 1s 等待 printHello() 执行完成。很黑科技，在生产环境绝对不可以这样用。我们使用信道修改下：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printHello</span>(<span style="color:#a6e22e">c</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>) {
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;hello world goroutine&#34;</span>)
-	<span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>    <span style="color:#75715e">// 读取信道的数据
-</span><span style="color:#75715e"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><p>这个例子 main() 协程使用了 time.Sleep() 函数休眠了 1s 等待 printHello() 执行完成。很黑科技，在生产环境绝对不可以这样用。我们使用信道修改下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">printHello</span>(c <span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">bool</span>) {
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;hello world goroutine&#34;</span>)
+	<span style="font-weight:bold">&lt;-</span> c    <span style="color:#998;font-style:italic">// 读取信道的数据
+</span><span style="color:#998;font-style:italic"></span>}
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>)
-	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">printHello</span>(<span style="color:#a6e22e">c</span>)
-	<span style="color:#a6e22e">c</span> <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">true</span>    <span style="color:#75715e">// main 协程阻塞
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;main goroutine&#34;</span>)
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	c <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">bool</span>)
+	<span style="font-weight:bold">go</span> <span style="color:#900;font-weight:bold">printHello</span>(c)
+	c <span style="font-weight:bold">&lt;-</span> <span style="font-weight:bold">true</span>    <span style="color:#998;font-style:italic">// main 协程阻塞
+</span><span style="color:#998;font-style:italic"></span>	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;main goroutine&#34;</span>)
 }
-</code></pre></div><p>输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">hello</span> <span style="color:#a6e22e">world</span> <span style="color:#a6e22e">goroutine</span>
-<span style="color:#a6e22e">main</span> <span style="color:#a6e22e">goroutine</span>
-</code></pre></div><p>上面的例子，main 协程创建完 printHello 协程之后，第 8 行往信道 c 写数据，main 协程阻塞，Go 调度器调度可使用 printHello 协程，从信道 c 读出数据，main 协程接触阻塞继续运行。注意：读取操作没有阻塞是因为信道 c 已有可读的数据，否则，读取操作会阻塞。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">hello world goroutine
+main goroutine
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的例子，main 协程创建完 printHello 协程之后，第 8 行往信道 c 写数据，main 协程阻塞，Go 调度器调度可使用 printHello 协程，从信道 c 读出数据，main 协程接触阻塞继续运行。注意：读取操作没有阻塞是因为信道 c 已有可读的数据，否则，读取操作会阻塞。</p>
 <h4 id="死锁">死锁</h4>
 <p>前面提到过，读/写数据的时候信道会阻塞，调度器会去调度其他可用的协程。问题来了，如果没有其他可用的协程会发生什么情况？没错，就会发生著名的<strong>死锁</strong>。最简单的情况就是，只往信道写数据。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">bool</span>)
-	<span style="color:#a6e22e">c</span> <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">true</span>    <span style="color:#75715e">// 只写不读
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;main goroutine&#34;</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	c <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">bool</span>)
+	c <span style="font-weight:bold">&lt;-</span> <span style="font-weight:bold">true</span>    <span style="color:#998;font-style:italic">// 只写不读
+</span><span style="color:#998;font-style:italic"></span>	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;main goroutine&#34;</span>)
 }
-</code></pre></div><p>报错：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">fatal</span> <span style="color:#66d9ef">error</span>: <span style="color:#a6e22e">all</span> <span style="color:#a6e22e">goroutines</span> <span style="color:#a6e22e">are</span> <span style="color:#a6e22e">asleep</span> <span style="color:#f92672">-</span> <span style="color:#a6e22e">deadlock</span>!
-</code></pre></div><p>同理，只读不写也会报同样的错误。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>报错：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">fatal <span style="color:#458;font-weight:bold">error</span>: all goroutines are asleep <span style="font-weight:bold">-</span> deadlock!
+</code></pre></td></tr></table>
+</div>
+</div><p>同理，只读不写也会报同样的错误。</p>
 <h4 id="关闭信道与-for-loop">关闭信道与 for loop</h4>
 <p>发送数据的信道有能力选择关闭信道，数据就不能传输。数据接收的时候可以返回一个状态判断该信道是否关闭：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">val</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">channel</span>
-</code></pre></div><p>val 是接收的值，ok 标识信道是否关闭。为 true 的话，该信道还可以进行读写操作；为 false 则标识信道关闭，数据不能传输。
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">val, ok <span style="font-weight:bold">:=</span> <span style="font-weight:bold">&lt;-</span> channel
+</code></pre></td></tr></table>
+</div>
+</div><p>val 是接收的值，ok 标识信道是否关闭。为 true 的话，该信道还可以进行读写操作；为 false 则标识信道关闭，数据不能传输。
 使用内置函数 close() 关闭信道。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printNums</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>) {
-	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">4</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
-		<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">i</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">printNums</span>(ch <span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>) {
+	<span style="font-weight:bold">for</span> i <span style="font-weight:bold">:=</span> <span style="color:#099">0</span>; i &lt; <span style="color:#099">4</span>; i<span style="font-weight:bold">++</span> {
+		ch <span style="font-weight:bold">&lt;-</span> i
 	}
-	close(<span style="color:#a6e22e">ch</span>)
+	<span style="color:#999">close</span>(ch)
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>)
-	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">printNums</span>(<span style="color:#a6e22e">ch</span>)
-	<span style="color:#66d9ef">for</span> {
-		<span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">ok</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch</span>
-		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">ok</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">false</span> {     <span style="color:#75715e">// 通过 ok 判断信道是否关闭
-</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">ok</span>)
-			<span style="color:#66d9ef">break</span>
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	ch <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>)
+	<span style="font-weight:bold">go</span> <span style="color:#900;font-weight:bold">printNums</span>(ch)
+	<span style="font-weight:bold">for</span> {
+		v, ok <span style="font-weight:bold">:=</span> <span style="font-weight:bold">&lt;-</span>ch
+		<span style="font-weight:bold">if</span> ok <span style="font-weight:bold">==</span> <span style="font-weight:bold">false</span> {     <span style="color:#998;font-style:italic">// 通过 ok 判断信道是否关闭
+</span><span style="color:#998;font-style:italic"></span>			fmt.<span style="color:#900;font-weight:bold">Println</span>(v, ok)
+			<span style="font-weight:bold">break</span>
 		}
-		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">v</span>, <span style="color:#a6e22e">ok</span>)
+		fmt.<span style="color:#900;font-weight:bold">Println</span>(v, ok)
 	}
 }
-</code></pre></div><p>输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">0</span> <span style="color:#66d9ef">true</span>
-<span style="color:#ae81ff">1</span> <span style="color:#66d9ef">true</span>
-<span style="color:#ae81ff">2</span> <span style="color:#66d9ef">true</span>
-<span style="color:#ae81ff">3</span> <span style="color:#66d9ef">true</span>
-<span style="color:#ae81ff">0</span> <span style="color:#66d9ef">false</span>
-</code></pre></div><p>printNums 协程写完数据之后关闭了信道，在 main 协程里对 ok 判断，若为 false 说明信道关闭，退出 for 循坏。从关闭的信道读出来的值是对应类型的零值，上面最后一行的输出值是 int 类型的零值 0。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">0</span> <span style="font-weight:bold">true</span>
+<span style="color:#099">1</span> <span style="font-weight:bold">true</span>
+<span style="color:#099">2</span> <span style="font-weight:bold">true</span>
+<span style="color:#099">3</span> <span style="font-weight:bold">true</span>
+<span style="color:#099">0</span> <span style="font-weight:bold">false</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>printNums 协程写完数据之后关闭了信道，在 main 协程里对 ok 判断，若为 false 说明信道关闭，退出 for 循坏。从关闭的信道读出来的值是对应类型的零值，上面最后一行的输出值是 int 类型的零值 0。</p>
 <p>使用 for 循环，需要手动判断信道有没有关闭。如果嫌烦的话，那就使用 for range 读取信道吧，信道关闭，for range 自动退出。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printNums</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>) {
-	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">4</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
-		<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">i</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">printNums</span>(ch <span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>) {
+	<span style="font-weight:bold">for</span> i <span style="font-weight:bold">:=</span> <span style="color:#099">0</span>; i &lt; <span style="color:#099">4</span>; i<span style="font-weight:bold">++</span> {
+		ch <span style="font-weight:bold">&lt;-</span> i
 	}
-	close(<span style="color:#a6e22e">ch</span>)
+	<span style="color:#999">close</span>(ch)
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>)
-	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">printNums</span>(<span style="color:#a6e22e">ch</span>)
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	ch <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>)
+	<span style="font-weight:bold">go</span> <span style="color:#900;font-weight:bold">printNums</span>(ch)
 
-	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">ch</span> {
-		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">v</span>)
+	<span style="font-weight:bold">for</span> v <span style="font-weight:bold">:=</span> <span style="font-weight:bold">range</span> ch {
+		fmt.<span style="color:#900;font-weight:bold">Println</span>(v)
 	}
 }
-</code></pre></div><p>输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">0</span>
-<span style="color:#ae81ff">1</span>
-<span style="color:#ae81ff">2</span>
-<span style="color:#ae81ff">3</span>
-</code></pre></div><p>提一点，使用 for range 一个信道，发送完毕之后必须 close() 信道，不然发生死锁。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">0</span>
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>提一点，使用 for range 一个信道，发送完毕之后必须 close() 信道，不然发生死锁。</p>
 <h4 id="缓冲信道和信道容量">缓冲信道和信道容量</h4>
 <p>之前创建的信道是无缓冲的，读写信道会立马阻塞当前协程。对于缓冲信道，写不会阻塞当前信道直到信道满了，同理，读操作也不会阻塞当前信道除非信道没数据。创建带缓冲的信道：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">ch</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">type</span>, <span style="color:#a6e22e">capacity</span>)  
-</code></pre></div><p>capacity 是缓冲大小，必须大于 0。 内置函数 len()、cap() 可以计算信道的长度和容量。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>,<span style="color:#ae81ff">3</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">ch <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="font-weight:bold">type</span>, capacity)  
+</code></pre></td></tr></table>
+</div>
+</div><p>capacity 是缓冲大小，必须大于 0。 内置函数 len()、cap() 可以计算信道的长度和容量。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	ch <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>,<span style="color:#099">3</span>)
 
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">7</span>
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">8</span>
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">9</span>
-	<span style="color:#75715e">//ch &lt;- 10    
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// 注释打开的话，协程阻塞，发生死锁
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">会发生死锁</span><span style="color:#960050;background-color:#1e0010">：</span><span style="color:#a6e22e">信道已满且没有其他可用信道读取数据</span>
+	ch <span style="font-weight:bold">&lt;-</span> <span style="color:#099">7</span>
+	ch <span style="font-weight:bold">&lt;-</span> <span style="color:#099">8</span>
+	ch <span style="font-weight:bold">&lt;-</span> <span style="color:#099">9</span>
+	<span style="color:#998;font-style:italic">//ch &lt;- 10    
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// 注释打开的话，协程阻塞，发生死锁
+</span><span style="color:#998;font-style:italic"></span>	会发生死锁<span style="color:#a61717;background-color:#e3d2d2">：</span>信道已满且没有其他可用信道读取数据
 
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;main stopped&#34;</span>)
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;main stopped&#34;</span>)
 }
-</code></pre></div><p>输出：main stopped
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：main stopped
 创建了缓冲为 3 的信道，写入 3 个数据时信道不会阻塞。如果将第 7 行代码注释打开的话，此时信道已满，协程阻塞，又没有其他可用协程读数据，便发生死锁。
 再来看个例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printNums</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>) {
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">printNums</span>(ch <span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>) {
 
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">7</span>
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">8</span>
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">9</span>
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;channel len:%d,capacity:%d\n&#34;</span>,len(<span style="color:#a6e22e">ch</span>),cap(<span style="color:#a6e22e">ch</span>))
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;blocking...&#34;</span>)
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">10</span>   <span style="color:#75715e">// 阻塞
-</span><span style="color:#75715e"></span>	close(<span style="color:#a6e22e">ch</span>)
+	ch <span style="font-weight:bold">&lt;-</span> <span style="color:#099">7</span>
+	ch <span style="font-weight:bold">&lt;-</span> <span style="color:#099">8</span>
+	ch <span style="font-weight:bold">&lt;-</span> <span style="color:#099">9</span>
+	fmt.<span style="color:#900;font-weight:bold">Printf</span>(<span style="color:#b84">&#34;channel len:%d,capacity:%d\n&#34;</span>,<span style="color:#999">len</span>(ch),<span style="color:#999">cap</span>(ch))
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;blocking...&#34;</span>)
+	ch <span style="font-weight:bold">&lt;-</span> <span style="color:#099">10</span>   <span style="color:#998;font-style:italic">// 阻塞
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#999">close</span>(ch)
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>,<span style="color:#ae81ff">3</span>)
-	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">printNums</span>(<span style="color:#a6e22e">ch</span>)
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	ch <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>,<span style="color:#099">3</span>)
+	<span style="font-weight:bold">go</span> <span style="color:#900;font-weight:bold">printNums</span>(ch)
 
-	<span style="color:#75715e">// 休眠 2s
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">2</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
-	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">ch</span> {
-		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">v</span>)
+	<span style="color:#998;font-style:italic">// 休眠 2s
+</span><span style="color:#998;font-style:italic"></span>	time.<span style="color:#900;font-weight:bold">Sleep</span>(<span style="color:#099">2</span><span style="font-weight:bold">*</span>time.Second)
+	<span style="font-weight:bold">for</span> v <span style="font-weight:bold">:=</span> <span style="font-weight:bold">range</span> ch {
+		fmt.<span style="color:#900;font-weight:bold">Println</span>(v)
 	}
 
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;main stopped&#34;</span>)
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;main stopped&#34;</span>)
 }
-</code></pre></div><p>输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">channel</span> <span style="color:#a6e22e">len</span>:<span style="color:#ae81ff">3</span>,<span style="color:#a6e22e">capacity</span>:<span style="color:#ae81ff">3</span>
-<span style="color:#a6e22e">blocking</span><span style="color:#f92672">...</span>
-<span style="color:#ae81ff">7</span>
-<span style="color:#ae81ff">8</span>
-<span style="color:#ae81ff">9</span>
-<span style="color:#ae81ff">10</span>
-<span style="color:#a6e22e">main</span> <span style="color:#a6e22e">stopped</span>
-</code></pre></div><p>休眠 2s 的目的是让信道写满数据发生阻塞，从打印结果可以看出。2s 之后，主协程从信道读取数据，信道容量有余阻塞便解除，继续写数据。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">channel len:<span style="color:#099">3</span>,capacity:<span style="color:#099">3</span>
+blocking<span style="font-weight:bold">...</span>
+<span style="color:#099">7</span>
+<span style="color:#099">8</span>
+<span style="color:#099">9</span>
+<span style="color:#099">10</span>
+main stopped
+</code></pre></td></tr></table>
+</div>
+</div><p>休眠 2s 的目的是让信道写满数据发生阻塞，从打印结果可以看出。2s 之后，主协程从信道读取数据，信道容量有余阻塞便解除，继续写数据。</p>
 <p>如果缓冲信道是关闭状态但有数据，仍然可以读取数据：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>,<span style="color:#ae81ff">3</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	ch <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>,<span style="color:#099">3</span>)
 	
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">7</span>
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">8</span>
-	<span style="color:#75715e">//ch &lt;- 9
-</span><span style="color:#75715e"></span>	close(<span style="color:#a6e22e">ch</span>)
+	ch <span style="font-weight:bold">&lt;-</span> <span style="color:#099">7</span>
+	ch <span style="font-weight:bold">&lt;-</span> <span style="color:#099">8</span>
+	<span style="color:#998;font-style:italic">//ch &lt;- 9
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#999">close</span>(ch)
 
-	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">ch</span> {
-		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">v</span>)
+	<span style="font-weight:bold">for</span> v <span style="font-weight:bold">:=</span> <span style="font-weight:bold">range</span> ch {
+		fmt.<span style="color:#900;font-weight:bold">Println</span>(v)
 	}
 
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;main stopped&#34;</span>)
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;main stopped&#34;</span>)
 }
-</code></pre></div><p>输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">7</span>
-<span style="color:#ae81ff">8</span>
-<span style="color:#a6e22e">main</span> <span style="color:#a6e22e">stopped</span>
-</code></pre></div><h4 id="单向信道">单向信道</h4>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">7</span>
+<span style="color:#099">8</span>
+main stopped
+</code></pre></td></tr></table>
+</div>
+</div><h4 id="单向信道">单向信道</h4>
 <p>之前创建的都是双向信道，既能发送数据也能接收数据。我们还可以创建单向信道，只发送或者只接收数据。
 语法：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">sch</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span><span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">int</span>)
-<span style="color:#a6e22e">rch</span> <span style="color:#f92672">:=</span> make(<span style="color:#f92672">&lt;-</span><span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>) 
-</code></pre></div><p>sch 是只发送信道，rch 是只接受信道。
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">sch <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span><span style="font-weight:bold">&lt;-</span> <span style="color:#458;font-weight:bold">int</span>)
+rch <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">&lt;-</span><span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>) 
+</code></pre></td></tr></table>
+</div>
+</div><p>sch 是只发送信道，rch 是只接受信道。
 这种单向信道有什么用呢？我们总不能只发不接或只接不发吧。这种信道主要用在信道作为参数传递的时候，Go 提供了自动转化，双向转单向。
 重写之前的例子：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printNums</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span><span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">int</span>) {
-	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">4</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
-		<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">i</span>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">printNums</span>(ch <span style="font-weight:bold">chan</span><span style="font-weight:bold">&lt;-</span> <span style="color:#458;font-weight:bold">int</span>) {
+	<span style="font-weight:bold">for</span> i <span style="font-weight:bold">:=</span> <span style="color:#099">0</span>; i &lt; <span style="color:#099">4</span>; i<span style="font-weight:bold">++</span> {
+		ch <span style="font-weight:bold">&lt;-</span> i
 	}
-	close(<span style="color:#a6e22e">ch</span>)
+	<span style="color:#999">close</span>(ch)
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>)
-	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">printNums</span>(<span style="color:#a6e22e">ch</span>)
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	ch <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">int</span>)
+	<span style="font-weight:bold">go</span> <span style="color:#900;font-weight:bold">printNums</span>(ch)
 
-	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">v</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">ch</span> {
-		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">v</span>)
+	<span style="font-weight:bold">for</span> v <span style="font-weight:bold">:=</span> <span style="font-weight:bold">range</span> ch {
+		fmt.<span style="color:#900;font-weight:bold">Println</span>(v)
 	}
 }
-</code></pre></div><p>输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#ae81ff">0</span>
-<span style="color:#ae81ff">1</span>
-<span style="color:#ae81ff">2</span>
-<span style="color:#ae81ff">3</span>
-</code></pre></div><p>main 协程中 ch 是一个双向信道，printNums() 在接收参数的时候将 ch 自动转成了单向信道，只发不收。但在 main 协程中，ch 仍然可以接收数据。<strong>使用单向通道主要是可以提高程序的类型安全性，程序不容易出错。</strong></p>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">0</span>
+<span style="color:#099">1</span>
+<span style="color:#099">2</span>
+<span style="color:#099">3</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>main 协程中 ch 是一个双向信道，printNums() 在接收参数的时候将 ch 自动转成了单向信道，只发不收。但在 main 协程中，ch 仍然可以接收数据。<strong>使用单向通道主要是可以提高程序的类型安全性，程序不容易出错。</strong></p>
 <h4 id="信道数据类型">信道数据类型</h4>
 <p>信道是一类值，类似于 int、string 等，可以像其他值一样在任何地方使用，比如作为结构体成员、函数参数、函数返回值，甚至作为另一个通道的类型。我们来看下<strong>使用通道作为另一个通道的数据类型</strong>。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">printWord</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>) {
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Hello &#34;</span> <span style="color:#f92672">+</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">printWord</span>(ch <span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">string</span>) {
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;Hello &#34;</span> <span style="font-weight:bold">+</span> <span style="font-weight:bold">&lt;-</span>ch)
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">productCh</span>(<span style="color:#a6e22e">ch</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)  {
-	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)   <span style="color:#75715e">// 创建 string type 信道
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">c</span>     <span style="color:#75715e">// 传输信道
-</span><span style="color:#75715e"></span>}
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">productCh</span>(ch <span style="font-weight:bold">chan</span> <span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">string</span>)  {
+	c <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">string</span>)   <span style="color:#998;font-style:italic">// 创建 string type 信道
+</span><span style="color:#998;font-style:italic"></span>	ch <span style="font-weight:bold">&lt;-</span> c     <span style="color:#998;font-style:italic">// 传输信道
+</span><span style="color:#998;font-style:italic"></span>}
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
 
-	<span style="color:#75715e">// 创建 chan string 类型的信道
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ch</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">string</span>)
-	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">productCh</span>(<span style="color:#a6e22e">ch</span>)
-	<span style="color:#75715e">// c 是 string type 的信道
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">c</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ch</span>
-	<span style="color:#66d9ef">go</span> <span style="color:#a6e22e">printWord</span>(<span style="color:#a6e22e">c</span>)
-	<span style="color:#a6e22e">c</span> <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;world&#34;</span>
-	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;main stopped&#34;</span>)
+	<span style="color:#998;font-style:italic">// 创建 chan string 类型的信道
+</span><span style="color:#998;font-style:italic"></span>	ch <span style="font-weight:bold">:=</span> <span style="color:#999">make</span>(<span style="font-weight:bold">chan</span> <span style="font-weight:bold">chan</span> <span style="color:#458;font-weight:bold">string</span>)
+	<span style="font-weight:bold">go</span> <span style="color:#900;font-weight:bold">productCh</span>(ch)
+	<span style="color:#998;font-style:italic">// c 是 string type 的信道
+</span><span style="color:#998;font-style:italic"></span>	c <span style="font-weight:bold">:=</span> <span style="font-weight:bold">&lt;-</span>ch
+	<span style="font-weight:bold">go</span> <span style="color:#900;font-weight:bold">printWord</span>(c)
+	c <span style="font-weight:bold">&lt;-</span> <span style="color:#b84">&#34;world&#34;</span>
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;main stopped&#34;</span>)
 }
-</code></pre></div><p>输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">Hello</span> <span style="color:#a6e22e">world</span>
-<span style="color:#a6e22e">main</span> <span style="color:#a6e22e">stopped</span>
-</code></pre></div><p>希望这篇文章能够帮助你，Good day!</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">Hello world
+main stopped
+</code></pre></td></tr></table>
+</div>
+</div><p>希望这篇文章能够帮助你，Good day!</p>
 <p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt=""></p>
+
+        <a data-fancybox="gallery" href="/me/weixingzh.jpg">
+            <img class="mx-auto" alt="" src="/me/weixingzh.jpg" />
+        </a>
+    </p>
 <h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
-                        </div>
+        </div>
 
-                        
+        
+
+
+        
 
 <div class="post-archive">
-    <h3>推荐阅读</h3>
+    <h2>See Also</h2>
     <ul class="listing">
         
         <li><a href="/2019/04/19/go-goroutine.html">Go 并发 -- 协程</a></li>
@@ -389,25 +713,29 @@ var _hmt = _hmt || [];
         
         <li><a href="/2019/03/29/go-interface-one.html">Go 语言接口详解（一）</a></li>
         
+        <li><a href="/2019/03/17/go-type-system.html">Go 语言类型详解</a></li>
+        
+        <li><a href="/2019/03/03/go-method.html">教女朋友写方法</a></li>
+        
     </ul>
 </div>
 
 
-                        <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://seekload.net/tags/go">Go</a></li>
-                                
-                                <li><a href="https://seekload.net/tags/%E4%BF%A1%E9%81%93">信道</a></li>
-                                
-                                <li><a href="https://seekload.net/tags/channel">channel</a></li>
-                                
-                            </ul>
-                            
-                        </div>
-                    </article>
-                    
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/go'>Go</a></li>
+                
+                <li><a href='/tags/%E4%BF%A1%E9%81%93'>信道</a></li>
+                
+                <li><a href='/tags/channel'>channel</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
     
 
     
@@ -422,12 +750,60 @@ var _hmt = _hmt || [];
       </script>
     </div>
     
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>
+        
+    </div>
+    <br />
+    <div>
+        
+       
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
                 </div>
-            </div>
-            <div id="secondary">
+
+                <div id="secondary">
 
     <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
       <input type="hidden" name="sitesearch" value="https://seekload.net">
@@ -455,6 +831,14 @@ var _hmt = _hmt || [];
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/sync-mutex.html" title="Go并发原语-mutex源码解析">Go并发原语-mutex源码解析</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/go-interface.html" title="通过 dlv 和汇编窥探 interface 底层实现(多图)">通过 dlv 和汇编窥探 interface 底层实现(多图)</a>
+    </li>
     
     <li>
         <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
@@ -488,14 +872,6 @@ var _hmt = _hmt || [];
         <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/29/go-interview-7-day.html" title="Go面试每天一篇（第 7 天）">Go面试每天一篇（第 7 天）</a>
-    </li>
-    
-    <li>
-        <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -515,50 +891,32 @@ var _hmt = _hmt || [];
     
 
     <section class="widget">
-        <h3 class="widget-title">分类</h3>
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
-    <li>
-        <a href="https://seekload.net/categories/golang/">golang(40)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/golang/">Golang (42)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇 (9)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言 (30)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题 (1)</a></li>
     
 </ul>
     </section>
 
     <section class="widget">
-        <h3 class="widget-title">标签</h3>
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 <div class="tagcloud">
     
     <a href="https://seekload.net/tags/channel/">channel</a>
@@ -567,15 +925,19 @@ var _hmt = _hmt || [];
     
     <a href="https://seekload.net/tags/function/">function</a>
     
-    <a href="https://seekload.net/tags/go/">go</a>
+    <a href="https://seekload.net/tags/go/">Go</a>
     
-    <a href="https://seekload.net/tags/golang/">golang</a>
+    <a href="https://seekload.net/tags/golang/">Golang</a>
     
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
     
-    <a href="https://seekload.net/tags/map/">map</a>
+    <a href="https://seekload.net/tags/interface/">interface</a>
     
-    <a href="https://seekload.net/tags/oop/">oop</a>
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/mutex/">mutex</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     
@@ -651,56 +1013,9 @@ var _hmt = _hmt || [];
         </ul>
     </section>
 </div>
+            </div>
         </div>
     </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        
-        &copy; 2021 <a href="https://seekload.net"> 公众号：Golang来啦 </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        
-        
-    </div>
-</footer>
-
-
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
-    window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
-    };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-133344385-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
-
-
-
-
 </body>
+
 </html>

@@ -1,68 +1,47 @@
 <!doctype html>
 <html lang="zh-CN">
-<script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?4b79e198f0e43ade55032d4bf11860a4";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
-</script>
-<script>
-(function(){
-    var bp = document.createElement('script');
-    var curProtocol = window.location.protocol.split(':')[0];
-    if (curProtocol === 'https') {
-        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-    }
-    else {
-        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-    }
-    var s = document.getElementsByTagName("script")[0];
-    s.parentNode.insertBefore(bp, s);
-})();
-</script>
-
 <head>
 
     <meta charset="utf-8">
-    <meta name="generator" content="Hugo 0.81.0" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
 
     <title>使用 Go 语言 context 包的取消功能 | Seekload&#39;s Blog</title>
     <meta property="og:title" content="使用 Go 语言 context 包的取消功能 - Seekload&#39;s Blog">
     <meta property="og:type" content="article">
         
-    <meta property="article:published_time" content="2021-02-06T22:08:08&#43;08:00">
+    <meta property="article:published_time" content='2021-02-06T22:08:08&#43;08:00'>
         
         
-    <meta property="article:modified_time" content="2021-02-06T22:08:08&#43;08:00">
+    <meta property="article:modified_time" content='2021-02-06T22:08:08&#43;08:00'>
         
     <meta name="Keywords" content="">
     <meta name="description" content="使用 Go 语言 context 包的取消功能">
         
     <meta name="author" content="Seekload">
     <meta property="og:url" content="https://seekload.net/2021/02/06/using-context-cancellation.html">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
 
-    <link rel="stylesheet" href="/css/normalize.css">
-    
-        <link rel="stylesheet" href="/css/prism.css">
-    
-    <link rel="stylesheet" href="/css/style.css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     
-
-
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
     
     
 </head>
 
+
 <body>
-<header id="header" class="clearfix">
+    <header id="header" class="clearfix">
     <div class="container">
         <div class="col-group">
             <div class="site-name ">
@@ -75,7 +54,7 @@ var _hmt = _hmt || [];
             </div>
             <div>
                 <nav id="nav-menu" class="clearfix">
-                    <a class="" href="https://seekload.net">首页</a>
+                    <a class="current" href="https://seekload.net">首页</a>
                     
                     <a  href="https://seekload.net/archives/" title="归档">归档</a>
                     
@@ -89,41 +68,38 @@ var _hmt = _hmt || [];
     </div>
 </header>
 
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
 
-<div id="body">
-    <div class="container">
-        <div class="col-group">
-
-            <div class="col-8" id="main">
-                <div class="res-cons">
-                    <article class="post">
-                        <header>
-                            <h1 class="post-title">使用 Go 语言 context 包的取消功能</h1>
-                        </header>
-                        <date class="post-meta meta-date">
-                            2021年2月6日
-                        </date>
-                        
-                        <div class="post-meta">
-                            <span>|</span>
-                            
-                                <span class="meta-category"><a href="https://seekload.net/categories/golang">Golang</a></span>
-                            
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span >
-                                <span>|</span>
-                                字数:1654
-                            </span>
-                        </div>
-                        
-                        <div class="post-meta">
-                            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span> 阅读</span></span>
-                        </div>
-                        
-                        <div class="post-content">
-                            <p>via:<!-- raw HTML omitted -->
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title">使用 Go 语言 context 包的取消功能</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2021年2月6日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/golang'>Golang</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="post-content">
+            <p>via:<!-- raw HTML omitted -->
 <a href="https://www.sohamkamani.com/golang/2018-06-17-golang-using-context-cancellation/">https://www.sohamkamani.com/golang/2018-06-17-golang-using-context-cancellation/</a>
 <!-- raw HTML omitted -->
 作者：Soham Kamani</p>
@@ -132,13 +108,29 @@ var _hmt = _hmt || [];
 <h3 id="为什么我们需要取消">为什么我们需要取消？</h3>
 <p>简而言之，取消是为了防止系统做一些不必要的工作。</p>
 <p>我们拿一种常见的场景举例，比如：用户发出 HTTP 请求，从数据获取数据并将数据返回给客户端。</p>
-<p><img src="/img/using-context-cancellation_1.png" alt="11"></p>
+<p>
+        <a data-fancybox="gallery" href="/img/using-context-cancellation_1.png">
+            <img class="mx-auto" alt="11" src="/img/using-context-cancellation_1.png" />
+        </a>
+    </p>
 <p>如果一切正常的话，时序图应该是下面这样的：</p>
-<p><img src="/img/using-context-cancellation_2.png" alt="2"></p>
+<p>
+        <a data-fancybox="gallery" href="/img/using-context-cancellation_2.png">
+            <img class="mx-auto" alt="2" src="/img/using-context-cancellation_2.png" />
+        </a>
+    </p>
 <p>但是，如果客户端中途取消了请求会发生什么？类似的场景，比如：关闭了浏览器等。如果不取消操作，服务器和数据库仍然会继续完成执行，即使它们的执行成果会被浪费：</p>
-<p><img src="/img/using-context-cancellation_3.png" alt="3"></p>
+<p>
+        <a data-fancybox="gallery" href="/img/using-context-cancellation_3.png">
+            <img class="mx-auto" alt="3" src="/img/using-context-cancellation_3.png" />
+        </a>
+    </p>
 <p>理想情况下，如果我们知道请求中断了，我们希望该请求下游的所有工作组件都停止执行。</p>
-<p><img src="/img/using-context-cancellation_4.png" alt="4"></p>
+<p>
+        <a data-fancybox="gallery" href="/img/using-context-cancellation_4.png">
+            <img class="mx-auto" alt="4" src="/img/using-context-cancellation_4.png" />
+        </a>
+    </p>
 <h3 id="context-cancellation-in-go">Context cancellation in Go</h3>
 <p>现在我们已经知道为什么需要取消，接着就来看看如何实现。因为取消事件与事务和操作高度相关，所以很自然将它与 context 联系在一起。</p>
 <p>取消主要有两个方面：</p>
@@ -149,121 +141,254 @@ var _hmt = _hmt || [];
 <h4 id="监听取消事件">监听取消事件</h4>
 <p>Context 类型提供了 Done() 方法，每次 context 接收到取消事件时，该方法都是返回一个 channel，这个 channel 会收到空结构体类型的数据。监听取消事件也很容易，&lt;- ctx.Done()。</p>
 <p>比如，一个 HTTP 请求处理需要两秒，如果在中途取消就必须立即返回。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#75715e">// Create an HTTP server that listens on port 8000
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;:8000&#34;</span>, <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">HandlerFunc</span>(<span style="color:#66d9ef">func</span>(<span style="color:#a6e22e">w</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ResponseWriter</span>, <span style="color:#a6e22e">r</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Request</span>) {
-		<span style="color:#a6e22e">ctx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">r</span>.<span style="color:#a6e22e">Context</span>()
-		<span style="color:#75715e">// This prints to STDOUT to show that processing has started
-</span><span style="color:#75715e"></span>		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprint</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stdout</span>, <span style="color:#e6db74">&#34;processing request\n&#34;</span>)
-		<span style="color:#75715e">// We use `select` to execute a peice of code depending on which
-</span><span style="color:#75715e"></span>		<span style="color:#75715e">// channel receives a message first
-</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">select</span> {
-		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">After</span>(<span style="color:#ae81ff">2</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>):
-			<span style="color:#75715e">// If we receive a message after 2 seconds
-</span><span style="color:#75715e"></span>			<span style="color:#75715e">// that means the request has been processed
-</span><span style="color:#75715e"></span>			<span style="color:#75715e">// We then write this as the response
-</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">w</span>.<span style="color:#a6e22e">Write</span>([]byte(<span style="color:#e6db74">&#34;request processed&#34;</span>))
-		<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>():
-			<span style="color:#75715e">// If the request gets cancelled, log it
-</span><span style="color:#75715e"></span>			<span style="color:#75715e">// to STDERR
-</span><span style="color:#75715e"></span>			<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Fprint</span>(<span style="color:#a6e22e">os</span>.<span style="color:#a6e22e">Stderr</span>, <span style="color:#e6db74">&#34;request cancelled\n&#34;</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	<span style="color:#998;font-style:italic">// Create an HTTP server that listens on port 8000
+</span><span style="color:#998;font-style:italic"></span>	http.<span style="color:#900;font-weight:bold">ListenAndServe</span>(<span style="color:#b84">&#34;:8000&#34;</span>, http.<span style="color:#900;font-weight:bold">HandlerFunc</span>(<span style="font-weight:bold">func</span>(w http.ResponseWriter, r <span style="font-weight:bold">*</span>http.Request) {
+		ctx <span style="font-weight:bold">:=</span> r.<span style="color:#900;font-weight:bold">Context</span>()
+		<span style="color:#998;font-style:italic">// This prints to STDOUT to show that processing has started
+</span><span style="color:#998;font-style:italic"></span>		fmt.<span style="color:#900;font-weight:bold">Fprint</span>(os.Stdout, <span style="color:#b84">&#34;processing request\n&#34;</span>)
+		<span style="color:#998;font-style:italic">// We use `select` to execute a peice of code depending on which
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// channel receives a message first
+</span><span style="color:#998;font-style:italic"></span>		<span style="font-weight:bold">select</span> {
+		<span style="font-weight:bold">case</span> <span style="font-weight:bold">&lt;-</span>time.<span style="color:#900;font-weight:bold">After</span>(<span style="color:#099">2</span> <span style="font-weight:bold">*</span> time.Second):
+			<span style="color:#998;font-style:italic">// If we receive a message after 2 seconds
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// that means the request has been processed
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// We then write this as the response
+</span><span style="color:#998;font-style:italic"></span>			w.<span style="color:#900;font-weight:bold">Write</span>([]<span style="color:#999">byte</span>(<span style="color:#b84">&#34;request processed&#34;</span>))
+		<span style="font-weight:bold">case</span> <span style="font-weight:bold">&lt;-</span>ctx.<span style="color:#900;font-weight:bold">Done</span>():
+			<span style="color:#998;font-style:italic">// If the request gets cancelled, log it
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// to STDERR
+</span><span style="color:#998;font-style:italic"></span>			fmt.<span style="color:#900;font-weight:bold">Fprint</span>(os.Stderr, <span style="color:#b84">&#34;request cancelled\n&#34;</span>)
 		}
 	}))
 }
-</code></pre></div><p>ps：文末有完整代码地址。</p>
+</code></pre></td></tr></table>
+</div>
+</div><p>ps：文末有完整代码地址。</p>
 <p>你可以使用 go run 将服务跑起来，在浏览器中打开 localhost:8000，如果你在 2s 钟之内关闭浏览器，终端将会输出 request cancelled。</p>
 <h3 id="发出取消事件">发出取消事件</h3>
 <p>如果你有需要取消的操作，可以通过 context 发出取消事件。可以通过 context 包提供的 WithCancel 函数完成，该函数返回 context 对象和一个取消函数，这个函数不带任何参数、没有返回值，当你需要取消 context 时可以调用该函数。</p>
 <p>假设有两个相互依赖的操作，这里“依赖”的意思是，如果其中一个操作失败了，另一条操作即使完成也没有任何意义。这个场景里，如果我们事先知道其中一个操作失败了，我们需要取消所有的操作。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">operation1</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>) <span style="color:#66d9ef">error</span> {
-	<span style="color:#75715e">// Let&#39;s assume that this operation failed for some reason
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// We use time.Sleep to simulate a resource intensive operation
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Sleep</span>(<span style="color:#ae81ff">100</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span>)
-	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">errors</span>.<span style="color:#a6e22e">New</span>(<span style="color:#e6db74">&#34;failed&#34;</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">operation1</span>(ctx context.Context) <span style="color:#458;font-weight:bold">error</span> {
+	<span style="color:#998;font-style:italic">// Let&#39;s assume that this operation failed for some reason
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// We use time.Sleep to simulate a resource intensive operation
+</span><span style="color:#998;font-style:italic"></span>	time.<span style="color:#900;font-weight:bold">Sleep</span>(<span style="color:#099">100</span> <span style="font-weight:bold">*</span> time.Millisecond)
+	<span style="font-weight:bold">return</span> errors.<span style="color:#900;font-weight:bold">New</span>(<span style="color:#b84">&#34;failed&#34;</span>)
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">operation2</span>(<span style="color:#a6e22e">ctx</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Context</span>) {
-	<span style="color:#75715e">// We use a similar pattern to the HTTP server
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// that we saw in the earlier example
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">select</span> {
-	<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">After</span>(<span style="color:#ae81ff">500</span> <span style="color:#f92672">*</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span>):
-		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;done&#34;</span>)
-	<span style="color:#66d9ef">case</span> <span style="color:#f92672">&lt;-</span><span style="color:#a6e22e">ctx</span>.<span style="color:#a6e22e">Done</span>():
-		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;halted operation2&#34;</span>)
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">operation2</span>(ctx context.Context) {
+	<span style="color:#998;font-style:italic">// We use a similar pattern to the HTTP server
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// that we saw in the earlier example
+</span><span style="color:#998;font-style:italic"></span>	<span style="font-weight:bold">select</span> {
+	<span style="font-weight:bold">case</span> <span style="font-weight:bold">&lt;-</span>time.<span style="color:#900;font-weight:bold">After</span>(<span style="color:#099">500</span> <span style="font-weight:bold">*</span> time.Millisecond):
+		fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;done&#34;</span>)
+	<span style="font-weight:bold">case</span> <span style="font-weight:bold">&lt;-</span>ctx.<span style="color:#900;font-weight:bold">Done</span>():
+		fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;halted operation2&#34;</span>)
 	}
 }
 
-<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#75715e">// Create a new context
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ctx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
-	<span style="color:#75715e">// Create a new context, with its cancellation function
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// from the original context
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithCancel</span>(<span style="color:#a6e22e">ctx</span>)
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	<span style="color:#998;font-style:italic">// Create a new context
+</span><span style="color:#998;font-style:italic"></span>	ctx <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">Background</span>()
+	<span style="color:#998;font-style:italic">// Create a new context, with its cancellation function
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// from the original context
+</span><span style="color:#998;font-style:italic"></span>	ctx, cancel <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithCancel</span>(ctx)
 
-	<span style="color:#75715e">// Run two operations: one in a different go routine
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
-		<span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">operation1</span>(<span style="color:#a6e22e">ctx</span>)
-		<span style="color:#75715e">// If this operation returns an error
-</span><span style="color:#75715e"></span>		<span style="color:#75715e">// cancel all operations using this context
-</span><span style="color:#75715e"></span>		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
-			<span style="color:#a6e22e">cancel</span>()
+	<span style="color:#998;font-style:italic">// Run two operations: one in a different go routine
+</span><span style="color:#998;font-style:italic"></span>	<span style="font-weight:bold">go</span> <span style="font-weight:bold">func</span>() {
+		err <span style="font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">operation1</span>(ctx)
+		<span style="color:#998;font-style:italic">// If this operation returns an error
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// cancel all operations using this context
+</span><span style="color:#998;font-style:italic"></span>		<span style="font-weight:bold">if</span> err <span style="font-weight:bold">!=</span> <span style="font-weight:bold">nil</span> {
+			<span style="color:#900;font-weight:bold">cancel</span>()
 		}
 	}()
 
-	<span style="color:#75715e">// Run operation2 with the same context we use for operation1
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">operation2</span>(<span style="color:#a6e22e">ctx</span>)
+	<span style="color:#998;font-style:italic">// Run operation2 with the same context we use for operation1
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#900;font-weight:bold">operation2</span>(ctx)
 }
-</code></pre></div><h3 id="基于时间的取消事件">基于时间的取消事件</h3>
+</code></pre></td></tr></table>
+</div>
+</div><h3 id="基于时间的取消事件">基于时间的取消事件</h3>
 <p>任何应用程序都需要在超时时间之内维护 SLA 可用性，可以采用基于时间的取消事件。相关的 API 与上面提到的例子类似，但是有一点补充：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// The context will be cancelled after 3 seconds
-</span><span style="color:#75715e">// If it needs to be cancelled earlier, the `cancel` function can
-</span><span style="color:#75715e">// be used, like before
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithTimeout</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#ae81ff">3</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Second</span>)
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#998;font-style:italic">// The context will be cancelled after 3 seconds
+</span><span style="color:#998;font-style:italic">// If it needs to be cancelled earlier, the `cancel` function can
+</span><span style="color:#998;font-style:italic">// be used, like before
+</span><span style="color:#998;font-style:italic"></span>ctx, cancel <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithTimeout</span>(ctx, <span style="color:#099">3</span><span style="font-weight:bold">*</span>time.Second)
 
-<span style="color:#75715e">// The context will be cancelled on 2009-11-10 23:00:00
-</span><span style="color:#75715e"></span><span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">cancel</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithDeadline</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Date</span>(<span style="color:#ae81ff">2009</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">November</span>, <span style="color:#ae81ff">10</span>, <span style="color:#ae81ff">23</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">UTC</span>))
-</code></pre></div><p>例如，使用 HTTP API 调用外部服务，如果请求时间太长，最好尽早取消请求。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
-	<span style="color:#75715e">// Create a new context
-</span><span style="color:#75715e"></span>	<span style="color:#75715e">// With a deadline of 100 milliseconds
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ctx</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">Background</span>()
-	<span style="color:#a6e22e">ctx</span>, <span style="color:#a6e22e">_</span> = <span style="color:#a6e22e">context</span>.<span style="color:#a6e22e">WithTimeout</span>(<span style="color:#a6e22e">ctx</span>, <span style="color:#ae81ff">100</span><span style="color:#f92672">*</span><span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Millisecond</span>)
+<span style="color:#998;font-style:italic">// The context will be cancelled on 2009-11-10 23:00:00
+</span><span style="color:#998;font-style:italic"></span>ctx, cancel <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">WithDeadline</span>(ctx, time.<span style="color:#900;font-weight:bold">Date</span>(<span style="color:#099">2009</span>, time.November, <span style="color:#099">10</span>, <span style="color:#099">23</span>, <span style="color:#099">0</span>, <span style="color:#099">0</span>, <span style="color:#099">0</span>, time.UTC))
+</code></pre></td></tr></table>
+</div>
+</div><p>例如，使用 HTTP API 调用外部服务，如果请求时间太长，最好尽早取消请求。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	<span style="color:#998;font-style:italic">// Create a new context
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// With a deadline of 100 milliseconds
+</span><span style="color:#998;font-style:italic"></span>	ctx <span style="font-weight:bold">:=</span> context.<span style="color:#900;font-weight:bold">Background</span>()
+	ctx, _ = context.<span style="color:#900;font-weight:bold">WithTimeout</span>(ctx, <span style="color:#099">100</span><span style="font-weight:bold">*</span>time.Millisecond)
 
-	<span style="color:#75715e">// Make a request, that will call the google homepage
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">req</span>, <span style="color:#a6e22e">_</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">NewRequest</span>(<span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">MethodGet</span>, <span style="color:#e6db74">&#34;http://google.com&#34;</span>, <span style="color:#66d9ef">nil</span>)
-	<span style="color:#75715e">// Associate the cancellable context we just created to the request
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">req</span> = <span style="color:#a6e22e">req</span>.<span style="color:#a6e22e">WithContext</span>(<span style="color:#a6e22e">ctx</span>)
+	<span style="color:#998;font-style:italic">// Make a request, that will call the google homepage
+</span><span style="color:#998;font-style:italic"></span>	req, _ <span style="font-weight:bold">:=</span> http.<span style="color:#900;font-weight:bold">NewRequest</span>(http.MethodGet, <span style="color:#b84">&#34;http://google.com&#34;</span>, <span style="font-weight:bold">nil</span>)
+	<span style="color:#998;font-style:italic">// Associate the cancellable context we just created to the request
+</span><span style="color:#998;font-style:italic"></span>	req = req.<span style="color:#900;font-weight:bold">WithContext</span>(ctx)
 
-	<span style="color:#75715e">// Create a new HTTP client and execute the request
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">client</span> <span style="color:#f92672">:=</span> <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">Client</span>{}
-	<span style="color:#a6e22e">res</span>, <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">client</span>.<span style="color:#a6e22e">Do</span>(<span style="color:#a6e22e">req</span>)
-	<span style="color:#75715e">// If the request failed, log to STDOUT
-</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
-		<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Request failed:&#34;</span>, <span style="color:#a6e22e">err</span>)
-		<span style="color:#66d9ef">return</span>
+	<span style="color:#998;font-style:italic">// Create a new HTTP client and execute the request
+</span><span style="color:#998;font-style:italic"></span>	client <span style="font-weight:bold">:=</span> <span style="font-weight:bold">&amp;</span>http.Client{}
+	res, err <span style="font-weight:bold">:=</span> client.<span style="color:#900;font-weight:bold">Do</span>(req)
+	<span style="color:#998;font-style:italic">// If the request failed, log to STDOUT
+</span><span style="color:#998;font-style:italic"></span>	<span style="font-weight:bold">if</span> err <span style="font-weight:bold">!=</span> <span style="font-weight:bold">nil</span> {
+		fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;Request failed:&#34;</span>, err)
+		<span style="font-weight:bold">return</span>
 	}
-	<span style="color:#75715e">// Print the statuscode if the request succeeds
-</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;Response received, status code:&#34;</span>, <span style="color:#a6e22e">res</span>.<span style="color:#a6e22e">StatusCode</span>)
+	<span style="color:#998;font-style:italic">// Print the statuscode if the request succeeds
+</span><span style="color:#998;font-style:italic"></span>	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;Response received, status code:&#34;</span>, res.StatusCode)
 }
-</code></pre></div><p>输出的结果取决于请求谷歌主页的快慢，有可能输出：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">Response</span> <span style="color:#a6e22e">received</span>, <span style="color:#a6e22e">status</span> <span style="color:#a6e22e">code</span>: <span style="color:#ae81ff">200</span>
-</code></pre></div><p>或者</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">Request</span> <span style="color:#a6e22e">failed</span>: <span style="color:#a6e22e">Get</span> <span style="color:#a6e22e">http</span>:<span style="color:#75715e">//google.com: context deadline exceeded
-</span></code></pre></div><h3 id="陷阱和警告">陷阱和警告</h3>
+</code></pre></td></tr></table>
+</div>
+</div><p>输出的结果取决于请求谷歌主页的快慢，有可能输出：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">Response received, status code: <span style="color:#099">200</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>或者</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">Request failed: Get http:<span style="color:#998;font-style:italic">//google.com: context deadline exceeded
+</span></code></pre></td></tr></table>
+</div>
+</div><h3 id="陷阱和警告">陷阱和警告</h3>
 <p>尽管 Context 的取消功能是一个很好用的工具，但是使用时有一些需要主要的点。最重要的是，context 只能被取消一次。如果你希望在同一操作中传递多个错误，那么使用 context 取消可能不是最佳选择。使用取消最常见的场景是仅仅希望取消操作，而不是返回下游操作出现的错误。</p>
 <p>需要注意的另一点就是，应将相同的 context  对象传递给可能要取消的所有函数或者协程，使用 WithTimeout 或 WithCancel 包装一个已经可取消的 context 将导致多种可能的上下文被取消，应该避免。</p>
 <p>ps: 文章的<a href="https://github.com/sohamkamani/blog-example-go-context-cancellation">完整代码</a>。</p>
 <p><!-- raw HTML omitted --><!-- raw HTML omitted -->
 (全文完)
-<img src="/me/weixingzh.jpg" alt=""></p>
+
+        <a data-fancybox="gallery" href="/me/weixingzh.jpg">
+            <img class="mx-auto" alt="" src="/me/weixingzh.jpg" />
+        </a>
+    </p>
 <h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
 
-                        </div>
+        </div>
 
-                        
+        
+
+
+        
 
 <div class="post-archive">
-    <h3>推荐阅读</h3>
+    <h2>See Also</h2>
     <ul class="listing">
         
         <li><a href="/2019/08/31/go-interview-9-day.html">Go面试每天一篇（第 9 天）</a></li>
@@ -272,23 +397,27 @@ var _hmt = _hmt || [];
         
         <li><a href="/2019/08/30/go-interview-8-day.html">Go面试每天一篇（第 8 天）</a></li>
         
+        <li><a href="/2019/08/29/go-interview-7-day.html">Go面试每天一篇（第 7 天）</a></li>
+        
+        <li><a href="/2019/08/28/go-interview-6-day.html">Go面试每天一篇（第 6 天）</a></li>
+        
     </ul>
 </div>
 
 
-                        <div class="post-meta meta-tags">
-                            
-                            <ul class="clearfix">
-                                
-                                <li><a href="https://seekload.net/tags/go">Go</a></li>
-                                
-                                <li><a href="https://seekload.net/tags/context">context</a></li>
-                                
-                            </ul>
-                            
-                        </div>
-                    </article>
-                    
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/go'>Go</a></li>
+                
+                <li><a href='/tags/context'>context</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
     
 
     
@@ -303,12 +432,60 @@ var _hmt = _hmt || [];
       </script>
     </div>
     
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>
+        
+    </div>
+    <br />
+    <div>
+        
+       
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
                 </div>
-            </div>
-            <div id="secondary">
+
+                <div id="secondary">
 
     <section class="widget">
-        <form id="search" action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
       
       <input type="text" name="q" maxlength="20" placeholder="Search">
       <input type="hidden" name="sitesearch" value="https://seekload.net">
@@ -336,6 +513,14 @@ var _hmt = _hmt || [];
     <section class="widget">
         <h3 class="widget-title">最近文章</h3>
 <ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/sync-mutex.html" title="Go并发原语-mutex源码解析">Go并发原语-mutex源码解析</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/go-interface.html" title="通过 dlv 和汇编窥探 interface 底层实现(多图)">通过 dlv 和汇编窥探 interface 底层实现(多图)</a>
+    </li>
     
     <li>
         <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
@@ -369,14 +554,6 @@ var _hmt = _hmt || [];
         <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
     </li>
     
-    <li>
-        <a href="https://seekload.net/2019/08/29/go-interview-7-day.html" title="Go面试每天一篇（第 7 天）">Go面试每天一篇（第 7 天）</a>
-    </li>
-    
-    <li>
-        <a href="https://seekload.net/2019/08/28/go-interview-6-day.html" title="Go面试每天一篇（第 6 天）">Go面试每天一篇（第 6 天）</a>
-    </li>
-    
 </ul>
     </section>
 
@@ -396,50 +573,32 @@ var _hmt = _hmt || [];
     
 
     <section class="widget">
-        <h3 class="widget-title">分类</h3>
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
 <ul class="widget-list">
     
-    <li>
-        <a href="https://seekload.net/categories/golang/">golang(40)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/golang/">Golang (42)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">go面试每天一篇(9)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇 (9)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习-go-语言(28)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言 (30)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书 (1)</a></li>
     
-    <li>
-        <a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题(1)</a>
-    </li>
+    <li><a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题 (1)</a></li>
     
 </ul>
     </section>
 
     <section class="widget">
-        <h3 class="widget-title">标签</h3>
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
 <div class="tagcloud">
     
     <a href="https://seekload.net/tags/channel/">channel</a>
@@ -448,15 +607,19 @@ var _hmt = _hmt || [];
     
     <a href="https://seekload.net/tags/function/">function</a>
     
-    <a href="https://seekload.net/tags/go/">go</a>
+    <a href="https://seekload.net/tags/go/">Go</a>
     
-    <a href="https://seekload.net/tags/golang/">golang</a>
+    <a href="https://seekload.net/tags/golang/">Golang</a>
     
-    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">golang语言</a>
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
     
-    <a href="https://seekload.net/tags/map/">map</a>
+    <a href="https://seekload.net/tags/interface/">interface</a>
     
-    <a href="https://seekload.net/tags/oop/">oop</a>
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/mutex/">mutex</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
     
     <a href="https://seekload.net/tags/select/">select</a>
     
@@ -532,56 +695,9 @@ var _hmt = _hmt || [];
         </ul>
     </section>
 </div>
+            </div>
         </div>
     </div>
-</div>
-<footer id="footer">
-    <div class="container">
-        
-        &copy; 2021 <a href="https://seekload.net"> 公众号：Golang来啦 </a>.
-        Powered by <a rel="nofollow noreferer noopener" href="https://gohugo.io" target="_blank">Hugo</a>.
-        
-        
-    </div>
-</footer>
-
-
-    <script type="text/javascript">
-    
-    (function(){
-        $("pre code").parent().addClass("line-numbers")
-    }())
-
-    window.MathJax = {
-        tex2jax: {
-            inlineMath: [ ['$','$'] ],
-            processEscapes: true
-        }
-    };
-    </script>
-    <script type="text/javascript" src="/js/prism.js" async="true"></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
-
-<a id="rocket" href="#top"></a>
-<script type="text/javascript" src="/js/totop.js?v=0.0.0" async=""></script>
-
-<script type="application/javascript">
-var doNotTrack = false;
-if (!doNotTrack) {
-	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-	ga('create', 'UA-133344385-1', 'auto');
-	
-	ga('send', 'pageview');
-}
-</script>
-<script async src='https://www.google-analytics.com/analytics.js'></script>
-
-
-
-<script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
-
-
-
-
 </body>
+
 </html>

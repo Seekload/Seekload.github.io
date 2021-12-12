@@ -1,0 +1,1139 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>Go并发原语-mutex源码解析 | Seekload&#39;s Blog</title>
+    <meta property="og:title" content="Go并发原语-mutex源码解析 - Seekload&#39;s Blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2021-12-12T10:47:05&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2021-12-12T10:47:05&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="Go并发原语-mutex源码解析">
+        
+    <meta name="author" content="Seekload">
+    <meta property="og:url" content="https://seekload.net/2021/12/12/sync-mutex.html">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://seekload.net">
+                        Seekload&#39;s Blog
+                    </a>
+                
+                <p class="description">专注于分享 Go 语言、职场心得和生活感悟</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://seekload.net">首页</a>
+                    
+                    <a  href="https://seekload.net/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://seekload.net/golang100/" title="Go语言知识站">Go语言知识站</a>
+                    
+                    <a  href="https://seekload.net/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 300px;
+        margin-left: -310px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#基本结构">基本结构</a></li>
+    <li><a href="#正常模式和饥饿模式">正常模式和饥饿模式</a></li>
+    <li><a href="#加锁和解锁">加锁和解锁</a>
+      <ul>
+        <li><a href="#lock">lock()</a></li>
+        <li><a href="#unlock">unlock</a></li>
+      </ul>
+    </li>
+    <li><a href="#一些思考">一些思考</a></li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#拓展阅读">拓展阅读</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">Go并发原语-mutex源码解析</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2021年12月12日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80'>就要学习 Go 语言</a></span>
+            
+            <span class="meta-category"><a href='/categories/golang'>Golang</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="clear" style="display: none">
+            <div class="toc-article">
+                <div class="toc-title">文章目录</div>
+            </div>
+        </div>
+        
+        <div class="post-content">
+            <blockquote>
+<p>源码版本 Go1.13.15</p>
+</blockquote>
+<p>Go 语言的 sync 包提供了用于同步的基本原语，sync.Mutex 就是其中用的最多的一个。</p>
+<p>sync.Mutex 是 Go 语言里面的一个排他锁，当某一个 G 拥有了锁的所有权之后，其他请求锁的 G 就会阻塞，直到锁被释放。</p>
+<p>锁的使用方法非常简单：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	<span style="font-weight:bold">var</span> mu sync.Mutex
+	mu.<span style="color:#900;font-weight:bold">Lock</span>()
+	<span style="font-weight:bold">defer</span> mu.<span style="color:#900;font-weight:bold">Unlock</span>()
+	<span style="color:#998;font-style:italic">// ... do others thing
+</span><span style="color:#998;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><p>那我们今天就来剖析下 sync.Mutes 底层是怎么实现的，看看那些还未获得锁的 G 阻塞时发生了什么。</p>
+<h2 id="基本结构">基本结构</h2>
+<p>sync.Mutex 由两个字段 state 和 sema 组成。其中 state 表示当前互斥锁的状态；而 sema 是用于控制锁状态的信号量，实现 G 的阻塞和唤醒。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">type</span> Mutex <span style="font-weight:bold">struct</span> {
+	state <span style="color:#458;font-weight:bold">int32</span>
+	sema  <span style="color:#458;font-weight:bold">uint32</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>上面这个只占 8 字节的结构体就是 Go 语言里面的排他锁。它实现了接口：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">type</span> Locker <span style="font-weight:bold">interface</span> {
+	<span style="color:#900;font-weight:bold">Lock</span>()
+	<span style="color:#900;font-weight:bold">Unlock</span>()
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>这两个方法我们后面会展开分析。</p>
+<p>重点讲下互斥锁的状态，state 是个复合型字段，一个字段包含了多个含义，如下图所示：</p>
+<p>
+        <a data-fancybox="gallery" href="/img/state%e5%ad%97%e6%ae%b5.png">
+            <img class="mx-auto" alt="state字段" src="/img/state%e5%ad%97%e6%ae%b5.png" />
+        </a>
+    </p>
+<p>在默认情况下，state 字段所有位都是 0。但是不同的 bit 位有不同的含义：</p>
+<ul>
+<li>mutexLocked 位表示互斥锁的锁定状态，1 表示已加锁，即某一个 G 获取到锁；0 表示未加锁。</li>
+<li>mutexWoken 位表示锁是否已唤醒，也就是某个唤醒的 G 正在尝试获取锁，1 表示已唤醒，0-表示未唤醒。</li>
+<li>mutexStarving 表示当前互斥锁的饥饿状态，1 表示饥饿状态，0 表示正常状态。</li>
+</ul>
+<p>其他位用来表示当前等待获取锁的 G 的数量，这样一算可以表示 2^29 个 G 等待获取锁。</p>
+<h2 id="正常模式和饥饿模式">正常模式和饥饿模式</h2>
+<p>sync.Mutex 有两种模式：正常模式和饥饿模式。</p>
+<p><strong>正常模式</strong>下，所有等待锁的 G 的按照 FIFO 顺序获取锁，被唤醒的 G 不会直接拥有锁，而是会与新请求的 G 共同竞争锁，但是因为新请求的 G 占用着 CPU，所以新请求的 G 有更大优势获取到锁，这样刚被唤醒的 G 大概率会竞争失败，获取不到锁。这种情况下，这个刚被唤醒的 G 会加入到等待队列的最前面。如果一个等待的 G 超过 1ms 没有获取到锁，那么它会将锁转变为饥饿模式。</p>
+<p><strong>饥饿模式</strong>下，拥有锁的 G 在释放锁的时候，会将锁直接交给等待队列最前面的 G。新来的 G 不会尝试获取锁，也不会自旋，而是放在等待队列的尾部。如果一个 G 获得了互斥锁并且它在队列的末尾或者它等待的时间少于 1ms，那么当前的互斥锁就会切换回正常模式。</p>
+<p>与饥饿模式相比，正常模式下互斥锁拥有更好的性能，引入饥饿模式是保证锁的公平性，能避免部分 G 陷入等待无法获取到锁而造成高尾延时，就是我们说的『饿死』。</p>
+<h2 id="加锁和解锁">加锁和解锁</h2>
+<p>这一节我们就来分析下加锁和解锁的过程，加锁和解锁分别分别调用 sync.Lock() 和 sync.Unlock() 方法，<strong>在看源码时，我们要从多线程(goroutine)的并发场景去分析。</strong></p>
+<h3 id="lock">lock()</h3>
+<p>我们先来分析下加锁过程：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> (m <span style="font-weight:bold">*</span>Mutex) <span style="color:#900;font-weight:bold">Lock</span>() {
+	<span style="color:#998;font-style:italic">// Fast path: grab unlocked mutex.
+</span><span style="color:#998;font-style:italic"></span>	<span style="font-weight:bold">if</span> atomic.<span style="color:#900;font-weight:bold">CompareAndSwapInt32</span>(<span style="font-weight:bold">&amp;</span>m.state, <span style="color:#099">0</span>, mutexLocked) {
+		<span style="font-weight:bold">return</span>    <span style="color:#998;font-style:italic">// 尝试获取锁成功
+</span><span style="color:#998;font-style:italic"></span>	}
+	<span style="color:#998;font-style:italic">// Slow path
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// 如果互斥锁的状态不是 0 就会进入 slowPath
+</span><span style="color:#998;font-style:italic"></span>	m.<span style="color:#900;font-weight:bold">lockSlow</span>()
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>调用 sync.Lock() 时分为两个部分，Fast path 和 Slow path，Fast path 是一条幸运之路，如果此时锁的状态是 0，通过一个 CAS 操作就能获取到锁，直接就返回了；如果走 Slow path，就会调用 m.lockSlow()，进行缓慢加锁过程。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">  9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 34
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 35
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 36
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 37
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 38
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 39
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 40
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 41
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 42
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 43
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 44
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 45
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 46
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 47
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 48
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 49
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 50
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 51
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 52
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 53
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 54
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 55
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 56
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 57
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 58
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 59
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 60
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 61
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 62
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 63
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 64
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 65
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 66
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 67
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 68
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 69
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 70
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 71
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 72
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 73
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 74
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 75
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 76
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 77
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 78
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 79
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 80
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 81
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 82
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 83
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 84
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 85
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 86
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 87
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 88
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 89
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 90
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 91
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 92
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 93
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 94
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 95
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 96
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 97
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 98
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 99
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">100
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">101
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">102
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">103
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">104
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">105
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">106
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">107
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">108
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">109
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">110
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">111
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">112
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">113
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> (m <span style="font-weight:bold">*</span>Mutex) <span style="color:#900;font-weight:bold">lockSlow</span>() {
+	<span style="color:#998;font-style:italic">// 标记本 goroutine 的等待时间
+</span><span style="color:#998;font-style:italic"></span>	<span style="font-weight:bold">var</span> waitStartTime <span style="color:#458;font-weight:bold">int64</span>
+	starving <span style="font-weight:bold">:=</span> <span style="font-weight:bold">false</span>     <span style="color:#998;font-style:italic">// 本 goroutine 是否已经处于饥饿状态
+</span><span style="color:#998;font-style:italic"></span>	awoke <span style="font-weight:bold">:=</span> <span style="font-weight:bold">false</span>   <span style="color:#998;font-style:italic">// 本 goroutine 是否已唤醒
+</span><span style="color:#998;font-style:italic"></span>	iter <span style="font-weight:bold">:=</span> <span style="color:#099">0</span>    	<span style="color:#998;font-style:italic">// 自旋次数
+</span><span style="color:#998;font-style:italic"></span>	old <span style="font-weight:bold">:=</span> m.state   <span style="color:#998;font-style:italic">// 赋值锁的当前状态
+</span><span style="color:#998;font-style:italic"></span>	<span style="font-weight:bold">for</span> {
+		<span style="color:#998;font-style:italic">// 第一个条件是，锁已经被锁了但不是饥饿状态；如果是饥饿状态，自旋是没有用的，锁的拥有权会直接交给等待队列的第一个 goroutine
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// 第二个条件是还可以自旋，多核、压力不大，在一定次数内可以自旋，具体条件参考 sync_runtime_canSpin 的实现
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// 如果满足这两个状态，不断自旋等待锁被释放、或者进入饥饿状态、或者不能再自旋
+</span><span style="color:#998;font-style:italic"></span>		<span style="font-weight:bold">if</span> old<span style="font-weight:bold">&amp;</span>(mutexLocked|mutexStarving) <span style="font-weight:bold">==</span> mutexLocked <span style="font-weight:bold">&amp;&amp;</span> <span style="color:#900;font-weight:bold">runtime_canSpin</span>(iter) {
+
+			<span style="color:#998;font-style:italic">// 在自旋的过程中，如果发现 state 还没有设置 woken 标识，则设置它的 woken 标识，并标记自己被唤醒
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 设置 mutexWoken==1，告诉 unlock 操作，存在自旋 goroutine，unlock 操作之后不需要唤醒其他 goroutine
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// old&amp;mutexWoken == 0 表示没有其他goroutine尝试唤醒锁
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// old&gt;&gt;mutexWaiterShift != 0 表示有等待的goroutine
+</span><span style="color:#998;font-style:italic"></span>
+			<span style="font-weight:bold">if</span> !awoke <span style="font-weight:bold">&amp;&amp;</span> old<span style="font-weight:bold">&amp;</span>mutexWoken <span style="font-weight:bold">==</span> <span style="color:#099">0</span> <span style="font-weight:bold">&amp;&amp;</span> old<span style="font-weight:bold">&gt;&gt;</span>mutexWaiterShift <span style="font-weight:bold">!=</span> <span style="color:#099">0</span> <span style="font-weight:bold">&amp;&amp;</span>
+				atomic.<span style="color:#900;font-weight:bold">CompareAndSwapInt32</span>(<span style="font-weight:bold">&amp;</span>m.state, old, old|mutexWoken) {
+				<span style="color:#998;font-style:italic">// 本 goroutine 已经被唤醒，正尝试唤醒锁
+</span><span style="color:#998;font-style:italic"></span>				awoke = <span style="font-weight:bold">true</span>
+			}
+			<span style="color:#900;font-weight:bold">runtime_doSpin</span>()  <span style="color:#998;font-style:italic">// 执行自旋操作
+</span><span style="color:#998;font-style:italic"></span>			iter<span style="font-weight:bold">++</span>
+			old = m.state    <span style="color:#998;font-style:italic">// 自旋之后重新获取锁的状态
+</span><span style="color:#998;font-style:italic"></span>			<span style="font-weight:bold">continue</span>
+		}
+
+		<span style="color:#998;font-style:italic">// 到了这一步，state 可能的状态：
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// 1.锁没有被释放，锁处于正常模式；
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// 2.锁没有被释放，锁处于饥饿模式；
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// 3.锁被释放，锁处于正常模式；
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// 4.锁被释放，锁处于饥饿模式；
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">//
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// 并且本goroutine的 awoke 可能为 true 或者 false
+</span><span style="color:#998;font-style:italic"></span>
+		<span style="color:#998;font-style:italic">// new 复制 state 的当前状态，用来设置新的状态；old 是锁的当前状态
+</span><span style="color:#998;font-style:italic"></span>		new <span style="font-weight:bold">:=</span> old
+		<span style="color:#998;font-style:italic">// 如果 old state 不是饥饿状态，new state 设置锁，尝试通过 cas 操作获取锁
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// 如果 old state 是饥饿状态，则不设置 new state 的锁，因为饥饿状态下锁直接转给等待队列的第一个
+</span><span style="color:#998;font-style:italic"></span>		<span style="font-weight:bold">if</span> old<span style="font-weight:bold">&amp;</span>mutexStarving <span style="font-weight:bold">==</span> <span style="color:#099">0</span> {
+			new <span style="font-weight:bold">|=</span> mutexLocked
+		}
+		<span style="color:#998;font-style:italic">// 如果当前锁处于锁定状态或者饥饿状态，则将等待队列的等待者数量加一
+</span><span style="color:#998;font-style:italic"></span>		<span style="font-weight:bold">if</span> old<span style="font-weight:bold">&amp;</span>(mutexLocked|mutexStarving) <span style="font-weight:bold">!=</span> <span style="color:#099">0</span> {
+			new <span style="font-weight:bold">+=</span> <span style="color:#099">1</span> <span style="font-weight:bold">&lt;&lt;</span> mutexWaiterShift
+		}
+		<span style="color:#998;font-style:italic">// 如果当前 goroutine 处于饥饿状态且 old state 已被加锁，将 new state 的状态标记为饥饿状态，即将锁标记为饥饿状态
+</span><span style="color:#998;font-style:italic"></span>		<span style="font-weight:bold">if</span> starving <span style="font-weight:bold">&amp;&amp;</span> old<span style="font-weight:bold">&amp;</span>mutexLocked <span style="font-weight:bold">!=</span> <span style="color:#099">0</span> {
+			new <span style="font-weight:bold">|=</span> mutexStarving
+		}
+		<span style="font-weight:bold">if</span> awoke {
+			<span style="color:#998;font-style:italic">// 当前 goroutine 自旋过之后，则需要将 mutexWoken 重置，因为当前 goroutine 的状态一定会是阻塞或者是已获得锁
+</span><span style="color:#998;font-style:italic"></span>			<span style="font-weight:bold">if</span> new<span style="font-weight:bold">&amp;</span>mutexWoken <span style="font-weight:bold">==</span> <span style="color:#099">0</span> {
+				<span style="color:#900;font-weight:bold">throw</span>(<span style="color:#b84">&#34;sync: inconsistent mutex state&#34;</span>)
+			}
+			<span style="color:#998;font-style:italic">// 清除 new state 的唤醒标记
+</span><span style="color:#998;font-style:italic"></span>			new <span style="font-weight:bold">&amp;^=</span> mutexWoken
+		}
+		<span style="color:#998;font-style:italic">// 当前 goroutine 获取到的 mutex state 是否被其他 goroutine 改变
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// 这里可能只设置锁，或者也有可能只设置为饥饿状态和等待数量
+</span><span style="color:#998;font-style:italic"></span>		<span style="font-weight:bold">if</span> atomic.<span style="color:#900;font-weight:bold">CompareAndSwapInt32</span>(<span style="font-weight:bold">&amp;</span>m.state, old, new) {
+			<span style="color:#998;font-style:italic">// 如果 old state 的状态是未被锁的状态，且锁不处于饥饿状态
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 那么当前的 goroutine 已经获得了锁的拥有权，返回
+</span><span style="color:#998;font-style:italic"></span>			<span style="font-weight:bold">if</span> old<span style="font-weight:bold">&amp;</span>(mutexLocked|mutexStarving) <span style="font-weight:bold">==</span> <span style="color:#099">0</span> {
+				<span style="font-weight:bold">break</span> <span style="color:#998;font-style:italic">// locked the mutex with CAS
+</span><span style="color:#998;font-style:italic"></span>			}
+			<span style="color:#998;font-style:italic">// If we were already waiting before, queue at the front of the queue.
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 设置/计算本goroutine的等待时间
+</span><span style="color:#998;font-style:italic"></span>			queueLifo <span style="font-weight:bold">:=</span> waitStartTime <span style="font-weight:bold">!=</span> <span style="color:#099">0</span>
+			<span style="font-weight:bold">if</span> waitStartTime <span style="font-weight:bold">==</span> <span style="color:#099">0</span> {
+				waitStartTime = <span style="color:#900;font-weight:bold">runtime_nanotime</span>()
+			}
+
+			<span style="color:#998;font-style:italic">// 既然未能获取到锁，就是用 sleep 原语阻塞本 goroutine  阻塞等待
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 如果是新来的 goroutine， queueLifo=false，加入到等待队列的尾部，耐心等待
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 如果是被唤醒的 goroutine，queueLifo=true,加入到等待队列的头部
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#900;font-weight:bold">runtime_SemacquireMutex</span>(<span style="font-weight:bold">&amp;</span>m.sema, queueLifo, <span style="color:#099">1</span>)
+
+			<span style="color:#998;font-style:italic">// 唤醒之后检查锁是否应该处于饥饿状态
+</span><span style="color:#998;font-style:italic"></span>
+			<span style="color:#998;font-style:italic">// 计算当前 goroutine 是否处于饥饿状态
+</span><span style="color:#998;font-style:italic"></span>			starving = starving <span style="font-weight:bold">||</span> <span style="color:#900;font-weight:bold">runtime_nanotime</span>()<span style="font-weight:bold">-</span>waitStartTime &gt; starvationThresholdNs
+			old = m.state <span style="color:#998;font-style:italic">// 重新获取锁当前的状态
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 如果当前的 state 处于饥饿状态，那么锁应该处于 unlock 状态，那么应该将锁直接交给本 goroutine，为什么？
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 因为如果锁处于饥饿状态，上一个释放锁的 G 会主动唤醒队首的 goroutine。
+</span><span style="color:#998;font-style:italic"></span>			<span style="font-weight:bold">if</span> old<span style="font-weight:bold">&amp;</span>mutexStarving <span style="font-weight:bold">!=</span> <span style="color:#099">0</span> {
+				<span style="color:#998;font-style:italic">// 非法状态
+</span><span style="color:#998;font-style:italic"></span>				<span style="font-weight:bold">if</span> old<span style="font-weight:bold">&amp;</span>(mutexLocked|mutexWoken) <span style="font-weight:bold">!=</span> <span style="color:#099">0</span> <span style="font-weight:bold">||</span> old<span style="font-weight:bold">&gt;&gt;</span>mutexWaiterShift <span style="font-weight:bold">==</span> <span style="color:#099">0</span> {
+					<span style="color:#900;font-weight:bold">throw</span>(<span style="color:#b84">&#34;sync: inconsistent mutex state&#34;</span>)
+				}
+				<span style="color:#998;font-style:italic">// 当前 goroutine 用来设置锁，并将等待的 goroutine 数减 1.
+</span><span style="color:#998;font-style:italic"></span>				delta <span style="font-weight:bold">:=</span> <span style="color:#999">int32</span>(mutexLocked <span style="font-weight:bold">-</span> <span style="color:#099">1</span><span style="font-weight:bold">&lt;&lt;</span>mutexWaiterShift)
+				<span style="color:#998;font-style:italic">// 如果本 goroutine 是最后一个等待者，或者它并不处于饥饿状态，
+</span><span style="color:#998;font-style:italic"></span>				<span style="color:#998;font-style:italic">// 那么我们需要把锁的 state 状态设置为正常模式.
+</span><span style="color:#998;font-style:italic"></span>				<span style="font-weight:bold">if</span> !starving <span style="font-weight:bold">||</span> old<span style="font-weight:bold">&gt;&gt;</span>mutexWaiterShift <span style="font-weight:bold">==</span> <span style="color:#099">1</span> {
+					<span style="color:#998;font-style:italic">// 退出饥饿模式
+</span><span style="color:#998;font-style:italic"></span>					delta <span style="font-weight:bold">-=</span> mutexStarving
+				}
+				<span style="color:#998;font-style:italic">// 设置新state, 因为已经获得了锁，退出、返回
+</span><span style="color:#998;font-style:italic"></span>				atomic.<span style="color:#900;font-weight:bold">AddInt32</span>(<span style="font-weight:bold">&amp;</span>m.state, delta)
+				<span style="font-weight:bold">break</span>
+			}
+			<span style="color:#998;font-style:italic">// 如果当前锁不是饥饿状态，就把当前的 goroutine 设置为被唤醒
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 重置iter
+</span><span style="color:#998;font-style:italic"></span>			awoke = <span style="font-weight:bold">true</span>
+			iter = <span style="color:#099">0</span>
+		} <span style="font-weight:bold">else</span> {
+			old = m.state
+		}
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>lockSlow() 方法里面是一个大的 for 循环，有几个变量标识本次请求 goroutine 的状态，比如 starving 表示本 goroutine 是否处于饥饿状态；awoke 表示本 goroutine 是否已唤醒；waitStartTime 记录本 goroutine 的等待时间。</p>
+<p>这里介绍下自旋的概念，</p>
+<blockquote>
+<p>自旋是 CPU 空转一定的时钟周期。</p>
+</blockquote>
+<p>自旋过程中，G 会保持对 CPU 的占用。在多核的 CPU 上，自旋可以避免 G 的切换，使用恰当会对性能带来很大的增益，但是使用不当就会拖慢整个程序，所以 G 进入自旋的条件非常苛刻：</p>
+<ol>
+<li>正常模式下才能自旋；</li>
+<li>runtime_canSpin() 返回 true；</li>
+</ol>
+<p>runtime_canSpin() 的判断如下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">sync_runtime_canSpin</span>(i <span style="color:#458;font-weight:bold">int</span>) <span style="color:#458;font-weight:bold">bool</span> {
+    <span style="color:#998;font-style:italic">// 1.自旋次数不能超过 4 次；
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// 2.CPU 核数大于 1；
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// 3.有空闲的 P；
+</span><span style="color:#998;font-style:italic"></span>    <span style="color:#998;font-style:italic">// 4.当前 goroutine 所挂载的 P 下，本地待运行队列为空；
+</span><span style="color:#998;font-style:italic"></span>	<span style="font-weight:bold">if</span> i <span style="font-weight:bold">&gt;=</span> active_spin <span style="font-weight:bold">||</span> ncpu <span style="font-weight:bold">&lt;=</span> <span style="color:#099">1</span> <span style="font-weight:bold">||</span> gomaxprocs <span style="font-weight:bold">&lt;=</span> <span style="color:#999">int32</span>(sched.npidle<span style="font-weight:bold">+</span>sched.nmspinning)<span style="font-weight:bold">+</span><span style="color:#099">1</span> {
+		<span style="font-weight:bold">return</span> <span style="font-weight:bold">false</span>
+	}
+	<span style="font-weight:bold">if</span> p <span style="font-weight:bold">:=</span> <span style="color:#900;font-weight:bold">getg</span>().m.p.<span style="color:#900;font-weight:bold">ptr</span>(); !<span style="color:#900;font-weight:bold">runqempty</span>(p) {
+		<span style="font-weight:bold">return</span> <span style="font-weight:bold">false</span>
+	}
+	<span style="font-weight:bold">return</span> <span style="font-weight:bold">true</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>当满足上述 4 个条件时，sync_runtime_canSpin() 才会返回 true。可以看出自旋要求严格，毕竟在锁竞争激烈时，如果还无限制地自旋就肯定会影响其他 goroutine。</p>
+<p>不同平台上自旋所用的指令不一样。例如在 amd64 平台下，汇编的实现如下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">TEXT runtime<span style="color:#a61717;background-color:#e3d2d2">·</span><span style="color:#900;font-weight:bold">procyield</span>(SB),NOSPLIT,<span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#099">0</span><span style="font-weight:bold">-</span><span style="color:#099">0</span>
+	MOVL	cycles<span style="font-weight:bold">+</span><span style="color:#099">0</span>(FP), AX
+again:
+    <span style="color:#998;font-style:italic">// 自旋 cycles 次，每次自旋执行 PAUSE 指令
+</span><span style="color:#998;font-style:italic"></span>	PAUSE
+	SUBL	<span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#099">1</span>, AX
+	JNZ	again
+	RET
+</code></pre></td></tr></table>
+</div>
+</div><p>每次自旋会执行 30 次 PAUSE 指令，该指令只会占用 CPU 并消耗 CPU 时间，相当于 30 个时钟周期。</p>
+<h3 id="unlock">unlock</h3>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> (m <span style="font-weight:bold">*</span>Mutex) <span style="color:#900;font-weight:bold">Unlock</span>() {
+	<span style="color:#998;font-style:italic">// Fast path:
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// 返回一个 state 被减后的值 new
+</span><span style="color:#998;font-style:italic"></span>	new <span style="font-weight:bold">:=</span> atomic.<span style="color:#900;font-weight:bold">AddInt32</span>(<span style="font-weight:bold">&amp;</span>m.state, <span style="font-weight:bold">-</span>mutexLocked)
+	<span style="font-weight:bold">if</span> new <span style="font-weight:bold">!=</span> <span style="color:#099">0</span> {
+		m.<span style="color:#900;font-weight:bold">unlockSlow</span>(new)
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>与加锁类似，解锁也分为 Fast path 和 Slow path，使用 atomic.AddInt32() 加锁，如果返回的新状态为 0，则解锁成功；反之则调用 m.unlockSlow() 进入慢速解锁。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> (m <span style="font-weight:bold">*</span>Mutex) <span style="color:#900;font-weight:bold">unlockSlow</span>(new <span style="color:#458;font-weight:bold">int32</span>) {
+	<span style="color:#998;font-style:italic">// 如果 state 不是处于锁的状态, 那么就是 Unlock 没有加锁的 mutex, panic
+</span><span style="color:#998;font-style:italic"></span>	<span style="font-weight:bold">if</span> (new<span style="font-weight:bold">+</span>mutexLocked)<span style="font-weight:bold">&amp;</span>mutexLocked <span style="font-weight:bold">==</span> <span style="color:#099">0</span> {
+		<span style="color:#900;font-weight:bold">throw</span>(<span style="color:#b84">&#34;sync: unlock of unlocked mutex&#34;</span>)
+	}
+	<span style="color:#998;font-style:italic">// 正常模式
+</span><span style="color:#998;font-style:italic"></span>	<span style="font-weight:bold">if</span> new<span style="font-weight:bold">&amp;</span>mutexStarving <span style="font-weight:bold">==</span> <span style="color:#099">0</span> {
+		old <span style="font-weight:bold">:=</span> new
+		<span style="font-weight:bold">for</span> {
+			<span style="color:#998;font-style:italic">// 如果已经没有等待获取锁的 goroutine
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 或者锁被获取了(在 for 循环过程中，锁被其他 goroutine 获取了)
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 或者锁是被唤醒状态，表示有 goroutine 被唤醒，不需要再去尝试唤醒其他 goroutine
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 或者锁是饥饿状态，锁会直接交给队列头的 goroutine
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 以上情况都直接返回
+</span><span style="color:#998;font-style:italic"></span>			<span style="font-weight:bold">if</span> old<span style="font-weight:bold">&gt;&gt;</span>mutexWaiterShift <span style="font-weight:bold">==</span> <span style="color:#099">0</span> <span style="font-weight:bold">||</span> old<span style="font-weight:bold">&amp;</span>(mutexLocked|mutexWoken|mutexStarving) <span style="font-weight:bold">!=</span> <span style="color:#099">0</span> {
+				<span style="font-weight:bold">return</span>
+			}
+
+			<span style="color:#998;font-style:italic">// 走到这一步说明，锁目前处于空闲状态、没有被唤醒的 goroutine、非饥饿模式且队列中有等待获取锁的 goroutine
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 那么就需要将等待状态的 goroutine 数量减一 并设置为唤醒状态，然后唤醒一个等待状态的 goroutine
+</span><span style="color:#998;font-style:italic"></span>			<span style="color:#998;font-style:italic">// 这里为什么要设置woken标记？？  避免被后到的 goroutine 竞争到锁
+</span><span style="color:#998;font-style:italic"></span>			new = (old <span style="font-weight:bold">-</span> <span style="color:#099">1</span><span style="font-weight:bold">&lt;&lt;</span>mutexWaiterShift) | mutexWoken
+			<span style="font-weight:bold">if</span> atomic.<span style="color:#900;font-weight:bold">CompareAndSwapInt32</span>(<span style="font-weight:bold">&amp;</span>m.state, old, new) {
+				<span style="color:#998;font-style:italic">// 唤醒一个阻塞的 goroutine，但不一定是队列第一个
+</span><span style="color:#998;font-style:italic"></span>				<span style="color:#900;font-weight:bold">runtime_Semrelease</span>(<span style="font-weight:bold">&amp;</span>m.sema, <span style="font-weight:bold">false</span>, <span style="color:#099">1</span>)
+				<span style="font-weight:bold">return</span>
+			}
+			old = m.state
+		}
+	} <span style="font-weight:bold">else</span> { <span style="color:#998;font-style:italic">// 饥饿模式
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#998;font-style:italic">// 让等待队列头部的第一个 goroutine 获得锁
+</span><span style="color:#998;font-style:italic"></span>		<span style="color:#900;font-weight:bold">runtime_Semrelease</span>(<span style="font-weight:bold">&amp;</span>m.sema, <span style="font-weight:bold">true</span>, <span style="color:#099">1</span>)
+	}
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>相对于加锁，解锁过程比较简单，代码里有详细的注释，有不清楚的欢迎留言交流。</p>
+<h2 id="一些思考">一些思考</h2>
+<p>现在我们回过头来想想几个问题，比如新请求的 G 为什么要进行自旋？加锁、解锁过程中为什么要设置 woken 标志位？</p>
+<p>1.自旋目的？</p>
+<p>自旋的目的是为了<strong>尽量减少阻塞和减少切换成本</strong>，想要减少切换成本那就不切换，不切换的话就自旋。假如上一个获得锁的 G 的临界区代码执行只需要十几个时钟周期时，让竞争者自旋等待一下，立刻就可以获得锁。减少不必要的切换成本，效率会更高。</p>
+<p>所以为了减少切换成本，短暂的自旋等待是简单的方法。</p>
+<p>2.加锁过程为什么要设置 woken 标记？</p>
+<p>新请求的 G 申请锁时，发现锁被占用了。但自己满足自旋条件，于是自旋，并设置 woken 标记。此时拥有锁的的 G 在释放锁时，检查 woken 标记，如果被标记，哪怕等待获取锁的队列不为空，也不做唤醒，直接return，让自旋的 G 有更大机会抢到锁。也是为了降低切换成本。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">if</span> old<span style="font-weight:bold">&gt;&gt;</span>mutexWaiterShift <span style="font-weight:bold">==</span> <span style="color:#099">0</span> <span style="font-weight:bold">||</span> old<span style="font-weight:bold">&amp;</span>(mutexLocked|mutexWoken|mutexStarving) <span style="font-weight:bold">!=</span> <span style="color:#099">0</span> {
+	<span style="font-weight:bold">return</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>所以竞争者在自旋时，主动设置 woken 标记，这样拥有锁的 G 在释放锁时才能感知到。</p>
+<p>3.解锁过程为什么要设置 woken 标记？</p>
+<p>解锁过程中设置 woken 标记其实是为了<strong>尽可能地保证锁的公平性</strong>。假设这样的场景，阻塞队列里最后一个 G 被唤醒后，它还得等调度器运行到它，它自己再去抢锁。但在调度器运行到它之前，很可能有新来的 G 参与竞争锁，此时锁被抢走的概率就很大。这有失公平，被阻塞的 G  是先到者，新的 G 是后来者，应该尽量让它们一起竞争。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#998;font-style:italic">// 唤醒一个阻塞的 G，并设置 woken 标记
+</span><span style="color:#998;font-style:italic"></span>new = (old <span style="font-weight:bold">-</span> <span style="color:#099">1</span><span style="font-weight:bold">&lt;&lt;</span>mutexWaiterShift) | mutexWoken
+<span style="font-weight:bold">if</span> atomic.<span style="color:#900;font-weight:bold">CompareAndSwapInt32</span>(<span style="font-weight:bold">&amp;</span>m.state, old, new) {
+	<span style="color:#998;font-style:italic">// 唤醒一个阻塞的 goroutine，但不一定是队列第一个
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#900;font-weight:bold">runtime_Semrelease</span>(<span style="font-weight:bold">&amp;</span>m.sema, <span style="font-weight:bold">false</span>, <span style="color:#099">1</span>)
+	<span style="font-weight:bold">return</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>设置 woken 标记后，state 就肯定不为零。此时新请求的 G，在执行 Lock() 的 fast-path 时会失败，接下来就只能乖乖排队了。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> (m <span style="font-weight:bold">*</span>Mutex) <span style="color:#900;font-weight:bold">Lock</span>() {
+	<span style="color:#998;font-style:italic">// Fast path
+</span><span style="color:#998;font-style:italic"></span>	<span style="color:#998;font-style:italic">// woken 标记设置后，这里的 CAS 操作就会失败
+</span><span style="color:#998;font-style:italic"></span>	<span style="font-weight:bold">if</span> atomic.<span style="color:#900;font-weight:bold">CompareAndSwapInt32</span>(<span style="font-weight:bold">&amp;</span>m.state, <span style="color:#099">0</span>, mutexLocked) {
+		<span style="font-weight:bold">return</span>
+	}
+    <span style="color:#998;font-style:italic">// 参与锁的竞争
+</span><span style="color:#998;font-style:italic"></span>	m.<span style="color:#900;font-weight:bold">lockSlow</span>()
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>4.采用了哪些方式保证锁尽量公平？</p>
+<ul>
+<li>上面 3 提到的一点，在锁释放时，主动设置 woken 标记，防止新的竞争者轻易抢到锁；</li>
+<li>锁的竞争者进入阻塞队列策略不一样。新来的竞争者，抢不到锁，就排在队列尾部。先来的竞争者，从队列中被唤醒后，还是抢不到锁，就会放在队列头部；</li>
+<li>引入饥饿模式，锁的竞争者，被阻塞等待的时间超过指定阀值 - 1ms，锁就转为饥饿模式。这时锁的拥有者在释放锁时会唤醒它们，手递手式把锁交给它们。别的竞争者（包括新来的）都抢不到锁，直到把饥饿问题解决掉；</li>
+</ul>
+<h2 id="总结">总结</h2>
+<p>sync.Mutex 的源码不多，加上注释不到 300 行，但是锁的实现方式和一些思路非常值得大家学习的，推荐大家阅读。大家可以多参考几篇文章阅读，每篇文章的侧重点都不一样，穿插着阅读可以帮助大家理解。</p>
+<h2 id="拓展阅读">拓展阅读</h2>
+<p><a href="https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-sync-primitives/#mutex">同步原语与锁</a></p>
+<p><a href="https://mp.weixin.qq.com/s/BZvfNn_Vre7o2T8BZ4LLMw">这可能是最容易理解的 Go Mutex 源码剖析</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&amp;mid=2651445527&amp;idx=4&amp;sn=490bc9f285a50d1d61b828e131d67b13&amp;chksm=80bb07e5b7cc8ef372c2ad5c7f03af9f21db6bb01e675e0cf363ffcddcd7030eeb65855f2560&amp;scene=21#wechat_redirect">你真的了解 sync.Mutex吗</a></p>
+<p><a href="https://colobu.com/2018/12/18/dive-into-sync-mutex/">sync.mutex 源代码分析</a></p>
+<p><a href="https://juejin.cn/post/6977202902267854862">sync.mutex 详解</a></p>
+<p><a href="https://www.cnblogs.com/luozhiyun/p/14157542.html">多图详解Go的互斥锁Mutex</a></p>
+<p><a href="https://www.purewhite.io/2019/03/28/golang-mutex-source/">源码剖析 golang 中 sync.Mutex</a></p>
+<p><a href="https://www.cnblogs.com/ricklz/p/14535653.html">go中sync.Mutex源码解读</a></p>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted -->
+(全文完)
+
+        <a data-fancybox="gallery" href="/me/weixingzh.jpg">
+            <img class="mx-auto" alt="" src="/me/weixingzh.jpg" />
+        </a>
+    </p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2021/12/12/go-interface.html">通过 dlv 和汇编窥探 interface 底层实现(多图)</a></li>
+        
+        <li><a href="/2021/11/28/go-context.html">图解Go语言Context（附源码分析）</a></li>
+        
+        <li><a href="/2021/03/03/go-context.html">图解Go语言Context</a></li>
+        
+        <li><a href="/2021/02/28/interview-question.html">Golang语言面试题（精编263道题），包含解析！！！</a></li>
+        
+        <li><a href="/2021/02/09/understanding-the-context-package.html">掌握 Context 包</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/go'>Go</a></li>
+                
+                <li><a href='/tags/golang%E8%AF%AD%E8%A8%80'>Golang语言</a></li>
+                
+                <li><a href='/tags/mutex'>mutex</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Seekload/Seekload.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>
+        
+    </div>
+    <br />
+    <div>
+        
+       
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+                </div>
+
+                <div id="secondary">
+
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://seekload.net">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利!!扫码关注回复关键字领取学习资料（入门、进阶Go语言书籍，还有海量视频资料）！！</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a title=""  style="color:red">
+                
+                    <img src="/me/weixingzh.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/sync-mutex.html" title="Go并发原语-mutex源码解析">Go并发原语-mutex源码解析</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/go-interface.html" title="通过 dlv 和汇编窥探 interface 底层实现(多图)">通过 dlv 和汇编窥探 interface 底层实现(多图)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/02/28/interview-question.html" title="Golang语言面试题（精编263道题），包含解析！！！">Golang语言面试题（精编263道题），包含解析！！！</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/02/09/understanding-the-context-package.html" title="掌握 Context 包">掌握 Context 包</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/02/06/using-context-cancellation.html" title="使用 Go 语言 context 包的取消功能">使用 Go 语言 context 包的取消功能</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-interview-9-day.html" title="Go面试每天一篇（第 9 天）">Go面试每天一篇（第 9 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-pointers-vs-references.html" title="指针与引用（译）">指针与引用（译）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://niannian.cleer.club/" title="念念有鱼">念念有鱼</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://seekload.net/categories/golang/">Golang (42)</a></li>
+    
+    <li><a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇 (9)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作 (1)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言 (30)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维 (1)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动 (1)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知 (1)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书 (1)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://seekload.net/tags/channel/">channel</a>
+    
+    <a href="https://seekload.net/tags/context/">context</a>
+    
+    <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">Go</a>
+    
+    <a href="https://seekload.net/tags/golang/">Golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
+    
+    <a href="https://seekload.net/tags/interface/">interface</a>
+    
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/mutex/">mutex</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
+    
+    <a href="https://seekload.net/tags/select/">select</a>
+    
+    <a href="https://seekload.net/tags/variadic/">variadic</a>
+    
+    <a href="https://seekload.net/tags/%E4%BF%A1%E9%81%93/">信道</a>
+    
+    <a href="https://seekload.net/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://seekload.net/tags/%E5%87%BD%E6%95%B0/">函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%88%87%E7%89%87/">切片</a>
+    
+    <a href="https://seekload.net/tags/%E5%8C%85/">包</a>
+    
+    <a href="https://seekload.net/tags/%E5%8D%8F%E7%A8%8B/">协程</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%98%E9%87%8F/">变量</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0/">可变函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%9D%9A%E6%8C%81/">坚持</a>
+    
+    <a href="https://seekload.net/tags/%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4/">工作空间</a>
+    
+    <a href="https://seekload.net/tags/%E5%B9%B6%E5%8F%91/">并发</a>
+    
+    <a href="https://seekload.net/tags/%E5%BC%95%E7%94%A8/">引用</a>
+    
+    <a href="https://seekload.net/tags/%E5%BD%B1%E5%93%8D%E5%8A%9B/">影响力</a>
+    
+    <a href="https://seekload.net/tags/%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5/">循环语句</a>
+    
+    <a href="https://seekload.net/tags/%E6%80%9D%E7%BB%B4/">思维</a>
+    
+    <a href="https://seekload.net/tags/%E6%8C%87%E9%92%88/">指针</a>
+    
+    <a href="https://seekload.net/tags/%E6%8E%A5%E5%8F%A3/">接口</a>
+    
+    <a href="https://seekload.net/tags/%E6%95%B0%E7%BB%84/">数组</a>
+    
+    <a href="https://seekload.net/tags/%E6%96%B9%E6%B3%95/">方法</a>
+    
+    <a href="https://seekload.net/tags/%E6%98%A0%E5%B0%84/">映射</a>
+    
+    <a href="https://seekload.net/tags/%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5/">条件语句</a>
+    
+    <a href="https://seekload.net/tags/%E7%B1%BB%E5%9E%8B/">类型</a>
+    
+    <a href="https://seekload.net/tags/%E7%BB%93%E6%9E%84%E4%BD%93/">结构体</a>
+    
+    <a href="https://seekload.net/tags/%E8%AE%A4%E7%9F%A5/">认知</a>
+    
+    <a href="https://seekload.net/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://seekload.net/tags/%E8%BF%90%E7%AE%97%E7%AC%A6/">运算符</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">面向对象</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%9F%BA/">面基</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E8%AF%95/">面试</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题</a>
+    
+</div>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://seekload.net/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

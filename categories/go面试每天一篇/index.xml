@@ -49,7 +49,7 @@
       <pubDate>Tue, 27 Aug 2019 20:17:59 +0800</pubDate>
       
       <guid>https://seekload.net/2019/08/27/go-interview-5-day.html</guid>
-      <description>1.下面这段代码能否通过编译？不能的话，原因是什么？如果通过，输出什么？ func main() { sn1 := struct { age int name string }{age: 11, name: &amp;#34;qq&amp;#34;} sn2 := struct { age int name string }{age: 11, name: &amp;#34;qq&amp;#34;} if sn1 == sn2 { fmt.Println(&amp;#34;sn1 ==</description>
+      <description>1.下面这段代码能否通过编译？不能的话，原因是什么？如果通过，输出什么？ 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 func main() { sn1 := struct {</description>
     </item>
     
     <item>
@@ -58,7 +58,7 @@
       <pubDate>Mon, 26 Aug 2019 20:17:59 +0800</pubDate>
       
       <guid>https://seekload.net/2019/08/26/go-interview-4-day.html</guid>
-      <description>1.下面这段代码能否通过编译，不能的话原因是什么；如果通过，输出什么。 func main() { list := new([]int) list = append(list, 1) fmt.Println(list) } 答案：不能通过编译，new([]int) 之后的</description>
+      <description>1.下面这段代码能否通过编译，不能的话原因是什么；如果通过，输出什么。 1 2 3 4 5 func main() { list := new([]int) list = append(list, 1) fmt.Println(list) } 答案：不能通过编译，new([]in</description>
     </item>
     
     <item>
@@ -67,7 +67,7 @@
       <pubDate>Sun, 25 Aug 2019 20:17:59 +0800</pubDate>
       
       <guid>https://seekload.net/2019/08/25/go-interview-3-day.html</guid>
-      <description>1.下面两段代码输出什么。 // 1. func main() { s := make([]int, 5) s = append(s, 1, 2, 3) fmt.Println(s) } // 2. func main() { s := make([]int,0) s = append(s,1,2,3,4) fmt.Println(s) } 2.下面这段代码有什么缺陷 func funcMui(x,y int)(sum int,error){ return x+y,nil } 答案：第二个返</description>
+      <description>1.下面两段代码输出什么。 1 2 3 4 5 6 7 8 9 10 11 12 13 // 1. func main() { s := make([]int, 5) s = append(s, 1, 2, 3) fmt.Println(s) } // 2. func main() { s := make([]int,0) s = append(s,1,2,3,4) fmt.Println(s) } 2.下面这段代码有什么缺陷 1</description>
     </item>
     
     <item>
@@ -76,7 +76,7 @@
       <pubDate>Sat, 24 Aug 2019 20:17:59 +0800</pubDate>
       
       <guid>https://seekload.net/2019/08/24/go-interview-2-day.html</guid>
-      <description>下面这段代码输出什么，说明原因。 func main() { slice := []int{0,1,2,3} m := make(map[int]*int) for key,val := range slice { m[key] = &amp;amp;val } for k,v := range m { fmt.Println(k,&amp;#34;-&amp;gt;&amp;#34;,*v) } } 参考答案： 0 -&amp;gt; 3 1 -&amp;gt; 3 2 -&amp;gt; 3 3 -&amp;gt; 3 解析：这是新手常会</description>
+      <description>下面这段代码输出什么，说明原因。 1 2 3 4 5 6 7 8 9 10 11 12 13 14 func main() { slice := []int{0,1,2,3} m := make(map[int]*int) for key,val := range slice { m[key] = &amp;amp;val } for k,v := range m { fmt.Println(k,&amp;#34;-&amp;gt;&amp;#34;,*v) } } 参考答案： 1 2 3 4 0 -&amp;gt; 3</description>
     </item>
     
     <item>
@@ -85,7 +85,7 @@
       <pubDate>Fri, 23 Aug 2019 20:17:59 +0800</pubDate>
       
       <guid>https://seekload.net/2019/08/23/go-interview-1-day.html</guid>
-      <description>下面这段代码输出的内容 package main import ( &amp;#34;fmt&amp;#34; ) func main() { defer_call() } func defer_call() { defer func() { fmt.Println(&amp;#34;打印前&amp;#34;) }() defer func() { fmt.Println(</description>
+      <description>下面这段代码输出的内容 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 package main import ( &amp;#34;fmt&amp;#34; ) func main() { defer_call() } func defer_call() { defer func() { fmt.Println(&amp;#34;打印前&amp;#34;</description>
     </item>
     
   </channel>

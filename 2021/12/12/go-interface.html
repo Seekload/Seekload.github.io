@@ -1,0 +1,1414 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+
+    <title>通过 dlv 和汇编窥探 interface 底层实现(多图) | Seekload&#39;s Blog</title>
+    <meta property="og:title" content="通过 dlv 和汇编窥探 interface 底层实现(多图) - Seekload&#39;s Blog">
+    <meta property="og:type" content="article">
+        
+    <meta property="article:published_time" content='2021-12-12T10:22:23&#43;08:00'>
+        
+        
+    <meta property="article:modified_time" content='2021-12-12T10:22:23&#43;08:00'>
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="通过 dlv 和汇编窥探 interface 底层实现(多图)">
+        
+    <meta name="author" content="Seekload">
+    <meta property="og:url" content="https://seekload.net/2021/12/12/go-interface.html">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+        <link href="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" rel="stylesheet">
+    
+    
+    
+    
+</head>
+
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="https://seekload.net">
+                        Seekload&#39;s Blog
+                    </a>
+                
+                <p class="description">专注于分享 Go 语言、职场心得和生活感悟</p>
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="current" href="https://seekload.net">首页</a>
+                    
+                    <a  href="https://seekload.net/archives/" title="归档">归档</a>
+                    
+                    <a  href="https://seekload.net/golang100/" title="Go语言知识站">Go语言知识站</a>
+                    
+                    <a  href="https://seekload.net/about/" title="关于">关于</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    <style type="text/css">
+    .post-toc {
+        position: fixed;
+        width: 300px;
+        margin-left: -310px;
+        padding: 5px 10px;
+        font-family: Athelas, STHeiti, Microsoft Yahei, serif;
+        font-size: 12px;
+        border: 1px solid rgba(0, 0, 0, .07);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.98);
+        background-clip: padding-box;
+        -webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .125);
+        word-wrap: break-word;
+        white-space: nowrap;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        z-index: 999;
+        cursor: pointer;
+        max-height: 70%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .post-toc .post-toc-title {
+        width: 100%;
+        margin: 0 auto;
+        font-size: 20px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .post-toc .post-toc-content {
+        font-size: 15px;
+    }
+
+    .post-toc .post-toc-content>nav>ul {
+        margin: 10px 0;
+    }
+
+    .post-toc .post-toc-content ul {
+        padding-left: 20px;
+        list-style: square;
+        margin: 0.5em;
+        line-height: 1.8em;
+    }
+
+    .post-toc .post-toc-content ul ul {
+        padding-left: 15px;
+        display: none;
+    }
+
+    @media print,
+    screen and (max-width:1057px) {
+        .post-toc {
+            display: none;
+        }
+    }
+</style>
+<div class="post-toc" style="position: absolute; top: 188px;">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#底层数据结构">底层数据结构</a>
+      <ul>
+        <li><a href="#_type-结构体">_type 结构体</a></li>
+        <li><a href="#itab-结构体">itab 结构体</a></li>
+      </ul>
+    </li>
+    <li><a href="#通过-dlv-和汇编窥探-interface-的内存布局">通过 dlv 和汇编窥探 interface 的内存布局</a>
+      <ul>
+        <li><a href="#空接口">空接口</a></li>
+        <li><a href="#非空接口">非空接口</a></li>
+      </ul>
+    </li>
+    <li><a href="#nil-与-non-nil">nil 与 non-nil</a></li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#拓展阅读">拓展阅读</a>
+      <ul>
+        <li><a href="#interface-相关">interface 相关</a></li>
+        <li><a href="#汇编相关">汇编相关</a></li>
+        <li><a href="#dlv-相关">dlv 相关</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var postToc = $(".post-toc");
+        if (postToc.length) {
+            var leftPos = $("#main").offset().left;
+            if(leftPos<220){
+                postToc.css({"width":leftPos-10,"margin-left":(0-leftPos)})
+            }
+
+            var t = postToc.offset().top - 20,
+                a = {
+                    start: {
+                        position: "absolute",
+                        top: t
+                    },
+                    process: {
+                        position: "fixed",
+                        top: 20
+                    },
+                };
+            $(window).scroll(function () {
+                var e = $(window).scrollTop();
+                e < t ? postToc.css(a.start) : postToc.css(a.process)
+            })
+        }
+    })
+</script>
+    <article class="post">
+        <header>
+            <h1 class="post-title">通过 dlv 和汇编窥探 interface 底层实现(多图)</h1>
+        </header>
+        <date class="post-meta meta-date">
+            2021年12月12日
+        </date>
+        
+        <div class="post-meta">
+            <span>|</span>
+            
+            <span class="meta-category"><a href='/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80'>就要学习 Go 语言</a></span>
+            
+            <span class="meta-category"><a href='/categories/golang'>Golang</a></span>
+            
+        </div>
+        
+        
+        <div class="post-meta">
+            <span id="busuanzi_container_page_pv">|<span id="busuanzi_value_page_pv"></span><span>
+                    阅读</span></span>
+        </div>
+        
+        
+        <div class="clear" style="display: none">
+            <div class="toc-article">
+                <div class="toc-title">文章目录</div>
+            </div>
+        </div>
+        
+        <div class="post-content">
+            <p>之前写过一些关于接口的文章，但都只是介绍了一些概念和基本的用法，没有做深入的了解。比如接口底层数据结构是怎样的？空接口与非空接口，底层数据结构有什么区别？还有容易掉坑的 nil 与 non-nil 是怎么回事？</p>
+<p>这篇文章跟大家分享下关于接口的一些更底层的东西，包括以下知识点：</p>
+<ol>
+<li>interface 的底层数据结构；</li>
+<li>非空接口与空接口的区别；</li>
+<li>如何使用 dlv 查看 interface 的内存布局；</li>
+<li>interface 内存布局的可视化；</li>
+<li>通过汇编窥探类型转换过程；</li>
+</ol>
+<p>先给大家来一个就连 5 年 goper 老司机一不小心就会掉进去的坑：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">InterfaceIsNil</span>(i <span style="font-weight:bold">interface</span>{}) {
+	<span style="font-weight:bold">if</span> i <span style="font-weight:bold">==</span> <span style="font-weight:bold">nil</span> {
+		fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;nil interface&#34;</span>)
+		<span style="font-weight:bold">return</span>
+	}
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;non-nil interface&#34;</span>)
+}
+
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	<span style="font-weight:bold">var</span> v <span style="font-weight:bold">interface</span>{} = <span style="font-weight:bold">nil</span>
+	<span style="font-weight:bold">var</span> i <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span> = <span style="font-weight:bold">nil</span>
+
+	<span style="color:#900;font-weight:bold">InterfaceIsNil</span>(v)
+	<span style="color:#900;font-weight:bold">InterfaceIsNil</span>(i)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>其实这点在之前的文章中有过介绍：</p>
+<blockquote>
+<p>接口类型变量在什么情况下才等于 nil ？当且仅当接口的动态类型和动态值都为 nil 时，变量才等于 nil。</p>
+</blockquote>
+<p>你是不是也很好奇，变量 i 明明是 nil，为什么经过 InterfaceIsNil() 会输出 <code>non-nil interface</code> 呢？</p>
+<p>我们先学习今天的知识，再来看看为什么？</p>
+<h2 id="底层数据结构">底层数据结构</h2>
+<p>Go 语言使用 eface 和 iface 分别描述空接口和非空接口，eface 代码如下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">type</span> eface <span style="font-weight:bold">struct</span> {    <span style="color:#998;font-style:italic">//16字节
+</span><span style="color:#998;font-style:italic"></span>	_type <span style="font-weight:bold">*</span>_type
+	data  unsafe.Pointer
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>由于空接口类型不包含任何方法，所以 eface 的结构比较简单，_type 指向底层数据类型，data 是指向原始数据的指针。</p>
+<p>iface 代码如下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">type</span> iface <span style="font-weight:bold">struct</span> {    <span style="color:#998;font-style:italic">// 16个字节
+</span><span style="color:#998;font-style:italic"></span>	tab  <span style="font-weight:bold">*</span>itab
+	data unsafe.Pointer
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>iface 结构体包含两个成员，tab 指向 *itab 实体，data 是指向原始数据的指针。下面我们来详细介绍下 _type 和 itab。</p>
+<h3 id="_type-结构体">_type 结构体</h3>
+<p>_type 是类型的运行时表示，包含了所有类型的元信息，比例：类型的大小、种类等。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">type</span> _type <span style="font-weight:bold">struct</span> {
+	size       <span style="color:#458;font-weight:bold">uintptr</span> <span style="color:#998;font-style:italic">// 类型占用内存大小
+</span><span style="color:#998;font-style:italic"></span>	ptrdata    <span style="color:#458;font-weight:bold">uintptr</span>
+	hash       <span style="color:#458;font-weight:bold">uint32</span>  <span style="color:#998;font-style:italic">// 类型 hash
+</span><span style="color:#998;font-style:italic"></span>	tflag      tflag   
+	align      <span style="color:#458;font-weight:bold">uint8</span>   <span style="color:#998;font-style:italic">// 对齐字节信息
+</span><span style="color:#998;font-style:italic"></span>	fieldalign <span style="color:#458;font-weight:bold">uint8</span>
+	kind       <span style="color:#458;font-weight:bold">uint8</span>
+	alg        <span style="font-weight:bold">*</span>typeAlg
+	gcdata    <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">byte</span>
+	str       nameOff
+	ptrToThis typeOff
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>size 表示类型占用内存大小，单位是字节；kind 表示基础类型枚举值。其他字段的作用和含义大家可以自行了解。</p>
+<p>kind 在 src/runtime/typekind.go 里面定义了基础类型的常量，比如下面这些，没有全部列出，大家可以找到对应的源码文件自行查看。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">const</span> (
+	kindBool = <span style="color:#099">1</span> <span style="font-weight:bold">+</span> <span style="font-weight:bold">iota</span>
+	kindInt
+	kindInt8
+	kindFloat32
+	kindArray
+	kindChan
+	kindSlice
+	kindStruct
+	<span style="font-weight:bold">...</span> 
+)
+</code></pre></td></tr></table>
+</div>
+</div><p>上面说 _type 是所有类型的元信息，比如：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">type</span> structtype <span style="font-weight:bold">struct</span> {     <span style="color:#998;font-style:italic">// 结构体类型
+</span><span style="color:#998;font-style:italic"></span>	typ     _type
+	pkgPath name
+	fields  []structfield
+}
+
+<span style="font-weight:bold">type</span> chantype <span style="font-weight:bold">struct</span> {   <span style="color:#998;font-style:italic">// channel 类型
+</span><span style="color:#998;font-style:italic"></span>	typ  _type
+	elem <span style="font-weight:bold">*</span>_type
+	dir  <span style="color:#458;font-weight:bold">uintptr</span>
+}
+
+<span style="font-weight:bold">type</span> slicetype <span style="font-weight:bold">struct</span> {  <span style="color:#998;font-style:italic">// slice 类型
+</span><span style="color:#998;font-style:italic"></span>	typ  _type
+	elem <span style="font-weight:bold">*</span>_type
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>structtype、chantype、slicetype 等保存类型的元信息就依赖 _type。同样的接口类型也有类似的定义：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">type</span> interfacetype <span style="font-weight:bold">struct</span> {
+	typ     _type
+	pkgpath name       <span style="color:#998;font-style:italic">// 接口所在包的路径等
+</span><span style="color:#998;font-style:italic"></span>	mhdr    []imethod  <span style="color:#998;font-style:italic">// 方法
+</span><span style="color:#998;font-style:italic"></span>}
+</code></pre></td></tr></table>
+</div>
+</div><p>接下来要说的 itab 结构体就包括一个 *interfacetype 成员。</p>
+<h3 id="itab-结构体">itab 结构体</h3>
+<p>itab 结构体可以说是接口类型最为核心的部分，如下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">type</span> itab <span style="font-weight:bold">struct</span> {      <span style="color:#998;font-style:italic">// 32个字节
+</span><span style="color:#998;font-style:italic"></span>	inter <span style="font-weight:bold">*</span>interfacetype
+	_type <span style="font-weight:bold">*</span>_type
+	hash  <span style="color:#458;font-weight:bold">uint32</span>   <span style="color:#998;font-style:italic">// copy of _type.hash. Used for type switches.
+</span><span style="color:#998;font-style:italic"></span>	_     [<span style="color:#099">4</span>]<span style="color:#458;font-weight:bold">byte</span>
+	fun   [<span style="color:#099">1</span>]<span style="color:#458;font-weight:bold">uintptr</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>从上面的代码可以看出，itab 是接口静态类型与动态类型的组合，inter 表示接口的静态类型，_type 表示动态类型。itab.hash 与 _type.hash 是完全一致的，这个值在类型查询的时候会用到，后面我们再写文章分析。fun 字段是一个函数指针，指向动态类型的函数方法，实现接口调用方法的动态派发。是不是你也很好奇，为什么它的大小只有 1？如果我的动态类型定义了很多个方法怎么办？没关系，因为函数指针在内存中都是连续存放的，后面通过汇编我们可以看到，如果想要调用别的方法，通过移动地址就可以获取其他函数指针。</p>
+<p>
+        <a data-fancybox="gallery" href="/img/iface%e5%92%8ceface%e7%9a%84%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83.png">
+            <img class="mx-auto" alt="iface和eface的内存分布" src="/img/iface%e5%92%8ceface%e7%9a%84%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83.png" />
+        </a>
+    </p>
+<h2 id="通过-dlv-和汇编窥探-interface-的内存布局">通过 dlv 和汇编窥探 interface 的内存布局</h2>
+<p>上面说了这么多还是有点雾里看花的感觉，有没有实际操作方法触探到实际数据结构呢？</p>
+<p>有的！这里给大家介绍两种方法，第一种是在外部“构造” iface 和 eface 结构，这里给大家推荐两篇文章，蛮详细的。</p>
+<p><a href="https://two.github.io/2019/09/02/go-interface-implement/">Go Interface 源码解析</a></p>
+<p><a href="https://segmentfault.com/a/1190000040493540">不懂汇编，也能看懂的 Go interface 原理</a></p>
+<p>第二种方法是使用调试工具 dlv 并结合汇编，个人感觉这种方式更 cool。看到过好多篇文章提到 dlv 不能调试 interface 接口，其实是可以的，可能是姿势不对，我们一起来实操下。</p>
+<h3 id="空接口">空接口</h3>
+<p>我们先从最简单的空接口开始，由浅入深。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">package</span> main
+
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	num <span style="font-weight:bold">:=</span> <span style="color:#099">8</span>
+	<span style="font-weight:bold">var</span> i <span style="font-weight:bold">interface</span>{} = num
+	_ = i
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的代码，将整型 num 赋值给了空接口类型变量 i，使用下面的命令生成汇编代码，代码后面我加了注释。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">go</span> tool compile <span style="font-weight:bold">-</span>N <span style="font-weight:bold">-</span>S <span style="font-weight:bold">-</span>l main.<span style="font-weight:bold">go</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>生成的汇编代码比较多，下面摘取了主要部分说明下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">0x000e</span> <span style="color:#099">00014</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">4</span>)	MOVQ	<span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#099">8</span>, <span style="color:#b84">&#34;&#34;</span>.<span style="color:#900;font-weight:bold">num</span>(SP)             ;将 <span style="color:#099">8</span> 放到 (SP) 上<span style="color:#a61717;background-color:#e3d2d2">，</span>变量 num 存储的值
+<span style="color:#099">0x0016</span> <span style="color:#099">00022</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">5</span>)	MOVQ	<span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#099">8</span>, <span style="color:#b84">&#34;&#34;</span>..autotmp_2<span style="font-weight:bold">+</span><span style="color:#099">8</span>(SP)    ;将 <span style="color:#099">8</span> 放到 <span style="color:#099">8</span>(SP) 上<span style="color:#a61717;background-color:#e3d2d2">，</span>这一步其实是复制变量 num 的值
+<span style="color:#099">0x001f</span> <span style="color:#099">00031</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">5</span>)	LEAQ	<span style="font-weight:bold">type</span>.<span style="color:#999">int</span>(SB), AX           ;将 <span style="font-weight:bold">*</span><span style="color:#900;font-weight:bold">_type</span>(<span style="color:#458;font-weight:bold">int</span>) 放到 AX 寄存器上
+<span style="color:#099">0x0026</span> <span style="color:#099">0003</span><span style="color:#099">8</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">5</span>)	MOVQ	AX, <span style="color:#b84">&#34;&#34;</span>.i<span style="font-weight:bold">+</span><span style="color:#099">16</span>(SP)            ;将 AX 寄存器的值<span style="color:#a61717;background-color:#e3d2d2">，</span>即 <span style="font-weight:bold">*</span><span style="color:#900;font-weight:bold">_type</span>(<span style="color:#458;font-weight:bold">int</span>)<span style="color:#a61717;background-color:#e3d2d2">，</span>放到 <span style="color:#099">16</span>(SP) 上<span style="color:#a61717;background-color:#e3d2d2">，</span>
+<span style="color:#099">0x002b</span> <span style="color:#099">00043</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">5</span>)	LEAQ	<span style="color:#b84">&#34;&#34;</span>..autotmp_2<span style="font-weight:bold">+</span><span style="color:#099">8</span>(SP), AX    ;将 <span style="color:#099">8</span>(SP) 地址放到 AX 寄存器
+<span style="color:#099">0x0030</span> <span style="color:#099">0004</span><span style="color:#099">8</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">5</span>)	MOVQ	AX, <span style="color:#b84">&#34;&#34;</span>.i<span style="font-weight:bold">+</span><span style="color:#099">24</span>(SP)            ;将 AX 寄存器的值<span style="color:#a61717;background-color:#e3d2d2">，</span>即 <span style="color:#099">8</span>(SP) 地址<span style="color:#a61717;background-color:#e3d2d2">，</span>放到 <span style="color:#099">24</span>(SP) 上
+</code></pre></td></tr></table>
+</div>
+</div><p>main 方法里面主要就是两个步骤：</p>
+<ol>
+<li>初始化变量 num；</li>
+<li>将整型对象转换成 interface；</li>
+</ol>
+<p>初始化 num 的汇编代码非常简单：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">MOVQ	<span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#099">8</span>, <span style="color:#b84">&#34;&#34;</span>.<span style="color:#900;font-weight:bold">num</span>(SP)             ;将 <span style="color:#099">8</span> 放到 (SP) 上
+</code></pre></td></tr></table>
+</div>
+</div><p>接下去的代码就是将整型对象转换成 interface。</p>
+<p>注意这条汇编指令：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">LEAQ	<span style="font-weight:bold">type</span>.<span style="color:#999">int</span>(SB), AX
+</code></pre></td></tr></table>
+</div>
+</div><p>这条指令的作用是将数据类型 int 对应的 _type 结构体指针放到 AX 寄存器上，这个 _type 结构体我们在上一节提到过。</p>
+<p>从汇编代码可以看出，16(SP) 上的 *_type(int) 和 24(SP) 存放的数据指针共同组成了 eface 结构体。下面是执行完这两个步骤之后的内存分布：</p>
+<p>
+        <a data-fancybox="gallery" href="/img/%e7%a9%ba%e6%8e%a5%e5%8f%a3eface%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83%28%e6%97%a0%e5%ae%9e%e9%99%85%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%29.png">
+            <img class="mx-auto" alt="空接口eface内存分布(无实际内存地址)" src="/img/%e7%a9%ba%e6%8e%a5%e5%8f%a3eface%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83%28%e6%97%a0%e5%ae%9e%e9%99%85%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%29.png" />
+        </a>
+    </p>
+<p>哈哈，上面说的这些可能都不是真的，那我们通过 dlv 工具调试验证。关于 dlv  工具的使用，文末有推荐文章，大家可以看下。</p>
+<p>我们使用 dlv 开始调试：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> c
+&gt; main.main<span style="font-weight:bold">()</span> ./main.go:7 <span style="font-weight:bold">(</span>hits goroutine<span style="font-weight:bold">(</span>1<span style="font-weight:bold">)</span>:1 total:1<span style="font-weight:bold">)</span> <span style="font-weight:bold">(</span>PC: 0x4678f5<span style="font-weight:bold">)</span>
+     2:
+     3:	func main<span style="font-weight:bold">()</span> <span style="font-weight:bold">{</span>
+     4:		num :<span style="font-weight:bold">=</span> <span style="color:#099">8</span>
+     5:		var i interface<span style="font-weight:bold">{}</span> <span style="font-weight:bold">=</span> num
+     6:		<span style="color:#008080">_</span> <span style="font-weight:bold">=</span> <span style="color:#008080">i</span>
+<span style="font-weight:bold">=</span>&gt;   7:	<span style="font-weight:bold">}</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> locals
+<span style="color:#008080">num</span> <span style="font-weight:bold">=</span> <span style="color:#099">8</span>
+<span style="color:#008080">i</span> <span style="font-weight:bold">=</span> interface <span style="font-weight:bold">{}(</span>int<span style="font-weight:bold">)</span> <span style="color:#099">8</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*runtime.eface<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>&amp;i<span style="font-weight:bold">))</span>
+runtime.eface <span style="font-weight:bold">{</span>
+	_type: *runtime._type <span style="font-weight:bold">{</span>size: 8, ptrdata: 0, hash: 4149441018, tflag: tflagUncommon|tflagExtraStar|tflagNamed|tflagRegularMemory <span style="font-weight:bold">(</span>15<span style="font-weight:bold">)</span>, align: 8, fieldAlign: 8, kind: 2, equal: runtime.memequal64, gcdata: *1, str: 640, ptrToThis: 17792<span style="font-weight:bold">}</span>,
+	data: unsafe.Pointer<span style="font-weight:bold">(</span>0xc00002e760<span style="font-weight:bold">)</span>,<span style="font-weight:bold">}</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*int<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>0xc00002e760<span style="font-weight:bold">))</span>
+<span style="color:#099">8</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> regs
+    <span style="color:#008080">Rsp</span> <span style="font-weight:bold">=</span> 0x000000c00002e758
+    ...
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span>	
+</code></pre></td></tr></table>
+</div>
+</div><p>我在第 7 行代码处打了一个断点，使用 locals 命令输出此时的局部变量，可以看到有 num 和 i。其中 i 是接口，那我们怎么打印接口的内部结构呢？上面已经展示出来了，使用 p 命令，p 是 print 的简写，意思时按表达式打印。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">p *<span style="font-weight:bold">(</span>*runtime.eface<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>&amp;i<span style="font-weight:bold">))</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>使用上面的就可以打印接口的内部结构。从打印的信息可以看出 eface 有两个成员：_type 和 data。其中 _type.kind 的值是 2，表示存储的动态类型是整型，对应变量 num 类型。另外可以看到数据指针是 0xc00002e760，使用命令 <code>p *(*int)(uintptr(0xc00002e760))</code> 打印出指针指向的实际值，是 8，这个 8 其实是变量 num 的副本，在汇编代码注释处有说明。</p>
+<p>使用 regs 命令打印此时各个寄存器的值，我们只需要关心 Rsp 寄存器就可以，该寄存器保存的值指向栈顶，此时：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#008080">Rsp</span> <span style="font-weight:bold">=</span> 0x000000c00002e758
+</code></pre></td></tr></table>
+</div>
+</div><p>此时内存分布与实际地址如下图表示：</p>
+<p>
+        <a data-fancybox="gallery" href="/img/%e7%a9%ba%e6%8e%a5%e5%8f%a3eface%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83%28%e6%9c%89%e5%ae%9e%e9%99%85%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%29.png">
+            <img class="mx-auto" alt="空接口eface内存分布(有实际内存地址)" src="/img/%e7%a9%ba%e6%8e%a5%e5%8f%a3eface%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83%28%e6%9c%89%e5%ae%9e%e9%99%85%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%29.png" />
+        </a>
+    </p>
+<p>有了实际内存地址就好办了，我们可以使用 dlv 工具打印内存地址存储的值。比如我想获取 *_type(int) 指针，这个指针存放在 0xc00002e768 内存地址上，通过这个指针就可以获取 _type(int) 结构体了：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*unsafe.Pointer<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>0xc00002e768<span style="font-weight:bold">))</span>
+unsafe.Pointer<span style="font-weight:bold">(</span>0x46f120<span style="font-weight:bold">)</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*runtime._type<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>0x46f120<span style="font-weight:bold">))</span>
+runtime._type <span style="font-weight:bold">{</span>size: 8, ptrdata: 0, hash: 4149441018, tflag: tflagUncommon|tflagExtraStar|tflagNamed|tflagRegularMemory <span style="font-weight:bold">(</span>15<span style="font-weight:bold">)</span>, align: 8, fieldAlign: 8, kind: 2, equal: runtime.memequal64, gcdata: *1, str: 640, ptrToThis: 17792<span style="font-weight:bold">}</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>从打印信息看出，内存地址 0x46f120 存放的就是 _type(int) 结构体。这个结构体与上面通过命令 <code>p *(*runtime.eface)(uintptr(&amp;i))</code> 打印出的 _type 是一致的。</p>
+<h3 id="非空接口">非空接口</h3>
+<p>上一节通过汇编和 dlv 工具窥探了空接口赋值时的类型转换过程，并且将 eface 结构体可视化，感觉能拿捏底层数据结构确实很爽对不对！</p>
+<p>我们继续分析下非空接口：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">package</span> main
+
+<span style="font-weight:bold">import</span> <span style="color:#b84">&#34;fmt&#34;</span>
+
+<span style="font-weight:bold">type</span> Person <span style="font-weight:bold">interface</span> {
+	<span style="color:#900;font-weight:bold">Speak</span>()
+	<span style="color:#900;font-weight:bold">Play</span>()
+}
+
+<span style="font-weight:bold">type</span> Student <span style="font-weight:bold">struct</span> {
+	Name <span style="color:#458;font-weight:bold">string</span>
+}
+
+<span style="font-weight:bold">func</span> (s Student) <span style="color:#900;font-weight:bold">Speak</span>() {
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(s.Name)
+}
+
+<span style="font-weight:bold">func</span> (s Student) <span style="color:#900;font-weight:bold">Play</span>() {
+	str <span style="font-weight:bold">:=</span> s.Name <span style="font-weight:bold">+</span> <span style="color:#b84">&#34; play.&#34;</span>
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(str)
+}
+
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	s <span style="font-weight:bold">:=</span> Student{Name: <span style="color:#b84">&#34;seekload&#34;</span>}
+	<span style="font-weight:bold">var</span> p Person = s
+	p.<span style="color:#900;font-weight:bold">Speak</span>()
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的代码非常简单，自定义的结构体 Student 实现了 Person 接口。在主函数里面初始化结构体变量 s，并将 s 赋值给了接口变量 p，这个过程会发生类型转换，最后调用了 Spesk() 方法。</p>
+<p>使用下面的命令生成相应的汇编代码：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">go</span> tool compile <span style="font-weight:bold">-</span>N <span style="font-weight:bold">-</span>S <span style="font-weight:bold">-</span>l main.<span style="font-weight:bold">go</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>截取了主要部分的代码，包括三个步骤：</p>
+<ol>
+<li>结构体初始化；</li>
+<li>将 Student 对象转换成 interface；</li>
+<li>调用 Speak() 方法；</li>
+</ol>
+<p>主要汇编如下：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">0x001d <span style="color:#099">00029</span> <span style="font-weight:bold">(</span>main.go:24<span style="font-weight:bold">)</span>	XORPS	X0, X0            						; 清空 X0 寄存器
+0x0020 <span style="color:#099">00032</span> <span style="font-weight:bold">(</span>main.go:24<span style="font-weight:bold">)</span>	MOVUPS	X0, <span style="color:#b84">&#34;&#34;</span>.s+32<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>   						; 32<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span> 置空
+0x0025 <span style="color:#099">00037</span> <span style="font-weight:bold">(</span>main.go:24<span style="font-weight:bold">)</span>	LEAQ	go.string.<span style="color:#b84">&#34;seekload&#34;</span><span style="font-weight:bold">(</span>SB<span style="font-weight:bold">)</span>, AX  			; 将 <span style="color:#b84">&#34;seekload&#34;</span> 字符串的地址放入 AX 中
+0x002c <span style="color:#099">00044</span> <span style="font-weight:bold">(</span>main.go:24<span style="font-weight:bold">)</span>	MOVQ	AX, <span style="color:#b84">&#34;&#34;</span>.s+32<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>   						; 将 AX 的值，即 <span style="color:#b84">&#34;seekload&#34;</span> 字符串的地址，放入 32<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>
+0x0031 <span style="color:#099">00049</span> <span style="font-weight:bold">(</span>main.go:24<span style="font-weight:bold">)</span>	MOVQ	<span style="color:#008080">$8</span>, <span style="color:#b84">&#34;&#34;</span>.s+40<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>  						; 将字符串长度 <span style="color:#099">8</span> 放入 40<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>
+0x003a <span style="color:#099">00058</span> <span style="font-weight:bold">(</span>main.go:25<span style="font-weight:bold">)</span>	MOVQ	AX, <span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>   								; 将 AX 的值，即 <span style="color:#b84">&#34;seekload&#34;</span> 字符串的地址，放入 <span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>
+0x003e <span style="color:#099">00062</span> <span style="font-weight:bold">(</span>main.go:25<span style="font-weight:bold">)</span>	MOVQ	<span style="color:#008080">$8</span>, 8<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>  								; 将字符串长度 <span style="color:#099">8</span> 放入 <span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>
+0x0047 <span style="color:#099">00071</span> <span style="font-weight:bold">(</span>main.go:25<span style="font-weight:bold">)</span>	PCDATA	<span style="color:#008080">$1</span>, <span style="color:#008080">$0</span>
+0x0047 <span style="color:#099">00071</span> <span style="font-weight:bold">(</span>main.go:25<span style="font-weight:bold">)</span>	CALL	runtime.convTstring<span style="font-weight:bold">(</span>SB<span style="font-weight:bold">)</span>  				; 调用 convTstring<span style="font-weight:bold">()</span> 函数，在栈上开辟一块新的内存存储传入的值，并将返回的内存地址存放在 16<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>
+0x004c <span style="color:#099">00076</span> <span style="font-weight:bold">(</span>main.go:25<span style="font-weight:bold">)</span>	MOVQ	16<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>, AX  							; 将函数返回的内存地址放在 AX 寄存器
+0x0051 <span style="color:#099">00081</span> <span style="font-weight:bold">(</span>main.go:25<span style="font-weight:bold">)</span>	MOVQ	AX, <span style="color:#b84">&#34;&#34;</span>..autotmp_2+24<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>  				; 将 AX 寄存器的值放在 24<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>
+0x0056 <span style="color:#099">00086</span> <span style="font-weight:bold">(</span>main.go:25<span style="font-weight:bold">)</span>	LEAQ	go.itab.<span style="color:#b84">&#34;&#34;</span>.Student,<span style="color:#b84">&#34;&#34;</span>.Person<span style="font-weight:bold">(</span>SB<span style="font-weight:bold">)</span>, CX  	; 将 *itab 指针存放在 CX
+0x005d <span style="color:#099">00093</span> <span style="font-weight:bold">(</span>main.go:25<span style="font-weight:bold">)</span>	MOVQ	CX, <span style="color:#b84">&#34;&#34;</span>.p+48<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>  						; 将 *itab 指针放在 48<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>
+0x0062 <span style="color:#099">00098</span> <span style="font-weight:bold">(</span>main.go:25<span style="font-weight:bold">)</span>	MOVQ	AX, <span style="color:#b84">&#34;&#34;</span>.p+56<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>  						; 将 AX 寄存器的值放在 56<span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>
+0x0067 <span style="color:#099">00103</span> <span style="font-weight:bold">(</span>main.go:26<span style="font-weight:bold">)</span>	TESTB	AL, <span style="font-weight:bold">(</span>CX<span style="font-weight:bold">)</span>
+0x0069 <span style="color:#099">00105</span> <span style="font-weight:bold">(</span>main.go:26<span style="font-weight:bold">)</span>	MOVQ	go.itab.<span style="color:#b84">&#34;&#34;</span>.Student,<span style="color:#b84">&#34;&#34;</span>.Person+32<span style="font-weight:bold">(</span>SB<span style="font-weight:bold">)</span>, CX ; 将 Student 结构体的 Speak<span style="font-weight:bold">()</span> 方法地址放入 CX 寄存器
+0x0070 <span style="color:#099">00112</span> <span style="font-weight:bold">(</span>main.go:26<span style="font-weight:bold">)</span>	MOVQ	AX, <span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>  								; 将 AX 寄存器的值放在 <span style="font-weight:bold">(</span>SP<span style="font-weight:bold">)</span>
+0x0074 <span style="color:#099">00116</span> <span style="font-weight:bold">(</span>main.go:26<span style="font-weight:bold">)</span>	CALL	CX  									; 调用 Speak<span style="font-weight:bold">()</span> 方法
+</code></pre></td></tr></table>
+</div>
+</div><p>上面的汇编代码我加了注释，便于大家理解，这里分成三个步骤分析：</p>
+<p><strong>第一步</strong>就是变量 s 初始化：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">0x001d</span> <span style="color:#099">0002</span><span style="color:#099">9</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">24</span>)	XORPS	X0, X0            						; 清空 X0 寄存器
+<span style="color:#099">0x0020</span> <span style="color:#099">00032</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">24</span>)	MOVUPS	X0, <span style="color:#b84">&#34;&#34;</span>.s<span style="font-weight:bold">+</span><span style="color:#099">32</span>(SP)   						; <span style="color:#099">32</span>(SP) 置空
+<span style="color:#099">0x0025</span> <span style="color:#099">00037</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">24</span>)	LEAQ	<span style="font-weight:bold">go</span>.<span style="color:#458;font-weight:bold">string</span>.<span style="color:#b84">&#34;seekload&#34;</span>(SB), AX  			; 将 <span style="color:#b84">&#34;seekload&#34;</span> 字符串的地址放入 AX 中
+<span style="color:#099">0x002c</span> <span style="color:#099">00044</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">24</span>)	MOVQ	AX, <span style="color:#b84">&#34;&#34;</span>.s<span style="font-weight:bold">+</span><span style="color:#099">32</span>(SP)   						; 将 AX 的值<span style="color:#a61717;background-color:#e3d2d2">，</span>即 <span style="color:#b84">&#34;seekload&#34;</span> 字符串的地址<span style="color:#a61717;background-color:#e3d2d2">，</span>放入 <span style="color:#099">32</span>(SP)
+<span style="color:#099">0x0031</span> <span style="color:#099">0004</span><span style="color:#099">9</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">24</span>)	MOVQ	<span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#099">8</span>, <span style="color:#b84">&#34;&#34;</span>.s<span style="font-weight:bold">+</span><span style="color:#099">40</span>(SP)
+</code></pre></td></tr></table>
+</div>
+</div><p>上面 1-2 行代码是清空 32(SP)，3-4 行代码是将 “seekload” 字符串的地址放在 32(SP) 上，最后一行是将字符串的长度 8 放在 40(SP) 上。3-5 行代码实现的是初始化 Student 结构体变量 s。</p>
+<p><strong>第二步</strong>就是将 Student 对象转换成 interface，涉及到类型转换：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">0x003a</span> <span style="color:#099">0005</span><span style="color:#099">8</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">25</span>)	MOVQ	AX, (SP)   								; 将 AX 的值<span style="color:#a61717;background-color:#e3d2d2">，</span>即 <span style="color:#b84">&#34;seekload&#34;</span> 字符串的地址<span style="color:#a61717;background-color:#e3d2d2">，</span>放入 (SP)
+<span style="color:#099">0x003e</span> <span style="color:#099">00062</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">25</span>)	MOVQ	<span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#099">8</span>, <span style="color:#099">8</span>(SP)  								; 将字符串长度 <span style="color:#099">8</span> 放入 (SP)
+<span style="color:#099">0x0047</span> <span style="color:#099">00071</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">25</span>)	PCDATA	<span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#099">1</span>, <span style="color:#a61717;background-color:#e3d2d2">$</span><span style="color:#099">0</span>
+<span style="color:#099">0x0047</span> <span style="color:#099">00071</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">25</span>)	CALL	runtime.<span style="color:#900;font-weight:bold">convTstring</span>(SB)  				; 调用 <span style="color:#900;font-weight:bold">convTstring</span>() 函数<span style="color:#a61717;background-color:#e3d2d2">，</span>在栈上开辟一块新的内存存储传入的值<span style="color:#a61717;background-color:#e3d2d2">，</span>并将返回的内存地址存放在 <span style="color:#099">16</span>(SP)
+<span style="color:#099">0x004c</span> <span style="color:#099">00076</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">25</span>)	MOVQ	<span style="color:#099">16</span>(SP), AX  							; 将函数返回的内存地址放在 AX 寄存器
+<span style="color:#099">0x0051</span> <span style="color:#099">000</span><span style="color:#099">81</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">25</span>)	MOVQ	AX, <span style="color:#b84">&#34;&#34;</span>..autotmp_2<span style="font-weight:bold">+</span><span style="color:#099">24</span>(SP)  				; 将 AX 寄存器的值放在 <span style="color:#099">24</span>(SP)
+<span style="color:#099">0x0056</span> <span style="color:#099">000</span><span style="color:#099">86</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">25</span>)	LEAQ	<span style="font-weight:bold">go</span>.itab.<span style="color:#b84">&#34;&#34;</span>.Student,<span style="color:#b84">&#34;&#34;</span>.<span style="color:#900;font-weight:bold">Person</span>(SB), CX  	; 将 <span style="font-weight:bold">*</span>itab 指针存放在 CX
+<span style="color:#099">0x005d</span> <span style="color:#099">000</span><span style="color:#099">93</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">25</span>)	MOVQ	CX, <span style="color:#b84">&#34;&#34;</span>.p<span style="font-weight:bold">+</span><span style="color:#099">48</span>(SP)  						; 将 <span style="font-weight:bold">*</span>itab 指针放在 <span style="color:#099">48</span>(SP)
+<span style="color:#099">0x0062</span> <span style="color:#099">000</span><span style="color:#099">98</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">25</span>)	MOVQ	AX, <span style="color:#b84">&#34;&#34;</span>.p<span style="font-weight:bold">+</span><span style="color:#099">56</span>(SP)  						; 将 AX 寄存器的值放在 <span style="color:#099">56</span>(SP)
+</code></pre></td></tr></table>
+</div>
+</div><p>上面 1-2 行代码是将 “seekload” 字符串地址和长度分别放在 (SP) 和 8(SP) 上，其实这一步是为下面调用 convTstring() 函数做准备的。接着第 4 行代码调用了该函数：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">convTstring</span>(val <span style="color:#458;font-weight:bold">string</span>) (x unsafe.Pointer) {
+	<span style="font-weight:bold">if</span> val <span style="font-weight:bold">==</span> <span style="color:#b84">&#34;&#34;</span> {
+		x = unsafe.<span style="color:#900;font-weight:bold">Pointer</span>(<span style="font-weight:bold">&amp;</span>zeroVal[<span style="color:#099">0</span>])
+	} <span style="font-weight:bold">else</span> {
+		x = <span style="color:#900;font-weight:bold">mallocgc</span>(unsafe.<span style="color:#900;font-weight:bold">Sizeof</span>(val), stringType, <span style="font-weight:bold">true</span>)
+		<span style="font-weight:bold">*</span>(<span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">string</span>)(x) = val
+	}
+	<span style="font-weight:bold">return</span>
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>runtime.convTstring() 函数会从栈顶 (SP) 取出入参“seekload”和 8，在栈上生成字符串变量，返回内存地址并放在 16(SP) 上。5-6 行代码就将该地址放在 24(SP) 。第 7 行代码生成 itab 指针，8-9 行代码是构造 iface，*itab 和数据指针 unsafe.Pointer 分别放在 48(SP)、56(SP)。此时内存布局是这样的：</p>
+<p>
+        <a data-fancybox="gallery" href="/img/%e9%9d%9e%e7%a9%ba%e6%8e%a5%e5%8f%a3iface%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83%28%e6%97%a0%e5%ae%9e%e9%99%85%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%29.png">
+            <img class="mx-auto" alt="非空接口iface内存分布(无实际内存地址)" src="/img/%e9%9d%9e%e7%a9%ba%e6%8e%a5%e5%8f%a3iface%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83%28%e6%97%a0%e5%ae%9e%e9%99%85%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%29.png" />
+        </a>
+    </p>
+<p><strong>第三步</strong>是调用 Spesk() 方法：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#099">0x0069</span> <span style="color:#099">00105</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">26</span>)	MOVQ	<span style="font-weight:bold">go</span>.itab.<span style="color:#b84">&#34;&#34;</span>.Student,<span style="color:#b84">&#34;&#34;</span>.Person<span style="font-weight:bold">+</span><span style="color:#099">32</span>(SB), CX ; 将 Student 结构体的 <span style="color:#900;font-weight:bold">Speak</span>() 方法地址放入 CX 寄存器
+<span style="color:#099">0x0070</span> <span style="color:#099">00112</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">26</span>)	MOVQ	AX, (SP)  								; 将 AX 寄存器的值放在 (SP)
+<span style="color:#099">0x0074</span> <span style="color:#099">00116</span> (main.<span style="font-weight:bold">go</span>:<span style="color:#099">26</span>)	CALL	CX  									; 调用 <span style="color:#900;font-weight:bold">Speak</span>() 方法
+</code></pre></td></tr></table>
+</div>
+</div><p>第 1 行代码通过 itab 找到函数指针并放在 CX 寄存器，第 2 行代码是将调用方法的入参放在栈顶，第 3 行调用 Speak()。此时内存布局如下图：</p>
+<p>
+        <a data-fancybox="gallery" href="/img/%e9%9d%9e%e7%a9%ba%e6%8e%a5%e5%8f%a3iface%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83%28%e6%97%a0%e5%ae%9e%e9%99%85%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%29-CX%e5%af%84%e5%ad%98%e5%99%a8.png">
+            <img class="mx-auto" alt="非空接口iface内存分布(无实际内存地址)-CX寄存器" src="/img/%e9%9d%9e%e7%a9%ba%e6%8e%a5%e5%8f%a3iface%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83%28%e6%97%a0%e5%ae%9e%e9%99%85%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%29-CX%e5%af%84%e5%ad%98%e5%99%a8.png" />
+        </a>
+    </p>
+<p>上面已经从汇编层面将三个步骤分析完了，接下来使用 dlv 工具触探下底层数据结构。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> c
+&gt; main.main<span style="font-weight:bold">()</span> ./main.go:26 <span style="font-weight:bold">(</span>hits goroutine<span style="font-weight:bold">(</span>1<span style="font-weight:bold">)</span>:1 total:1<span style="font-weight:bold">)</span> <span style="font-weight:bold">(</span>PC: 0x4b89e7<span style="font-weight:bold">)</span>
+    21:	<span style="font-weight:bold">}</span>
+    22:
+    23:	func main<span style="font-weight:bold">()</span> <span style="font-weight:bold">{</span>
+    24:		s :<span style="font-weight:bold">=</span> Student<span style="font-weight:bold">{</span>Name: <span style="color:#b84">&#34;seekload&#34;</span><span style="font-weight:bold">}</span>
+    25:		var p <span style="color:#008080">Person</span> <span style="font-weight:bold">=</span> <span style="color:#008080">s</span>
+<span style="font-weight:bold">=</span>&gt;  26:		p.Speak<span style="font-weight:bold">()</span>
+    27:	<span style="font-weight:bold">}</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> locals
+<span style="color:#008080">s</span> <span style="font-weight:bold">=</span> main.Student <span style="font-weight:bold">{</span>Name: <span style="color:#b84">&#34;seekload&#34;</span><span style="font-weight:bold">}</span>
+<span style="color:#008080">p</span> <span style="font-weight:bold">=</span> main.Person<span style="font-weight:bold">(</span>main.Student<span style="font-weight:bold">)</span> <span style="font-weight:bold">{</span>Name: <span style="color:#b84">&#34;seekload&#34;</span><span style="font-weight:bold">}</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*runtime.iface<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>&amp;p<span style="font-weight:bold">))</span>
+runtime.iface <span style="font-weight:bold">{</span>
+	tab: *runtime.itab <span style="font-weight:bold">{</span>
+		inter: *<span style="font-weight:bold">(</span>*runtime.interfacetype<span style="font-weight:bold">)(</span>0x4c9080<span style="font-weight:bold">)</span>,
+		_type: *<span style="font-weight:bold">(</span>*runtime._type<span style="font-weight:bold">)(</span>0x4cd660<span style="font-weight:bold">)</span>,
+		hash: 3558907866,
+		_: <span style="font-weight:bold">[</span>4<span style="font-weight:bold">]</span>uint8 <span style="font-weight:bold">[</span>0,0,0,0<span style="font-weight:bold">]</span>,
+		fun: <span style="font-weight:bold">[</span>1<span style="font-weight:bold">]</span>uintptr <span style="font-weight:bold">[</span>4950560<span style="font-weight:bold">]</span>,<span style="font-weight:bold">}</span>,
+	data: unsafe.Pointer<span style="font-weight:bold">(</span>0xc0000821e0<span style="font-weight:bold">)</span>,<span style="font-weight:bold">}</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> regs
+    <span style="color:#008080">Rsp</span> <span style="font-weight:bold">=</span> 0x000000c000089f38
+    ...
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>在 26 行处打了断点，运行到此处，使用 locals 打印局部变量，可以看出有结构体变量 s 和接口变量 p，p 的动态类型为 Student，值为 {Name: &ldquo;seekload&rdquo;}。</p>
+<p>最重要的下面打印的 runtime.iface 结构体，里面包含的信息一目了然，比如：itab 结构体指针，里面包含的接口类型信息 runtime.interfacetype、动态类型信息 runtime._type；数据指针 data 的值是 unsafe.Pointer(0xc0000821e0)。</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*string<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>0xc0000821e0<span style="font-weight:bold">))</span>
+<span style="color:#b84">&#34;seekload&#34;</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*runtime.interfacetype<span style="font-weight:bold">)(</span>0x4c9080<span style="font-weight:bold">)</span>
+runtime.interfacetype <span style="font-weight:bold">{</span>
+	typ: runtime._type <span style="font-weight:bold">{</span>size: 16, ptrdata: 16, hash: 110219261, tflag: tflagUncommon|tflagExtraStar|tflagNamed <span style="font-weight:bold">(</span>7<span style="font-weight:bold">)</span>, align: 8, fieldAlign: 8, kind: 20, equal: runtime.interequal, gcdata: *2, str: 11296, ptrToThis: 27392<span style="font-weight:bold">}</span>,
+	pkgpath: runtime.name <span style="font-weight:bold">{</span>bytes: *0<span style="font-weight:bold">}</span>,
+	mhdr: <span style="font-weight:bold">[]</span>runtime.imethod len: 2, cap: 2, <span style="font-weight:bold">[</span>
+		<span style="font-weight:bold">(</span>*runtime.imethod<span style="font-weight:bold">)(</span>0x4c90e0<span style="font-weight:bold">)</span>,
+		<span style="font-weight:bold">(</span>*runtime.imethod<span style="font-weight:bold">)(</span>0x4c90e8<span style="font-weight:bold">)</span>,
+	<span style="font-weight:bold">]</span>,<span style="font-weight:bold">}</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*runtime._type<span style="font-weight:bold">)(</span>0x4cd660<span style="font-weight:bold">)</span>
+runtime._type <span style="font-weight:bold">{</span>size: 16, ptrdata: 8, hash: 3558907866, tflag: tflagUncommon|tflagExtraStar|tflagNamed <span style="font-weight:bold">(</span>7<span style="font-weight:bold">)</span>, align: 8, fieldAlign: 8, kind: 25, equal: runtime.strequal, gcdata: *1, str: 12640, ptrToThis: 61632<span style="font-weight:bold">}</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>使用 regs 命令查看 Rsp 寄存器，此时的值是：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">Rsp = <span style="color:#099">0x000000c000089f38</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>根据这个值可以推测此时内存分布与实际地址如下图表示：</p>
+<p>
+        <a data-fancybox="gallery" href="/img/%e9%9d%9e%e7%a9%ba%e6%8e%a5%e5%8f%a3iface%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83%28%e6%9c%89%e5%ae%9e%e9%99%85%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%29.png">
+            <img class="mx-auto" alt="非空接口iface内存分布(有实际内存地址)" src="/img/%e9%9d%9e%e7%a9%ba%e6%8e%a5%e5%8f%a3iface%e5%86%85%e5%ad%98%e5%88%86%e5%b8%83%28%e6%9c%89%e5%ae%9e%e9%99%85%e5%86%85%e5%ad%98%e5%9c%b0%e5%9d%80%29.png" />
+        </a>
+    </p>
+<p>通过之前的汇编代码，我们可以得出 16(SP)、24(SP) 和 56(SP) 存放的是数据指针：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">9
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*unsafe.Pointer<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>0x000000c000089f38<span style="font-weight:bold">)</span>+16<span style="font-weight:bold">)</span>
+unsafe.Pointer<span style="font-weight:bold">(</span>0xc0000821e0<span style="font-weight:bold">)</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*unsafe.Pointer<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>0x000000c000089f38<span style="font-weight:bold">)</span>+24<span style="font-weight:bold">)</span>
+unsafe.Pointer<span style="font-weight:bold">(</span>0xc0000821e0<span style="font-weight:bold">)</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*unsafe.Pointer<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>0x000000c000089f38<span style="font-weight:bold">)</span>+56<span style="font-weight:bold">)</span>
+unsafe.Pointer<span style="font-weight:bold">(</span>0xc0000821e0<span style="font-weight:bold">)</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*string<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>0xc0000821e0<span style="font-weight:bold">))</span>
+<span style="color:#b84">&#34;seekload&#34;</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>48(SP) 存放的是 *itab 指针，我们 debug 下找到该指针，看能不能打印出 itab 结构体：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*unsafe.Pointer<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>0x000000c000089f38<span style="font-weight:bold">)</span>+48<span style="font-weight:bold">)</span>
+unsafe.Pointer<span style="font-weight:bold">(</span>0x4eafe0<span style="font-weight:bold">)</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span> p *<span style="font-weight:bold">(</span>*runtime.itab<span style="font-weight:bold">)(</span>uintptr<span style="font-weight:bold">(</span>0x4eafe0<span style="font-weight:bold">))</span>
+runtime.itab <span style="font-weight:bold">{</span>
+	inter: *runtime.interfacetype <span style="font-weight:bold">{</span>
+		typ: <span style="font-weight:bold">(</span>*runtime._type<span style="font-weight:bold">)(</span>0x4c9080<span style="font-weight:bold">)</span>,
+		pkgpath: <span style="font-weight:bold">(</span>*runtime.name<span style="font-weight:bold">)(</span>0x4c90b0<span style="font-weight:bold">)</span>,
+		mhdr: <span style="font-weight:bold">[]</span>runtime.imethod len: 2, cap: 2, <span style="font-weight:bold">[</span>
+			<span style="font-weight:bold">(</span>*runtime.imethod<span style="font-weight:bold">)(</span>0x4c90e0<span style="font-weight:bold">)</span>,
+			<span style="font-weight:bold">(</span>*runtime.imethod<span style="font-weight:bold">)(</span>0x4c90e8<span style="font-weight:bold">)</span>,
+		<span style="font-weight:bold">]</span>,<span style="font-weight:bold">}</span>,
+	_type: *runtime._type <span style="font-weight:bold">{</span>size: 16, ptrdata: 8, hash: 3558907866, tflag: tflagUncommon|tflagExtraStar|tflagNamed <span style="font-weight:bold">(</span>7<span style="font-weight:bold">)</span>, align: 8, fieldAlign: 8, kind: 25, equal: runtime.strequal, gcdata: *1, str: 12640, ptrToThis: 61632<span style="font-weight:bold">}</span>,
+	hash: 3558907866,
+	_: <span style="font-weight:bold">[</span>4<span style="font-weight:bold">]</span>uint8 <span style="font-weight:bold">[</span>0,0,0,0<span style="font-weight:bold">]</span>,
+	fun: <span style="font-weight:bold">[</span>1<span style="font-weight:bold">]</span>uintptr <span style="font-weight:bold">[</span>4950560<span style="font-weight:bold">]</span>,<span style="font-weight:bold">}</span>
+<span style="font-weight:bold">(</span>dlv<span style="font-weight:bold">)</span>
+</code></pre></td></tr></table>
+</div>
+</div><p>卧槽，确实可以！而且信息还挺丰富。比如接口类型信息、接口定义的方法地址等。之前介绍 itab 结构体时提到过 itab.hash 与 itab._type.hash 是一致的，从打印信息看出，这里是 3558907866。</p>
+<h2 id="nil-与-non-nil">nil 与 non-nil</h2>
+<p>回到文章开头提到的问题：</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4">
+<table style="border-spacing:0;padding:0;margin:0;border:0;width:auto;overflow:auto;display:block;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">InterfaceIsNil</span>(i <span style="font-weight:bold">interface</span>{}) {
+	<span style="font-weight:bold">if</span> i <span style="font-weight:bold">==</span> <span style="font-weight:bold">nil</span> {
+		fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;nil interface&#34;</span>)
+		<span style="font-weight:bold">return</span>
+	}
+	fmt.<span style="color:#900;font-weight:bold">Println</span>(<span style="color:#b84">&#34;non-nil interface&#34;</span>)
+}
+
+<span style="font-weight:bold">func</span> <span style="color:#900;font-weight:bold">main</span>() {
+	<span style="font-weight:bold">var</span> v <span style="font-weight:bold">interface</span>{} = <span style="font-weight:bold">nil</span>
+	<span style="font-weight:bold">var</span> i <span style="font-weight:bold">*</span><span style="color:#458;font-weight:bold">int</span> = <span style="font-weight:bold">nil</span>
+
+	<span style="color:#900;font-weight:bold">InterfaceIsNil</span>(v)
+	<span style="color:#900;font-weight:bold">InterfaceIsNil</span>(i)
+}
+</code></pre></td></tr></table>
+</div>
+</div><p>变量 i 明明是 nil，为什么经过 InterfaceIsNil() 输出 <code>non-nil interface</code> 呢？相信经过整篇文章的介绍，你已经知道原因是什么了。当调用 InterfaceIsNil() 入参是变量 i 时，其实在底层发生了类型转换，虽然此时动态值是 nil，但是动态类型 eface._type 却是 *int，不为 nil，所以此时 i != nil。</p>
+<h2 id="总结">总结</h2>
+<p>文章开头提出一个 Go 语言里面常见的 interface 坑，由问题切入，全文通过汇编和 dlv 调试工具给大家展示了空接口、非空接口底层数据结构有何区别；类型转换；使用 dlv 工具打印 interface 结构；将接口底层数据结构可视化等。欢迎留言交流！</p>
+<h2 id="拓展阅读">拓展阅读</h2>
+<h3 id="interface-相关">interface 相关</h3>
+<p><a href="https://draveness.me/golang/docs/part2-foundation/ch04-basic/golang-interface/#426-%E5%B0%8F%E7%BB%93">Go 语言设计与实现-接口</a></p>
+<p><a href="https://two.github.io/2019/09/02/go-interface-implement/">Go Interface 源码解析</a></p>
+<p><a href="https://mp.weixin.qq.com/s/EbxkBokYBajkCR-MazL0ZA">深度解密Go语言之关于 interface 的 10 个问题</a></p>
+<h3 id="汇编相关">汇编相关</h3>
+<p><a href="https://www.luozhiyun.com/archives/518">从栈上理解 Go语言函数调用</a></p>
+<p><a href="https://segmentfault.com/a/1190000021126576">走进Golang之运行与Plan9汇编</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&amp;mid=2651441649&amp;idx=2&amp;sn=f03b7516ea75aacb59ac029661ba75ba&amp;chksm=80bb1703b7cc9e1559a0222129dfe3feb541b533ae36e81f7860e97220da0fe67681904ee9e8&amp;scene=21#wechat_redirect">腾讯：汇编是深入理解 Go 的基础</a></p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzAxMTA4Njc0OQ==&amp;mid=2651438002&amp;idx=2&amp;sn=8e0c7f9514ddb7058ac9295a5c219923&amp;chksm=80bb6540b7ccec56538bcf091a2e43bc96a9ae869f0378e5a43f0f38117a4bb6ec7551e7b046&amp;scene=21#wechat_redirect">小米大佬讲解 Go 之运行与Plan9汇编</a></p>
+<h3 id="dlv-相关">dlv 相关</h3>
+<p><a href="https://chai2010.cn/advanced-go-programming-book/ch3-asm/ch3-09-debug.html">Delve调试器</a></p>
+<p><a href="https://segmentfault.com/a/1190000020086695">Go的调试工具:gdb vs dlv</a></p>
+<p><a href="https://shuzang.github.io/2020/golang-deep-learning-5-debug-with-dlv/">Golang深入学习5-使用dlv调试程序</a></p>
+<p><!-- raw HTML omitted --><!-- raw HTML omitted -->
+(全文完)
+
+        <a data-fancybox="gallery" href="/me/weixingzh.jpg">
+            <img class="mx-auto" alt="" src="/me/weixingzh.jpg" />
+        </a>
+    </p>
+<h4 id="center扫码关注领取学习资料center"><!-- raw HTML omitted -->扫码关注领取学习资料！<!-- raw HTML omitted --></h4>
+
+        </div>
+
+        
+
+
+        
+
+<div class="post-archive">
+    <h2>See Also</h2>
+    <ul class="listing">
+        
+        <li><a href="/2021/11/28/go-context.html">图解Go语言Context（附源码分析）</a></li>
+        
+        <li><a href="/2021/03/03/go-context.html">图解Go语言Context</a></li>
+        
+        <li><a href="/2021/02/28/interview-question.html">Golang语言面试题（精编263道题），包含解析！！！</a></li>
+        
+        <li><a href="/2021/02/09/understanding-the-context-package.html">掌握 Context 包</a></li>
+        
+        <li><a href="/2021/02/06/using-context-cancellation.html">使用 Go 语言 context 包的取消功能</a></li>
+        
+    </ul>
+</div>
+
+
+        <div class="post-meta meta-tags">
+            
+            <ul class="clearfix">
+                
+                <li><a href='/tags/go'>Go</a></li>
+                
+                <li><a href='/tags/golang%E8%AF%AD%E8%A8%80'>Golang语言</a></li>
+                
+                <li><a href='/tags/interface'>interface</a></li>
+                
+            </ul>
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    <div class="post bg-white">
+      <script src="https://utteranc.es/client.js"
+            repo= "Seekload/Seekload.github.io"
+            issue-term="pathname"
+            theme="github-light"
+            crossorigin="anonymous"
+            async>
+      </script>
+    </div>
+    
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2021 <a href="https://seekload.net">Seekload&#39;s Blog By Seekload</a>
+        
+    </div>
+    <br />
+    <div>
+        
+       
+        
+    </div>
+</footer>
+
+
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script><script src="https://cdn.bootcdn.net/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+<script type="application/javascript">
+var doNotTrack = false;
+if (!doNotTrack) {
+	window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+	ga('create', 'UA-133344385-1', 'auto');
+	
+	ga('send', 'pageview');
+}
+</script>
+<script async src='https://www.google-analytics.com/analytics.js'></script>
+
+
+
+    <script type="text/javascript" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+
+
+
+
+                </div>
+
+                <div id="secondary">
+
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="https://seekload.net">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title" style="color:red">福利!!扫码关注回复关键字领取学习资料（入门、进阶Go语言书籍，还有海量视频资料）！！</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a title=""  style="color:red">
+                
+                    <img src="/me/weixingzh.jpg">
+                
+            </a>
+        </li>
+        
+    </ul>
+</section>
+
+    
+    <section class="widget">
+        <h3 class="widget-title">最近文章</h3>
+<ul class="widget-list">
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/sync-mutex.html" title="Go并发原语-mutex源码解析">Go并发原语-mutex源码解析</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/12/12/go-interface.html" title="通过 dlv 和汇编窥探 interface 底层实现(多图)">通过 dlv 和汇编窥探 interface 底层实现(多图)</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/11/28/go-context.html" title="图解Go语言Context（附源码分析）">图解Go语言Context（附源码分析）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/03/03/go-context.html" title="图解Go语言Context">图解Go语言Context</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/02/28/interview-question.html" title="Golang语言面试题（精编263道题），包含解析！！！">Golang语言面试题（精编263道题），包含解析！！！</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/02/09/understanding-the-context-package.html" title="掌握 Context 包">掌握 Context 包</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2021/02/06/using-context-cancellation.html" title="使用 Go 语言 context 包的取消功能">使用 Go 语言 context 包的取消功能</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-interview-9-day.html" title="Go面试每天一篇（第 9 天）">Go面试每天一篇（第 9 天）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/31/go-pointers-vs-references.html" title="指针与引用（译）">指针与引用（译）</a>
+    </li>
+    
+    <li>
+        <a href="https://seekload.net/2019/08/30/go-interview-8-day.html" title="Go面试每天一篇（第 8 天）">Go面试每天一篇（第 8 天）</a>
+    </li>
+    
+</ul>
+    </section>
+
+    
+<section class="widget">
+    <h3 class="widget-title">友情链接</h3>
+    <ul class="widget-list">
+        
+        <li>
+            <a target="_blank" href="https://niannian.cleer.club/" title="念念有鱼">念念有鱼</a>
+        </li>
+        
+    </ul>
+</section>
+
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>分类</a></h3>
+<ul class="widget-list">
+    
+    <li><a href="https://seekload.net/categories/golang/">Golang (42)</a></li>
+    
+    <li><a href="https://seekload.net/categories/go%E9%9D%A2%E8%AF%95%E6%AF%8F%E5%A4%A9%E4%B8%80%E7%AF%87/">Go面试每天一篇 (9)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E5%86%99%E4%BD%9C/">写作 (1)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E5%B0%B1%E8%A6%81%E5%AD%A6%E4%B9%A0-go-%E8%AF%AD%E8%A8%80/">就要学习 Go 语言 (30)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E6%80%9D%E7%BB%B4/">思维 (1)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E6%B4%BB%E5%8A%A8/">活动 (1)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E8%AE%A4%E7%9F%A5/">认知 (1)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E8%AF%BB%E4%B9%A6/">读书 (1)</a></li>
+    
+    <li><a href="https://seekload.net/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题 (1)</a></li>
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>标签</a></h3>
+<div class="tagcloud">
+    
+    <a href="https://seekload.net/tags/channel/">channel</a>
+    
+    <a href="https://seekload.net/tags/context/">context</a>
+    
+    <a href="https://seekload.net/tags/function/">function</a>
+    
+    <a href="https://seekload.net/tags/go/">Go</a>
+    
+    <a href="https://seekload.net/tags/golang/">Golang</a>
+    
+    <a href="https://seekload.net/tags/golang%E8%AF%AD%E8%A8%80/">Golang语言</a>
+    
+    <a href="https://seekload.net/tags/interface/">interface</a>
+    
+    <a href="https://seekload.net/tags/map/">Map</a>
+    
+    <a href="https://seekload.net/tags/mutex/">mutex</a>
+    
+    <a href="https://seekload.net/tags/oop/">OOP</a>
+    
+    <a href="https://seekload.net/tags/select/">select</a>
+    
+    <a href="https://seekload.net/tags/variadic/">variadic</a>
+    
+    <a href="https://seekload.net/tags/%E4%BF%A1%E9%81%93/">信道</a>
+    
+    <a href="https://seekload.net/tags/%E5%86%99%E4%BD%9C/">写作</a>
+    
+    <a href="https://seekload.net/tags/%E5%87%BD%E6%95%B0/">函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%88%87%E7%89%87/">切片</a>
+    
+    <a href="https://seekload.net/tags/%E5%8C%85/">包</a>
+    
+    <a href="https://seekload.net/tags/%E5%8D%8F%E7%A8%8B/">协程</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%98%E9%87%8F/">变量</a>
+    
+    <a href="https://seekload.net/tags/%E5%8F%AF%E5%8F%98%E5%87%BD%E6%95%B0/">可变函数</a>
+    
+    <a href="https://seekload.net/tags/%E5%9D%9A%E6%8C%81/">坚持</a>
+    
+    <a href="https://seekload.net/tags/%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4/">工作空间</a>
+    
+    <a href="https://seekload.net/tags/%E5%B9%B6%E5%8F%91/">并发</a>
+    
+    <a href="https://seekload.net/tags/%E5%BC%95%E7%94%A8/">引用</a>
+    
+    <a href="https://seekload.net/tags/%E5%BD%B1%E5%93%8D%E5%8A%9B/">影响力</a>
+    
+    <a href="https://seekload.net/tags/%E5%BE%AA%E7%8E%AF%E8%AF%AD%E5%8F%A5/">循环语句</a>
+    
+    <a href="https://seekload.net/tags/%E6%80%9D%E7%BB%B4/">思维</a>
+    
+    <a href="https://seekload.net/tags/%E6%8C%87%E9%92%88/">指针</a>
+    
+    <a href="https://seekload.net/tags/%E6%8E%A5%E5%8F%A3/">接口</a>
+    
+    <a href="https://seekload.net/tags/%E6%95%B0%E7%BB%84/">数组</a>
+    
+    <a href="https://seekload.net/tags/%E6%96%B9%E6%B3%95/">方法</a>
+    
+    <a href="https://seekload.net/tags/%E6%98%A0%E5%B0%84/">映射</a>
+    
+    <a href="https://seekload.net/tags/%E6%9D%A1%E4%BB%B6%E8%AF%AD%E5%8F%A5/">条件语句</a>
+    
+    <a href="https://seekload.net/tags/%E7%B1%BB%E5%9E%8B/">类型</a>
+    
+    <a href="https://seekload.net/tags/%E7%BB%93%E6%9E%84%E4%BD%93/">结构体</a>
+    
+    <a href="https://seekload.net/tags/%E8%AE%A4%E7%9F%A5/">认知</a>
+    
+    <a href="https://seekload.net/tags/%E8%AF%BB%E4%B9%A6/">读书</a>
+    
+    <a href="https://seekload.net/tags/%E8%BF%90%E7%AE%97%E7%AC%A6/">运算符</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1/">面向对象</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E5%9F%BA/">面基</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E8%AF%95/">面试</a>
+    
+    <a href="https://seekload.net/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/">面试题</a>
+    
+</div>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+            <li><a href="https://seekload.net/index.xml">文章 RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
